@@ -44,7 +44,7 @@ class ProductionConfig(BaseConfig):
 
     ENV = "production"
     DEBUG = environ.get("DEBUG", False)
-    DB_HOST = environ.get("DB_HOST", "https://sql.proyecto2020.linti.unlp.edu.ar/")
+    DB_HOST = environ.get("DB_HOST", "localhost")
     DB_USER = environ.get("DB_USER", "grupo13")
     DB_PASS = environ.get("DB_PASS", "NWE3YTMzYmU4YjY1")
     DB_NAME = environ.get("DB_NAME", "grupo13")
