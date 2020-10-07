@@ -15,5 +15,3 @@ def unauthorized_error(e):
         "error_description": "No está autorizado para acceder a la url",
     }
     return render_template("error.html", **kwargs), 401
-
-

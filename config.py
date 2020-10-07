@@ -1,5 +1,6 @@
 from os import environ
 
+
 class BaseConfig(object):
     """Base configuration."""
 
@@ -21,7 +22,7 @@ class DevelopmentConfig(BaseConfig):
 
     ENV = "development"
     DEBUG = environ.get("DEBUG", True)
-    DB_HOST = environ.get("DB_HOST", "localhost") 
+    DB_HOST = environ.get("DB_HOST", "localhost")
     DB_USER = environ.get("DB_USER", "root")
     DB_PASS = environ.get("DB_PASS", "password")
     DB_NAME = environ.get("DB_NAME", "proyecto")

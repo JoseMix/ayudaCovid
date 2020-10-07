@@ -1,4 +1,4 @@
-import pymysql
+"""import pymysql
 
 from flask import current_app
 from flask import g
@@ -28,3 +28,4 @@ def close(e=None):
 
 def init_app(app):
     app.teardown_appcontext(close)
+"""

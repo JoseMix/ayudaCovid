@@ -1,5 +1,6 @@
 from os import path, environ
 from flask import Flask, render_template, g
+from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from config import config
 from app import db
@@ -24,7 +25,11 @@ def create_app(environment="development"):
     Session(app)
 
     # Configure db
-    db.init_app(app)
+    app.config[
+        "SQLALCHEMY_DATABASE_URI"
+    ] = "mysql+pymysql://root:password@172.17.0.4/proyecto"
+    db = SQLAlchemy(app)
+    """db.init_app(app)"""
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
