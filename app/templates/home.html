@@ -5,8 +5,8 @@
 {% endblock %}
 {% block content %}
   <h1>Inicio</h1>
-  <p>Página de inicio de la aplicación</p>
-  <a href="{{ url_for('issue_index') }}" class="link">Consultas</a>
+  <p>No disponible</p>
+  <a href="{{ url_for('user_index') }}" class="link">Perfil</a>
   {% if is_authenticated(session) %}
     <a href="{{ url_for('user_index') }}" class="link">Usuarios</a>
     <a href="{{ url_for('auth_logout') }}" class="link">Cerrar sesión</a>
