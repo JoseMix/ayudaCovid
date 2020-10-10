@@ -43,22 +43,21 @@
                  Usuario
                 </a>
                  <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                     <a class="dropdown-item" href="{{ url_for('user_index') }}" class="link">Perfil</a>
+                     <a class="dropdown-item" href="{{ url_for('user_index') }}">Perfil</a>
                      <a class="dropdown-item" href="{{ url_for('auth_logout') }}">Cerrar Sesion</a>                 
                  </div>
+                </li>  
                  <li class="nav-item">
                   <a class="nav-link" href="{{ url_for('home') }}">Volver</a>
                  </li> 
                   {%else %}
                    <a class="nav-link" href="{{ url_for('auth_login') }}" >Iniciar sesión</a>
                   {% endif %}
-                 </li>                
-                
-                </li>
+                            
             </ul> 
-           
+          </div>
           <div id="derecha">           
-            <img class="card-img-top" src="donaciones.png" alt="imagen">
+            <img class="card-img-top" src="{{ url_for('static', filename='donaciones.png') }}" alt="imagen">
           </div>
          
         </nav>

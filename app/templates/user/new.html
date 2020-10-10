@@ -5,27 +5,34 @@
 {% endblock %}
 {% block content %}
   <h1>Crear un usuario</h1>
-  <form action="{{ url_for('user_create') }}" method="POST">
-    <p>
-      <label>Email<label></br>
-      <input name="email" placeholder="Correo"/>
-    </p>
-    <p>
-      <label>Clave<label></br>
-      <input type="password" name="password" placeholder="Clave"/>
-    </p>
-    <p>
-      <label>Nombre<label></br>
-      <input name="first_name" placeholder="Nombre"/>
-    </p>
-    <p>
-      <label>Apellido<label></br>
-      <input name="last_name" placeholder="Apellido"/>
-    </p>
-    <p>
-      <input type="submit" value="Crear">
-      <button type="reset">Limpiar</button>
-    </p>
-  </form>
+  <div>
+    <form action="{{ url_for('user_create') }}" method="POST">
+      <p>
+        <label>Nombre </label>
+        <input type="text" name="user_name" placeholder="Nombre de Usuario"/>
+      </p>
+      <p>
+        <label>Email </label>
+        <input type="email"name="email" placeholder="Correo"/>
+      </p>
+      <p>
+        <label>Clave </label>
+        <input type="password" name="password" placeholder="Clave"/>
+      </p>
+      <p>
+        <label>Nombre </label>
+        <input type="text" name="first_name" placeholder="Nombre"/>
+      </p>
+      <p>
+        <label>Apellido </label>
+        <input type="text" name="last_name" placeholder="Apellido"/>
+      </p>
+      <p>
+        <input type="submit" value="Crear">
+        <button type="reset" >Limpiar</button>
+      </p>
+   
+    </form>
+    </div>
   <a href="{{ url_for('user_index') }}" class="link">Volver</a>
 {% endblock %}
