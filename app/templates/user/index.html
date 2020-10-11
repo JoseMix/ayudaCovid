@@ -4,13 +4,31 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Perfil Usuario</h1>
-  {% for user in users %}
-  <ul>
-    <li>{{ user.email }} - {{ user.first_name }} - {{ user.last_name }} - {{ user.password }}</li>
-  </ul>
-  {% endfor %}
+  <h1>Usuario</h1>
+  <table style="width:75%"  >
+    <tr>
+      <th>ID</th>
+      <th>Nombre usuario</th>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Mail</th>
+      <th>Rol</th>
+      <th>Modificar</th>
+    </tr>
+    {% for user in users %}
+      <tr>
+        <td>{{ user.id }} </td>
+        <td> {{user.username}} </td>
+        <td> {{ user.first_name }} </td>
+        <td> {{ user.last_name }} </td>
+        <td> {{ user.email }}</td>
+        <td> ROL - falta consulta - </td>
+        <td><a href="#" class="link">Modificar</a> </td>
+      </tr>
+      {% endfor %}
+    </table>
+
   <a href="{{ url_for('home') }}" class="link">Volver</a>
   <a href="{{ url_for('user_new') }}" class="link">Nuevo</a>
- {# <a href="{{ url_for('user_update') }}" class="link">Modificar</a> #}
+
 {% endblock %}

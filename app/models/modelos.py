@@ -88,9 +88,9 @@ class User(db.Model):
     def create(conn, formulario):
         nuevo = User(
             email=formulario["email"],
-            username=formulario["username"],
+            username=formulario["user_name"],
             password=formulario["password"],
-            activo=formulario["activo"],
+            activo= True,#formulario["activo"], 
             created_at=date.today(),
             first_name=formulario["first_name"],
             last_name=formulario["last_name"],
@@ -101,3 +101,16 @@ class User(db.Model):
     def all(conn):
         users = User.query.all()
         return users
+    
+    def __getitem__(self, email):
+        return self.__dict__[email]
+
+    def find_by_email_and_pass(self, conn, emailForm, passwordForm):
+        user = User.query.filter(
+            and_(User.email == emailForm, User.password == passwordForm)
+        ).first()
+        return user
+    
+    def find_by_username(self, conn, name):
+        user = User.query.filter_by(User.username == name)
+        return user

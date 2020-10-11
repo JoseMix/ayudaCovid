@@ -4,14 +4,22 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Inicio</h1>
-  <p>No disponible</p>
-  <a href="{{ url_for('user_index') }}" class="link">Perfil</a>
+  {# <h1>Inicio</h1> #}
+
+  
   {% if is_authenticated(session) %}
-    <a href="{{ url_for('user_index') }}" class="link">Usuarios</a>
-    <a href="{{ url_for('auth_logout') }}" class="link">Cerrar sesión</a>
+  <a href="{{ url_for('rol_index') }}" class="link">Roles</a>
+  <a href="{{ url_for('permiso_index') }}" class="link">Permisos</a>
+  <a href="{{ url_for('user_index') }}" class="link">Usuarios</a>
+  
+  {#<a href="{{ url_for('auth_logout') }}" class="link">Cerrar sesión</a>#} 
   {% else %}
-    <a href="{{ url_for('auth_login') }}" class="link">Iniciar sesión</a>
+  {#  <a href="{{ url_for('auth_login') }}" class="link">Iniciar sesión</a>#} 
+  <div>    
+    {# debe fijarse el estado del sitio #}
+    <h1> El sitio se encuentra mantenimiento </h1>       
+    <img class="card-img-top" src="{{ url_for('static', filename='mantenimiento.png') }}" alt="imagen página en mantenimiento">
+  </div>
   {% endif %}
 
 {% endblock %}

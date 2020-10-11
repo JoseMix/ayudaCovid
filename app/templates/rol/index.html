@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Roles{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+  <h1>Roles</h1>
+
+  <table style="width:75%"  >
+    <tr>
+      <th>Rol</th>  
+    </tr>
+    {% for rol in roles %} 
+      <tr>
+        <td>{{ rol.nombre }} </td>
+      </tr>
+      {% endfor %}
+    </table>
+
+  <a href="{{ url_for('home') }}" class="link">Volver</a>
+  <a href="{{ url_for('rol_new') }}" class="link">Nuevo</a>
+{% endblock %}

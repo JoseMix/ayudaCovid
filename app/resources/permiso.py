@@ -1,27 +1,32 @@
-from flask import redirect, render_template, request, url_for
+from flask import redirect, render_template, request, url_for, session, abort
 from flask_sqlalchemy import SQLAlchemy
 
 # from app.db import connection
 from app.models.modelos import Permiso
+from app.helpers.auth import authenticated
 
-"""
 # Public resources
 def index():
+    if not authenticated(session):
+        abort(401)
     conn = SQLAlchemy()
     # conn = connection()
-    issues = Issue.all(conn)
+    permisos = Permiso.all(conn)
 
-    return render_template("issue/index.html", issues=issues)
+    return render_template("permiso/index.html", permisos=permisos)
 
 
 def new():
-    return render_template("issue/new.html")
+    if not authenticated(session):
+        abort(401)
+    return render_template("permiso/new.html")
 
 
 def create():
+    if not authenticated(session):
+        abort(401)
     conn = SQLAlchemy()
     # conn = connection()
-    Issue.create(conn, request.form)
+    Permiso.create(conn, request.form)
 
-    return redirect(url_for("issue_index"))
-"""
+    return redirect(url_for("permiso_index"))

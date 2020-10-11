@@ -9,23 +9,23 @@
     <form action="{{ url_for('user_create') }}" method="POST">
       <p>
         <label>Nombre </label>
-        <input type="text" name="user_name" placeholder="Nombre de Usuario"/>
+        <input type="text" name="user_name" required placeholder="Nombre de Usuario"/>
       </p>
       <p>
         <label>Email </label>
-        <input type="email"name="email" placeholder="Correo"/>
+        <input type="email"name="email" required placeholder="Correo"/>
       </p>
       <p>
         <label>Clave </label>
-        <input type="password" name="password" placeholder="Clave"/>
+        <input type="password" name="password" required placeholder="Clave"/>
       </p>
       <p>
         <label>Nombre </label>
-        <input type="text" name="first_name" placeholder="Nombre"/>
+        <input type="text" name="first_name" required placeholder="Nombre"/>
       </p>
       <p>
         <label>Apellido </label>
-        <input type="text" name="last_name" placeholder="Apellido"/>
+        <input type="text" name="last_name" required placeholder="Apellido"/>
       </p>
       <p>
         <input type="submit" value="Crear">

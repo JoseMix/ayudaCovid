@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Permisos{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+  <h1>Permisos</h1>
+
+  <table style="width:75%"  >
+    <tr>
+      <th>Permiso</th>  
+    </tr>
+    {% for permiso in permisos %} 
+      <tr>
+        <td>{{ permiso.nombre }} </td>
+      </tr>
+      {% endfor %}
+    </table>
+
+  <a href="{{ url_for('home') }}" class="link">Volver</a>
+  <a href="{{ url_for('permiso_new') }}" class="link">Nuevo</a>
+{% endblock %}
