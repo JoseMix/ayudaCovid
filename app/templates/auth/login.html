@@ -1,13 +1,44 @@
 {% extends "layout.html" %}
-{% block title %}Login{% endblock %}
+{% block title %}Donaciones Covid{% endblock %}
 {% block head %}
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Iniciar sesión</h1>
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <div > 
+          <form  action="{{ url_for('auth_authenticate') }}" onsubmit="" method="POST" enctype="multipart/form-data" >
+              <fieldset>
+                <div class="form-group " >
+                  <legend> Iniciar Sesion</legend>
+                </div>
+                <div class="form-group " >
+                  <label>Usuario</label>
+                  <input  type="text" class="form-control" name="email" id="usuario"> </br>
+                
+                </div>
+                <div ><label> Contraseña </label><input type="password" 
+                class="form-control" name="password" id="contrasena">
+              
+                <div ><br> <input type="submit"  class="btn btn-primary" value="Iniciar Sesion"></div>
+              </fieldset>
+         </form>
+      </div>
+    </div>
+    <div class="col-sm">
+     
+    </div>
+    <div class="col-sm">
+      
+    </div>
+  </div>
+</div>
+
+<!--<h1>Iniciar sesión</h1>
   <form action="{{ url_for('auth_authenticate') }}" method="POST">
     <input name="email" placeholder="Correo" required/>
     <input type="password" name="password" placeholder="Clave" required/>
     <input type="submit" value="Login">
-  </form>
+  </form>-->
 {% endblock %}
