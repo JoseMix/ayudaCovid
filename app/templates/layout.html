@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>  
-   
+  
     <title>{% block title %}{% endblock %}</title>
     {% endblock %}
   </head>
@@ -23,7 +23,7 @@
           <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNavDropdown">
-           
+          
             <ul class="navbar-nav">
               <li class="nav-item active">
                 <a class="nav-link" href="{{ url_for('home') }}">Pagina Principal </a>
@@ -40,18 +40,19 @@
               {% if is_authenticated(session) %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                 Usuario
+                Usuario
                 </a>
-                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                     <a class="dropdown-item" href="{{ url_for('user_index') }}">Perfil</a>
-                     <a class="dropdown-item" href="{{ url_for('auth_logout') }}">Cerrar Sesion</a>                 
-                 </div>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                      <a class="dropdown-item" href="{{ url_for('user_index') }}">Perfil</a>
+                      <a class="dropdown-item" href="{{ url_for('issue_index') }}">Usuarios</a>
+                      <a class="dropdown-item" href="{{ url_for('auth_logout') }}">Cerrar Sesion</a>                 
+                  </div>
                 </li>  
-                 <li class="nav-item">
+                  <li class="nav-item">
                   <a class="nav-link" href="{{ url_for('home') }}">Volver</a>
-                 </li> 
+                  </li> 
                   {%else %}
-                   <a class="nav-link" href="{{ url_for('auth_login') }}" >Iniciar sesión</a>
+                    <a class="nav-link" href="{{ url_for('auth_login') }}" >Iniciar sesión</a>
                   {% endif %}
                             
             </ul> 
@@ -59,9 +60,9 @@
           <div id="derecha">           
             <img class="card-img-top" src="{{ url_for('static', filename='donaciones.png') }}" alt="imagen">
           </div>
-         
+    
         </nav>
-       
+      
       </div>
       {% endblock %}
     </div>
