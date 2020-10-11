@@ -27,11 +27,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-<<<<<<< HEAD
     ] = "mysql+pymysql://root:password@172.17.0.4/entrega1"
-=======
-    ] = "mysql+pymysql://root:@localhost/proyecto"
->>>>>>> development
     db = SQLAlchemy(app)
     """db.init_app(app)"""
     initialize_db(app)
@@ -55,8 +51,8 @@ def create_app(environment="development"):
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
-#   app.add_url_rule("/usuarios/modificar", "user_update", user.update)
-#   app.add_url_rule("/usuarios", "user_", user., methods=["POST"])
+    #   app.add_url_rule("/usuarios/modificar", "user_update", user.update)
+    #   app.add_url_rule("/usuarios", "user_", user., methods=["POST"])
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
