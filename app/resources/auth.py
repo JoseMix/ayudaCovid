@@ -2,7 +2,7 @@ from flask import redirect, render_template, request, url_for, abort, session, f
 from flask_sqlalchemy import SQLAlchemy
 
 # from app.db import connection
-from app.models.user import User
+from app.models.modelos import User
 
 
 def login():

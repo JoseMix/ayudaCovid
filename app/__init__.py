@@ -4,12 +4,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from config import config
 from app import db
-from app.resources import issue
 from app.resources import user
 from app.resources import auth
 from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
+from app.models.modelos import initialize_db
 
 
 def create_app(environment="development"):
@@ -27,9 +27,10 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    ] = "mysql+pymysql://root:password@172.17.0.4/entrega1"
     db = SQLAlchemy(app)
     """db.init_app(app)"""
+    initialize_db(app)
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
@@ -40,12 +41,12 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
     )
-
+    """
     # Rutas de Consultas
     app.add_url_rule("/consultas", "issue_index", issue.index)
     app.add_url_rule("/consultas", "issue_create", issue.create, methods=["POST"])
     app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
-
+    """
     # Rutas de Usuarios
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])

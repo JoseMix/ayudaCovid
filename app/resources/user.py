@@ -2,7 +2,7 @@ from flask import redirect, render_template, request, url_for, session, abort
 from flask_sqlalchemy import SQLAlchemy
 
 # from app.db import connection
-from app.models.user import User
+from app.models.modelos import User
 from app.helpers.auth import authenticated
 
 # Protected resources
