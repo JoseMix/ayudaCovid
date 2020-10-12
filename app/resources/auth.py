@@ -30,4 +30,4 @@ def logout():
     session.clear()
     flash("La sesión se cerró correctamente.")
 
-    return redirect(url_for("auth_login"))
+    return redirect(url_for("home"))

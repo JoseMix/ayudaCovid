@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
   <h1>Crear un usuario</h1>
-  <div>
+  <div id="formulario">
     <form action="{{ url_for('user_create') }}" method="POST">
       <p>
         <label>Nombre </label>
@@ -28,8 +28,15 @@
         <input type="text" name="last_name" required placeholder="Apellido"/>
       </p>
       <p>
+        <label>Seleccione un Rol</label>
+        <select name="rol" id="rol" required>
+          <option value="">Administrador</option>
+          <option value="">Operador de centro de ayuda</option>
+        </select>
+      </p>
+      <p>
         <input type="submit" value="Crear">
-        <button type="reset" >Limpiar</button>
+        <button id="boton" type="reset" >Limpiar</button>
       </p>
    
     </form>

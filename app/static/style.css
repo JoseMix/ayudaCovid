@@ -39,6 +39,22 @@ div #derecha{
   float: right;
 }
 
+div #formulario{
+  text-align: center;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+#boton{
+  border: 1px solid rgb(165, 164, 164);
+  border-radius: 3px;
+  line-height: 1.3;
+  text-decoration: none;
+  letter-spacing: 1px;
+  background-color: rgb(214, 211, 211);
+  padding: 4px 5px;
+}
+
 a.link {
   text-transform: uppercase;
   font-size: 10px;
