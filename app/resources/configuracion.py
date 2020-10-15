@@ -10,14 +10,14 @@ def new():
         abort(401)
     return render_template("configuracion/new.html")
 
-
+'''
 def show():
     if not authenticated(session):
         abort(401)
     conn = SQLAlchemy()
     sitio = Configuracion.sitio(conn)
     return render_template("configuracion/show.html", sitio=sitio)
-
+'''
 
 def create():
     if not authenticated(session):

@@ -139,7 +139,8 @@ class User(db.Model):
     def find_by_username(self, conn, name):
         user = User.query.filter_by(User.username == name)
         return user
-    
-'''    def find_by(self, conn, string):
-        user = User.query.filter_by(string).first()
-        return user'''
+    '''
+    def find_by_email(self, conn, email):
+        user = self.query.filter_by(User.email == email)
+        return user
+    '''

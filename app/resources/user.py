@@ -14,16 +14,17 @@ def index():
     users = User.all(conn)
 
     return render_template("user/index.html", users=users)
+
 '''
 def show():
     if not authenticated(session):
         abort(401)
     conn = SQLAlchemy()
-    email = "User.email ==" + session.get("user")
-    user = User.find_by(conn,email)
-    
-    return render_template("user/show.html", user=user)    
-'''
+    user = User.find_by_email(conn, session.get("user"))
+   
+    return render_template("user/show.html", user=user.get(1))    
+ '''
+ 
 def new():
     if not authenticated(session):
         abort(401)
