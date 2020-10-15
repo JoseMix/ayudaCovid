@@ -44,8 +44,8 @@
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{session.get("user") }}</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                   <a class="dropdown-item" href="{{ url_for('user_index') }}">Perfil</a>
-                   <a class="dropdown-item" href="{{ url_for('auth_logout') }}">Cerrar Sesion</a>                                   
+                  <a class="dropdown-item" href="{{ url_for('user_show') }}">Perfil</a>
+                  <a class="dropdown-item" href="{{ url_for('auth_logout') }}">Cerrar Sesion</a>                                   
                 </div>                
             </li> 
               {%else %}
