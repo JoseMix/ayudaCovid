@@ -27,6 +27,31 @@ usuario_rol = db.Table(
     db.Column("users_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
 )
 
+# Modelo configuracion
+class Configuracion(db.Model):
+    __tablename__ = "configuracion"
+    id = db.Column(db.Integer, primary_key=True)
+    titulo = db.Column(db.String(255))
+    descripcion = db.Column(db.String(255))
+    email = db.Column(db.String(255))
+    paginas = db.Column(db.Integer)
+    activo = db.Column(db.Boolean, nullable=False)
+
+    def create(conn, formulario):
+        nuevo = Configuracion(
+            email=formulario["email"],
+            titulo=formulario["titulo"],
+            descripcion=formulario["descripcion"],
+            activo= eval(formulario["activo"]),
+            paginas=formulario["paginado"]
+        )
+        db.session.add(nuevo)
+        db.session.commit()
+
+    def sitio(self, conn):
+        sitio = Configuracion.query.all()
+        return sitio
+
 
 # Modelo Rol
 class Rol(db.Model):
@@ -114,3 +139,7 @@ class User(db.Model):
     def find_by_username(self, conn, name):
         user = User.query.filter_by(User.username == name)
         return user
+    
+'''    def find_by(self, conn, string):
+        user = User.query.filter_by(string).first()
+        return user'''

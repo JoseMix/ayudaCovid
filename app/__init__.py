@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from config import config
 from app import db
-from app.resources import user, rol, permiso
+from app.resources import user, rol, permiso, configuracion
 from app.resources import auth
 from app.resources.api import issue as api_issue
 from app.helpers import handler
@@ -52,8 +52,14 @@ def create_app(environment="development"):
     app.add_url_rule("/permisos", "permiso_create", permiso.create, methods=["POST"])
     app.add_url_rule("/permisos/nueva", "permiso_new", permiso.new)
 
+    # Rutas de Configuración
+    app.add_url_rule("/configuracion/nuevo", "configuracion_new", configuracion.new)
+    app.add_url_rule("/configuracion", "configuracion_create", configuracion.create, methods=["POST"])
+  # app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
+    
     # Rutas de Usuarios
     app.add_url_rule("/usuarios", "user_index", user.index)
+  #  app.add_url_rule("/usuarios/show", "user_show", user.show)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
     #   app.add_url_rule("/usuarios/modificar", "user_update", user.update)
@@ -63,7 +69,7 @@ def create_app(environment="development"):
     @app.route("/")
     def home():
         return render_template("home.html")
-
+    
     # Rutas de API-rest
 #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
 

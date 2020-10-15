@@ -14,6 +14,8 @@
       <th>Mail</th>
       <th>Rol</th>
       <th>Modificar</th>
+      <th>Activar</th>
+      <th>Borrar</th>
     </tr>
     {% for user in users %}
       <tr>
@@ -24,6 +26,8 @@
         <td> {{ user.email }}</td>
         <td> ROL - falta consulta - </td>
         <td><a href="#" id="boton">Modificar</a> </td>
+        <td><a> redireccion al controlador-activar/desact </a></td>
+        <td><a> redireccion al controlador- borrar </a></td>
       </tr>
       {% endfor %}
     </table>

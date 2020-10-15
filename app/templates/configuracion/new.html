@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+{% block title %}Configuración de sitio{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+  <h1>Configuración del sitio</h1>
+  <div id="formulario">
+    <form action="{{ url_for('configuracion_create') }}" method="post">
+      <p>
+        <label>Título del Sitio: </label>
+        <input type="text" name="titulo" required placeholder="Ingrese un título"/>
+      </p>
+      <p>
+        <label>Descripción: </label>
+        {#<textarea name="descripcion" rows="5" cols="40"> </textarea>#}
+        <input type="textarea" name="descripcion" required placeholder="Ingrese una descripción de sitio"/>
+      </p>
+      <p>
+        <label>Mail de contacto: </label>
+        <input type="email" name="email" required placeholder="Mail de contacto"/>
+      </p>
+      <p>
+        <label>Cantidad de elementos por página </label>
+        <input type="number" name="paginado" required placeholder=""/>
+      </p>
+      <p>
+        <label>Estado de sitio:</label>
+        <select name="activo" required>
+          <option value="True">Habilitado</option>
+          <option value="False">Deshabilitado</option>
+        </select>
+      </p>
+      <p>
+        <input type="submit" value="Configurar">
+        <button id="boton" type="reset" >Limpiar Formulario</button>
+      </p>
+   
+    </form>
+    </div>
+    {# <a href="{{ url_for('configuracion_show') }}" class="link">Volver</a>#}
+{% endblock %}
