@@ -14,56 +14,50 @@
     <title>{% block title %}{% endblock %}</title>
     {% endblock %}
   </head>
-  <body>
- 
+
+  <body> 
       <nav class="navbar justify-content-center  navbar-expand-lg navbar-light bg-light">
         <div id="izquierda">           
-          <img class="card-img-top" src="{{ url_for('static', filename='donaciones.png') }}" alt="imagen">
+          <a href="{{ url_for('home') }}"> <img  src="{{ url_for('static', filename='donaciones.png') }}" alt="imagen" > </a>
         </div>
-        <a class="navbar-brand" href="#">Donaciones Covid-19</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        
+
+        <a class="navbar-brand" href="{{ url_for('home') }}">Donaciones Covid-19</a>
+       
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">        
           <ul class="navbar-nav">
-            <li class="nav-item active">
-              <a class="nav-link" href="{{ url_for('home') }}">Pagina Principal </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Plasma</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Comida</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Contacto</a>
-            </li>            
+                      
             {% if is_authenticated(session) %}
+            <li class="nav-item">
+              <a href="{{ url_for('user_index') }}" class="nav-link">Usuarios</a>
+            </li>  
+            <li class="nav-item">
+              <a href="{{ url_for('configuracion_new') }}" class="nav-link">Configuracion</a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ url_for('rol_index') }}" class="nav-link">Roles</a>
+            </li>   
+            <li class="nav-item">
+              <a href="{{ url_for('permiso_index') }}" class="nav-link">Permisos</a>
+            </li>               
+            
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Usuario
-              </a>
+              {{session.get("user") }}</a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                {# <a class="dropdown-item" href="{{ url_for('user_show') }}">Perfil</a>
-                   <a class="dropdown-item" href="{{ url_for('user_index') }}">Usuarios</a> #}
-                   <a class="dropdown-item" href="{{ url_for('auth_logout') }}">Cerrar Sesion</a>                 
-                </div>
+                   <a class="dropdown-item" href="{{ url_for('user_index') }}">Perfil</a>
+                   <a class="dropdown-item" href="{{ url_for('auth_logout') }}">Cerrar Sesion</a>                                   
+                </div>                
+            </li> 
+              {%else %}
+              <li>
+                <a class="nav-link" href="{{ url_for('auth_login') }}" >Iniciar sesión</a>
               </li>
-                {%else %}
-                <li>
-                  <a class="nav-link" href="{{ url_for('auth_login') }}" >Iniciar sesión</a>
-                </li>
-                  {% endif %}
-                          
-          </ul> 
-
-        </div>
-  
+              {% endif %}    
+          </ul>  
+        </div>  
       </nav>
-
-  
-    <div id="content">
+      
+      <div id="content">
       {% with messages = get_flashed_messages() %}
         {% if messages %}
           <ul class=flashes>
@@ -79,6 +73,7 @@
     </div>
     <div id="footer">
       {% block footer %}
+      
       {% endblock %}
     </div>
   </body>
