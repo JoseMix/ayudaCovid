@@ -21,7 +21,7 @@ def show():
         abort(401)
     '''conn = SQLAlchemy()
     user = User.find_by_email(conn, session.get("user"))'''
-    return render_template("user/show.html" )    
+    return render_template("user/show.html")    
 
 
 def new():

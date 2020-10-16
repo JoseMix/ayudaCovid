@@ -4,7 +4,12 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Usuario</h1>
+
+  <h1>Usuarios</h1>
+  <input class="form-control" id="busqueda" type="text" placeholder="Buscar por nombre" style="width:25%">
+  <button id="botonBusqueda" type="button" class="btn btn-default">Usuarios Activos</button>
+  <button id="botonBusqueda" type="button" class="btn btn-default">Usuarios Bloqueados</button>
+  
   <table class="table table-hover" style="width:75%"  >
     <tr style="text-align: center;">
       <th>ID</th>
