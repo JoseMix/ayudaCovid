@@ -9,20 +9,16 @@ def login():
     return render_template("auth/login.html")
 
 
-def authenticate():
+def authenticate(form):
     conn = SQLAlchemy()
-    # conn = connection()
-    params = request.form
-    user = User().find_by_email_and_pass(conn, params["email"], params["password"])
-
+    user = User().find_by_email_and_pass(
+        conn, form["email"].data, form["password"].data
+    )
     if not user:
         flash("Usuario o clave incorrecto.")
-        return redirect(url_for("auth_login"))
-
+        return redirect(url_for("login"))
     session["user"] = user["email"]
-    flash("La sesión se inició correctamente.")
-
-    return redirect(url_for("home"))
+    # return redirect(url_for("home"))
 
 
 def logout():
@@ -31,3 +27,12 @@ def logout():
     flash("La sesión se cerró correctamente.")
 
     return redirect(url_for("home"))
+
+
+def validate(form):
+    conn = SQLAlchemy()
+    # conn = connection()
+    user = User().validate_user_creation(
+        conn, form["email"].data, form["username"].data
+    )
+    return user

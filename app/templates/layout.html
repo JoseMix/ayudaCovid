@@ -24,7 +24,7 @@
         <a class="navbar-brand" href="{{ url_for('home') }}">Donaciones Covid-19</a>
        
         <div class="collapse navbar-collapse" id="navbarNavDropdown">        
-          <ul class="navbar-nav">
+          <ul class="nav justify-content-end">
                       
             {% if is_authenticated(session) %}
             <li class="nav-item">
@@ -48,13 +48,16 @@
                   <a class="dropdown-item" href="{{ url_for('auth_logout') }}">Cerrar Sesion</a>                                   
                 </div>                
             </li> 
-              {%else %}
-              <li>
-                <a class="nav-link" href="{{ url_for('auth_login') }}" >Iniciar sesión</a>
-              </li>
-              {% endif %}    
-          </ul>  
-        </div>  
+                {%else %}
+                <li>
+                  <a class="nav-link" href="{{ url_for('login') }}" >Iniciar sesión</a>
+                </li>
+                  {% endif %}
+                          
+          </ul> 
+
+        </div>
+  
       </nav>
       
       <div id="content">

@@ -1,5 +1,5 @@
 from os import path, environ
-from flask import Flask, render_template, g
+from flask import Flask, render_template, g, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from config import config
@@ -10,6 +10,7 @@ from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.modelos import initialize_db
+from app.resources.forms import RegistrationForm, LoginForm
 
 
 def create_app(environment="development"):
@@ -27,7 +28,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://root:@localhost/proyecto"
+    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
     db = SQLAlchemy(app)
     """db.init_app(app)"""
     initialize_db(app)
@@ -36,12 +37,19 @@ def create_app(environment="development"):
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
 
     # Autenticación
-    app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
+    # app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
     app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
-    app.add_url_rule(
-        "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
-    )
-    
+    # app.add_url_rule("/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"])
+
+    @app.route("/iniciar_sesion", methods=["GET", "POST"])
+    def login():
+        form = LoginForm()
+        if form.validate_on_submit():
+            if not (auth.authenticate(form)):
+                flash("Usuario logueado correctamente")
+                return redirect(url_for("home"))
+        return render_template("auth/login.html", form=form)
+
     # Rutas de Roles
     app.add_url_rule("/roles", "rol_index", rol.index)
     app.add_url_rule("/roles", "rol_create", rol.create, methods=["POST"])
@@ -54,24 +62,38 @@ def create_app(environment="development"):
 
     # Rutas de Configuración
     app.add_url_rule("/configuracion/nuevo", "configuracion_new", configuracion.new)
-    app.add_url_rule("/configuracion", "configuracion_create", configuracion.create, methods=["POST"])
-  # app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
-    
+    app.add_url_rule(
+        "/configuracion", "configuracion_create", configuracion.create, methods=["POST"]
+    )
+    # app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
+
     # Rutas de Usuarios
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios/show", "user_show", user.show)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
-    app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
-    #   app.add_url_rule("/usuarios/modificar", "user_update", user.update)
-    #   app.add_url_rule("/usuarios", "user_", user., methods=["POST"])
+    # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
+    # app.add_url_rule("/usuarios/modificar", "user_update", user.update)
+    # app.add_url_rule("/usuarios", "user_", user., methods=["POST"])
+
+    @app.route("/usuarios/nuevo", methods=["GET", "POST"])
+    def register():
+        form = RegistrationForm()
+        if form.validate_on_submit():
+            if not user.validate(form):
+                flash("Usuario creado con éxito")
+                user.create(form)
+                return redirect(url_for("home"))
+            else:
+                flash("El usuario o el email ya existe")
+        return render_template("user/new.html", form=form)
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
         return render_template("home.html")
-    
+
     # Rutas de API-rest
-#    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
+    #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
 
     # Handlers
     app.register_error_handler(404, handler.not_found_error)
