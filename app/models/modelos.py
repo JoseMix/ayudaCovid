@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 from datetime import date
 
 db = SQLAlchemy()
@@ -42,8 +42,8 @@ class Configuracion(db.Model):
             email=formulario["email"],
             titulo=formulario["titulo"],
             descripcion=formulario["descripcion"],
-            activo= eval(formulario["activo"]),
-            paginas=formulario["paginado"]
+            activo=eval(formulario["activo"]),
+            paginas=formulario["paginado"],
         )
         db.session.add(nuevo)
         db.session.commit()
@@ -110,15 +110,15 @@ class User(db.Model):
         backref=db.backref("users", lazy=True),
     )
 
-    def create(conn, formulario):
+    def create(self, conn, formulario):
         nuevo = User(
-            email=formulario["email"],
-            username=formulario["user_name"],
-            password=formulario["password"],
-            activo= True,#formulario["activo"], 
+            email=formulario["email"].data,
+            username=formulario["username"].data,
+            password=formulario["password"].data,
+            activo=True,  # formulario["activo"],
             created_at=date.today(),
-            first_name=formulario["first_name"],
-            last_name=formulario["last_name"],
+            first_name=formulario["first_name"].data,
+            last_name=formulario["last_name"].data,
         )
         db.session.add(nuevo)
         db.session.commit()
@@ -126,21 +126,28 @@ class User(db.Model):
     def all(conn):
         users = User.query.all()
         return users
-    
+
     def __getitem__(self, email):
         return self.__dict__[email]
 
-    def find_by_email_and_pass(self, conn, emailForm, passwordForm):
+    def find_by_email_and_pass(self, conn, emailForm, usernameForm):
         user = User.query.filter(
-            and_(User.email == emailForm, User.password == passwordForm)
+            and_(User.email == emailForm, User.password == usernameForm)
         ).first()
         return user
-    
+
     def find_by_username(self, conn, name):
         user = User.query.filter_by(User.username == name)
         return user
-    '''
+
+    def validate_user_creation(self, conn, emailForm, usernameForm):
+        user = User.query.filter(
+            or_(User.email == emailForm, User.username == usernameForm)
+        ).first()
+        return user
+
+    """
     def find_by_email(self, conn, email):
         user = self.query.filter_by(User.email == email)
         return user
-    '''
+    """

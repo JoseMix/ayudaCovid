@@ -15,27 +15,35 @@ def index():
 
     return render_template("user/index.html", users=users)
 
-'''
+
+"""
 def show():
     if not authenticated(session):
         abort(401)
     conn = SQLAlchemy()
     user = User.find_by_email(conn, session.get("user"))
-   
     return render_template("user/show.html", user=user.get(1))    
- '''
- 
+"""
+
+
 def new():
     if not authenticated(session):
         abort(401)
-
     return render_template("user/new.html")
 
 
-def create():
-    if not authenticated(session):
-        abort(401)
+def create(form):
     conn = SQLAlchemy()
     # conn = connection()
-    User.create(conn, request.form)
-    return redirect(url_for("user_index"))
+    user = User()
+    user.create(conn, form)
+    # Crear y redirigir logueado
+    return redirect(url_for("login"))
+
+
+def validate(form):
+    conn = SQLAlchemy()
+    user = User().validate_user_creation(
+        conn, form["email"].data, form["username"].data
+    )
+    return user

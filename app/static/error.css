@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Montserrat:400,600,700');
-@import url('https://fonts.googleapis.com/css?family=Catamaran:400,800');
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,600,700");
+@import url("https://fonts.googleapis.com/css?family=Catamaran:400,800");
 * {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
@@ -11,9 +11,13 @@ body {
   margin-bottom: 50px;
 }
 
-html, button, input, select, textarea {
-    font-family: 'Montserrat', Helvetica, sans-serif;
-    color: #92a4ad;
+html,
+button,
+input,
+select,
+textarea {
+  font-family: "Montserrat", Helvetica, sans-serif;
+  color: #92a4ad;
 }
 
 h1 {
@@ -21,7 +25,7 @@ h1 {
   margin: 30px 15px;
 }
 
-.zoom-area { 
+.zoom-area {
   max-width: 490px;
   margin: 30px auto 30px;
   font-size: 19px;
@@ -35,15 +39,15 @@ h1 {
 a.more-link {
   text-transform: uppercase;
   font-size: 13px;
-    background-color: #92a4ad;
-    padding: 10px 15px;
-    border-radius: 0;
-    color: #416475;
-    display: inline-block;
-    margin-right: 5px;
-    margin-bottom: 5px;
-    line-height: 1.5;
-    text-decoration: none;
+  background-color: #92a4ad;
+  padding: 10px 15px;
+  border-radius: 0;
+  color: #416475;
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  line-height: 1.5;
+  text-decoration: none;
   margin-top: 50px;
   letter-spacing: 1px;
 }
