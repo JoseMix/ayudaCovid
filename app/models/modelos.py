@@ -37,6 +37,9 @@ class Configuracion(db.Model):
     paginas = db.Column(db.Integer)
     activo = db.Column(db.Boolean, nullable=False)
 
+    def __setitem__(self, key, item):
+        self.__dict__[key] = item
+    
     def create(conn, formulario):
         nuevo = Configuracion(
             email=formulario["email"],
@@ -48,10 +51,25 @@ class Configuracion(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-    def sitio(self, conn):
+    def sitio():
         sitio = Configuracion.query.all()
         return sitio
 
+    def edit(formulario):
+        s = Configuracion.sitio()
+        sitio = s[0]
+        sitio.__setitem__("email", formulario["email"])
+        #sitio["email"]=formulario["email"]
+        sitio.__setitem__("titulo", formulario["titulo"])
+        #sitio["titulo"]=formulario["titulo"]
+        sitio.__setitem__("descripcion", formulario["descripcion"])
+        #sitio["activo"]=formulario["descripcion"]
+        sitio.__setitem__("activo", eval(formulario["activo"]))
+        #sitio["activo"]=eval(formulario["activo"])
+        sitio.__setitem__("paginas", formulario["paginas"])
+        #sitio["paginas"]=formulario["paginado"]
+        db.session.add(sitio)
+        db.session.commit()
 
 # Modelo Rol
 class Rol(db.Model):
