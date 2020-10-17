@@ -127,6 +127,9 @@ class User(db.Model):
         users = User.query.all()
         return users
 
+    def __getitem__(self, id):
+        return self.__dict__[id]
+
     def __getitem__(self, email):
         return self.__dict__[email]
 
@@ -151,3 +154,7 @@ class User(db.Model):
         user = self.query.filter_by(User.email == email)
         return user
     """
+
+    def find_by_id(self, id):
+        user = User.query.filter(User.id==id).first()
+        return user
