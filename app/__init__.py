@@ -1,5 +1,5 @@
 from os import path, environ
-from flask import Flask, render_template, g, request, redirect, url_for, flash
+from flask import Flask, render_template, g, request, redirect, session, abort, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from config import config
@@ -11,7 +11,9 @@ from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.modelos import initialize_db
 from app.resources.forms import RegistrationForm, LoginForm
-
+# from app.db import connection
+from app.models.modelos import User
+from app.helpers.auth import authenticated
 
 def create_app(environment="development"):
     # Configuración inicial de la app
@@ -90,7 +92,10 @@ def create_app(environment="development"):
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
-        return render_template("home.html")
+        conn = SQLAlchemy()
+        # conn = connection()
+        us = User.all(conn)
+        return render_template("home.html",us=us)
 
     # Rutas de API-rest
     #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
