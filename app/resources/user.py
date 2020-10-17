@@ -16,8 +16,7 @@ def index():
 def show():
     if not authenticated(session):
         abort(401)
-    user = User().find_by_id(1)
-    print (user)
+    user = User().find_by_id(session.get("user_id"))
     return render_template("user/show.html",user=user)    
 
 
