@@ -24,15 +24,16 @@
         <td> {{ user.first_name }} </td>
         <td> {{ user.last_name }} </td>
         <td> {{ user.email }}</td>
+        
         <td> ROL - falta consulta - </td>
         <td><a href="#" id="boton">Modificar</a> </td>
-        <td><a> redireccion al controlador-activar/desact </a></td>
-        <td><a> redireccion al controlador- borrar </a></td>
-      </tr>
+        <td><a> {{user.activo}} </a></td>
+        <form method="post" action="{{ url_for('user_index') }}" onsubmit="return confirmation()">
+        <td><a href="#" id="boton" onclick="return confirmation()"><button type="submit">Eliminar</button></a></td>
+        <script src="{{ url_for('static', filename='validac.js') }}"> </script>       
+        </tr>
       {% endfor %}
     </table>
-
   <a href="{{ url_for('home') }}" class="link">Volver</a>
   <a href="{{ url_for('register') }}" class="link">Nuevo</a>
-
 {% endblock %}
