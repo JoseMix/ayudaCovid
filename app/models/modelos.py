@@ -152,3 +152,9 @@ class User(db.Model):
     def find_by_id(self, id):
         user = User.query.filter(User.id==id).first()
         return user
+
+    def eliminar(self,id):
+        user = User().find_by_id(id)
+        user.activo = False
+        db.session.commit()
+        return user

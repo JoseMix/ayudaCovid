@@ -16,7 +16,8 @@ def index():
 def show():
     if not authenticated(session):
         abort(401)
-    user = User().find_by_id(session.get("user_id"))
+    user = User().find_by_id(1)
+    print (user)
     return render_template("user/show.html",user=user)    
 
 
@@ -42,3 +43,7 @@ def validate(form):
         conn, form["email"].data, form["username"].data
     )
     return user
+
+def eliminar(user_id):
+    User().eliminar(id=user_id)
+    return render_template("user/eliminar.html")
