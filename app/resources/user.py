@@ -2,7 +2,7 @@ from flask import redirect, render_template, request, url_for, session, abort
 from flask_sqlalchemy import SQLAlchemy
 
 # from app.db import connection
-from app.models.modelos import User, Rol
+from app.models.modelos import User, Rol, Configuracion, Permiso
 from app.helpers.auth import authenticated
 
 # Protected resources
@@ -11,7 +11,8 @@ def index():
         abort(401)
     conn = SQLAlchemy()
     users = User.all(conn)
-    return render_template("user/index.html", users=users)
+    sitio = Configuracion.sitio()
+    return render_template("user/index.html", users=users, sitio=sitio)
 
 
 def show():
@@ -19,13 +20,15 @@ def show():
         abort(401)
     user = User().find_by_id(1)
     print(user)
-    return render_template("user/show.html", user=user)
+    sitio = Configuracion.sitio()
+    return render_template("user/show.html", user=user, sitio=sitio)
 
 
 def new():
     if not authenticated(session):
         abort(401)
-    return render_template("user/new.html")
+    sitio = Configuracion.sitio()
+    return render_template("user/new.html", sitio=sitio)
 
 
 def create(form):
@@ -47,6 +50,12 @@ def eliminar(user_id):
     return render_template("user/eliminar.html")
 
 def update_rol(user_id):
-    user = User().find_by_id(id=user_id)
-    roles = Rol().User().find_by(users_id=user_id)
-    return render_template("user/update_rol.html", user=user, roles=roles)
+   
+    roles = User().mis_roles(user_id)
+
+    sitio = Configuracion.sitio()
+    print(roles)
+    return render_template("user/update_rol.html", roles=roles, sitio=sitio)
+
+def edit_rol(form):
+    return 1  

@@ -162,6 +162,12 @@ class User(db.Model):
         ).first()
         return user
 
+    def mis_roles(self,id):
+        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id)
+        return roles
+                
+    '''.filter(Version.name == my_version).order_by(Group.number).order_by(Member.number)   '''
+
     """
     def find_by_email(self, conn, email):
         user = self.query.filter_by(User.email == email)

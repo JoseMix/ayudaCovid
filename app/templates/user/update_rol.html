@@ -1,19 +1,26 @@
 {% extends "layout.html" %}
-{% block title %}Roles{% endblock %}
+{% block title %}Asignación de Roles{% endblock %}
 {% block head %}
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Crear un rol</h1>
-  <form action="{{ url_for('rol_create') }}" method="POST">
-    <p>
-      <label>Rol: <label></br>
-      <input name="rol" required placeholder="rol"/>
-    </p>
-    <p>
+
+  <h1> <strong> Asignación de Roles </strong></h1>
+  <h4> <strong>Roles: </strong></h4></br>
+  <form action="#" method="POST">
+
+
+      {% for rol in roles %} 
+      <label>
+        <input type="checkbox" name="roles" required placeholder="rol"/>
+        {{ rol.nombre}}
+      </label><br>
+        
+        {% endfor %}
+    
       <input type="submit" value="Crear">
       <button type="reset">Limpiar</button>
-    </p>
   </form>
-  <a href="{{ url_for('rol_index') }}" class="link">Volver</a>
+  <a href="{{ url_for('user_index') }}" class="link">Volver</a>
+ 
 {% endblock %}
