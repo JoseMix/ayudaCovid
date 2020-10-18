@@ -48,10 +48,19 @@ class Configuracion(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-    def sitio(self, conn):
-        sitio = Configuracion.query.all()
+    def sitio():
+        s = Configuracion.query.all() #no me funciono el limit(1)
+        sitio = s[0]
         return sitio
 
+    def edit(formulario):
+        sitio = Configuracion.sitio()
+        sitio.email = formulario["email"]
+        sitio.titulo = formulario["titulo"]
+        sitio.descripcion = formulario["descripcion"]
+        sitio.activo = eval(formulario["activo"])
+        sitio.paginas = formulario["paginas"]
+        db.session.commit()
 
 # Modelo Rol
 class Rol(db.Model):
@@ -59,7 +68,7 @@ class Rol(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
     permisos = db.relationship(
-        "Rol",
+        "Permiso",
         secondary=permiso_rol,
         lazy="subquery",
         backref=db.backref("roles", lazy=True),
@@ -152,6 +161,12 @@ class User(db.Model):
             or_(User.email == emailForm, User.username == usernameForm)
         ).first()
         return user
+
+    def mis_roles(self,id):
+        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id)
+        return roles
+                
+    '''.filter(Version.name == my_version).order_by(Group.number).order_by(Member.number)   '''
 
     def eliminar(self,id):
             user = User().find_by_id(id)

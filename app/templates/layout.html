@@ -21,7 +21,7 @@
           <a href="{{ url_for('home') }}"> <img  src="{{ url_for('static', filename='donaciones.png') }}" alt="imagen" > </a>
         </div>
 
-        <a class="navbar-brand" href="{{ url_for('home') }}">Donaciones Covid-19</a>
+        <h1> <strong style="color: rgb(56, 62, 90);"> {{ sitio.titulo }} </strong></h1>
        
         <div class="collapse navbar-collapse" id="navbarNavDropdown">        
           <ul class="nav justify-content-end">
@@ -31,7 +31,7 @@
               <a href="{{ url_for('user_index') }}" class="nav-link">Usuarios</a>
             </li>  
             <li class="nav-item">
-              <a href="{{ url_for('configuracion_new') }}" class="nav-link">Configuracion</a>
+              <a href="{{ url_for('configuracion_show') }}" class="nav-link">Configuracion</a>
             </li>
             <li class="nav-item">
               <a href="{{ url_for('rol_index') }}" class="nav-link">Roles</a>
