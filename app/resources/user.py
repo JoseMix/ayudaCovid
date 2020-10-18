@@ -13,13 +13,13 @@ def index():
     users = User.all(conn)
     return render_template("user/index.html", users=users)
 
+
 def show():
     if not authenticated(session):
         abort(401)
     user = User().find_by_id(1)
-    print (user)
-    return render_template("user/show.html",user=user)    
-
+    print(user)
+    return render_template("user/show.html", user=user)
 
 
 def new():
@@ -38,11 +38,9 @@ def create(form):
 
 
 def validate(form):
-    conn = SQLAlchemy()
-    user = User().validate_user_creation(
-        conn, form["email"].data, form["username"].data
-    )
+    user = User().validate_user_creation(form["email"].data, form["username"].data)
     return user
+
 
 def eliminar(user_id):
     User().eliminar(id=user_id)

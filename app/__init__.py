@@ -1,5 +1,15 @@
 from os import path, environ
-from flask import Flask, render_template, g, request, redirect, session, abort, url_for, flash
+from flask import (
+    Flask,
+    render_template,
+    g,
+    request,
+    redirect,
+    session,
+    abort,
+    url_for,
+    flash,
+)
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from config import config
@@ -11,9 +21,11 @@ from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.modelos import initialize_db
 from app.resources.forms import RegistrationForm, LoginForm
+
 # from app.db import connection
 from app.models.modelos import User
 from app.helpers.auth import authenticated
+
 
 def create_app(environment="development"):
     # Configuración inicial de la app
@@ -77,15 +89,31 @@ def create_app(environment="development"):
         )
     # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
     # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
-    app.add_url_rule("/usuarios/eliminar<int:user_id>","user_eliminar", user.eliminar,methods=["GET"])
+    app.add_url_rule(
+        "/usuarios/eliminar<int:user_id>",
+        "user_eliminar",
+        user.eliminar,
+        methods=["GET"],
+    )
 
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
     # app.add_url_rule("/usuarios/modificar", "user_update", user.update)
     # app.add_url_rule("/usuarios", "user_", user., methods=["POST"])
 
-    
-
+    @app.route("/usuarios/<int:user_id>/modificar", methods=["GET", "POST"])
+    def update_user(user_id):
+        user = User.query.get_or_404(user_id)
+        form = RegistrationForm(obj=user)
+        if form.validate_on_submit():
+            if not user.validate_user_creation(form.email.data, form.username.data):
+                form.populate_obj(user)
+                db.session.merge(user)
+                db.session.commit()
+                return redirect(url_for("user_index"))
+            else:
+                flash("El usuario o el email ya existe")
+        return render_template("user/update.html", form=form)
 
     @app.route("/usuarios/nuevo", methods=["GET", "POST"])
     def register():
@@ -97,7 +125,7 @@ def create_app(environment="development"):
                 return redirect(url_for("home"))
             else:
                 flash("El usuario o el email ya existe")
-        return render_template("user/new.html", form=form)
+        return render_template("user/new.html", form=form, title="Actualizar usuario")
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
@@ -105,7 +133,7 @@ def create_app(environment="development"):
         conn = SQLAlchemy()
         # conn = connection()
         us = User.all(conn)
-        return render_template("home.html",us=us)
+        return render_template("home.html", us=us)
 
     # Rutas de API-rest
     #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)

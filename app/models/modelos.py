@@ -152,12 +152,19 @@ class User(db.Model):
         user = User.query.filter_by(User.username == name)
         return user
 
-    def validate_user_creation(self, conn, emailForm, usernameForm):
+    def find_by_id(self, conn, id):
+        user = User.query.filter_by(User.id == id)
+        return user
+
+    def validate_user_creation(self, emailForm, usernameForm):
         user = User.query.filter(
             or_(User.email == emailForm, User.username == usernameForm)
         ).first()
         return user
 
+    """
+    def find_by_email(self, conn, email):
+        user = self.query.filter_by(User.email == email)
     def find_by_id(self, id):
         user = User.query.filter(User.id==id).first()
         return user
@@ -167,3 +174,4 @@ class User(db.Model):
         user.activo = False
         db.session.commit()
         return user
+    """

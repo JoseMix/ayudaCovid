@@ -45,6 +45,7 @@ class RegistrationForm(FlaskForm):
             ),
         ],
     )
+
     submit = SubmitField("Enviar")
 
 
