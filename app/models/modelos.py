@@ -49,7 +49,7 @@ class Configuracion(db.Model):
         db.session.commit()
 
     def sitio():
-        s = Configuracion.query.all() #no me funciono el limit(1)
+        s = Configuracion.query.all()  # no me funciono el limit(1)
         sitio = s[0]
         return sitio
 
@@ -61,6 +61,7 @@ class Configuracion(db.Model):
         sitio.activo = eval(formulario["activo"])
         sitio.paginas = formulario["paginas"]
         db.session.commit()
+
 
 # Modelo Rol
 class Rol(db.Model):
@@ -142,6 +143,12 @@ class User(db.Model):
     def __getitem__(self, email):
         return self.__dict__[email]
 
+    def __getitem__(self, password):
+        return self.__dict__[password]
+
+    def set_update_time(self):
+        self.updated_at = date.today()
+
     def find_by_email_and_pass(self, conn, emailForm, usernameForm):
         user = User.query.filter(
             and_(User.email == emailForm, User.password == usernameForm)
@@ -162,7 +169,14 @@ class User(db.Model):
         ).first()
         return user
 
-    def mis_roles(self,id):
+    def validate_user_update(self, emailForm, usernameForm, id):
+        user = User.query.filter(
+            or_(User.email == emailForm, User.username == usernameForm),
+            and_(User.id != id),
+        ).first()
+        return user
+
+    def mis_roles(self, id):
         roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id)
         return roles
                 
@@ -180,12 +194,6 @@ class User(db.Model):
             db.session.commit()
             return user 
                    
-    """
-    def find_by_email(self, conn, email):
-        user = self.query.filter_by(User.email == email)
-    def find_by_id(self, id):
-        user = User.query.filter(User.id==id).first()
-        return user
-    """
+   
     
   

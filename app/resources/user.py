@@ -51,6 +51,7 @@ def eliminar(user_id):
 def activar(user_id):
     User().activar(id=user_id)
     return render_template("user/activar.html")
+    
 def update_rol(user_id):
    
     roles = User().mis_roles(user_id)
