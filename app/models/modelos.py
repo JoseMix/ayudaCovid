@@ -133,6 +133,9 @@ class User(db.Model):
     def __getitem__(self, email):
         return self.__dict__[email]
 
+    def __getitem__(self, password):
+        return self.__dict__[password]
+
     def find_by_email_and_pass(self, conn, emailForm, usernameForm):
         user = User.query.filter(
             and_(User.email == emailForm, User.password == usernameForm)
@@ -150,6 +153,13 @@ class User(db.Model):
     def validate_user_creation(self, emailForm, usernameForm):
         user = User.query.filter(
             or_(User.email == emailForm, User.username == usernameForm)
+        ).first()
+        return user
+
+    def validate_user_update(self, emailForm, usernameForm, id):
+        user = User.query.filter(
+            or_(User.email == emailForm, User.username == usernameForm),
+            and_(User.id != id),
         ).first()
         return user
 

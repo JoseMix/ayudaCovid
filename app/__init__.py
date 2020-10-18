@@ -10,6 +10,7 @@ from flask import (
     url_for,
     flash,
 )
+from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from config import config
@@ -21,6 +22,7 @@ from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.modelos import initialize_db
 from app.resources.forms import RegistrationForm, LoginForm
+
 
 # from app.db import connection
 from app.models.modelos import User
@@ -42,10 +44,11 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://root:password@172.17.0.4/entrega1"
+    ] = "mysql+pymysql://root:password@172.17.0.4/grupo13"
     db = SQLAlchemy(app)
     """db.init_app(app)"""
     initialize_db(app)
+    bcrypt = Bcrypt(app)
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
@@ -59,7 +62,7 @@ def create_app(environment="development"):
     def login():
         form = LoginForm()
         if form.validate_on_submit():
-            if not (auth.authenticate(form)):
+            if auth.authenticate(form):
                 flash("Usuario logueado correctamente")
                 return redirect(url_for("home"))
         return render_template("auth/login.html", form=form)
@@ -103,7 +106,13 @@ def create_app(environment="development"):
         user = User.query.get_or_404(user_id)
         form = RegistrationForm(obj=user)
         if form.validate_on_submit():
-            if not user.validate_user_creation(form.email.data, form.username.data):
+            if not user.validate_user_update(
+                form.email.data, form.username.data, user_id
+            ):
+                hashed_password = bcrypt.generate_password_hash(
+                    form.password.data
+                ).decode("utf-8")
+                form.password.data = hashed_password
                 form.populate_obj(user)
                 db.session.merge(user)
                 db.session.commit()
@@ -117,9 +126,13 @@ def create_app(environment="development"):
         form = RegistrationForm()
         if form.validate_on_submit():
             if not user.validate(form):
+                hashed_password = bcrypt.generate_password_hash(
+                    form.password.data
+                ).decode("utf-8")
+                form.password.data = hashed_password
                 flash("Usuario creado con éxito")
                 user.create(form)
-                return redirect(url_for("home"))
+                return redirect(url_for("login"))
             else:
                 flash("El usuario o el email ya existe")
         return render_template("user/new.html", form=form, title="Actualizar usuario")
