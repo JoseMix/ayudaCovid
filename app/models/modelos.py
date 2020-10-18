@@ -68,7 +68,7 @@ class Rol(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
     permisos = db.relationship(
-        "Rol",
+        "Permiso",
         secondary=permiso_rol,
         lazy="subquery",
         backref=db.backref("roles", lazy=True),
