@@ -42,7 +42,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://root:password@172.17.0.4/entrega1"
+    ] = "mysql+pymysql://root:@localhost/proyecto"
     db = SQLAlchemy(app)
     """db.init_app(app)"""
     initialize_db(app)
@@ -86,12 +86,7 @@ def create_app(environment="development"):
     app.add_url_rule("/usuarios/show", "user_show", user.show)
 
     # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
-    app.add_url_rule(
-        "/usuarios/eliminar<int:user_id>",
-        "user_eliminar",
-        user.eliminar,
-        methods=["GET"],
-    )
+    app.add_url_rule("/usuarios/eliminar<int:user_id>","user_eliminar",user.eliminar, methods=["GET"])
 
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
