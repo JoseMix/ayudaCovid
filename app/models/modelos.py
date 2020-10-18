@@ -127,6 +127,9 @@ class User(db.Model):
         users = User.query.all()
         return users
 
+    def __getitem__(self, id):
+        return self.__dict__[id]
+
     def __getitem__(self, email):
         return self.__dict__[email]
 
@@ -150,19 +153,16 @@ class User(db.Model):
         ).first()
         return user
 
-    def update(self, obj, formulario):
-        obj.email = formulario.email.data
-        obj.username = formulario.username.data
-        obj.password = formulario.password.data
-        obj.activo = True
-        obj.updated_at = date.today()
-        obj.first_name = formulario.first_name.data
-        obj.last_name = formulario.last_name.data
-        db.session.update()
-        db.session.commit()
-
     """
     def find_by_email(self, conn, email):
         user = self.query.filter_by(User.email == email)
+    def find_by_id(self, id):
+        user = User.query.filter(User.id==id).first()
+        return user
+
+    def eliminar(self,id):
+        user = User().find_by_id(id)
+        user.activo = False
+        db.session.commit()
         return user
     """

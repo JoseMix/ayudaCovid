@@ -4,7 +4,12 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Usuario</h1>
+
+  <h1>Usuarios</h1>
+  <input class="form-control" id="busqueda" type="text" placeholder="Buscar por nombre" style="width:25%">
+  <button id="botonBusqueda" type="button" class="btn btn-default">Usuarios Activos</button>
+  <button id="botonBusqueda" type="button" class="btn btn-default">Usuarios Bloqueados</button>
+  
   <table class="table table-hover" style="width:75%"  >
     <tr style="text-align: center;">
       <th>ID</th>
@@ -25,14 +30,23 @@
         <td> {{ user.last_name }} </td>
         <td> {{ user.email }}</td>
         <td> ROL - falta consulta - </td>
-        <td><a href="{{ url_for('update_user', user_id=user.id)}}" id="boton">Modificar</a> </td>
-        <td><a> redireccion al controlador-activar/desact </a></td>
-        <td><a> redireccion al controlador- borrar </a></td>
+        
+    
+<td><a href="{{ url_for('update_user', user_id=user.id)}}" id="boton">Modificar</a> </td>
+        <td>  {% if user.activo == True %}
+                Usuario activo 
+              {%else %}
+                Usuario Inactivo
+                {% endif %}
+        </td>
+        <td>
+          {% if user.activo == True %}
+              <a href="{{ url_for('user_eliminar', user_id=user.id)}}" id="boton" onclick="return confirmation()" type="submit">Eliminar</a></td>
+              <script src="{{ url_for('static', filename='validac.js') }}"> </script>       
+          {% endif %}
       </tr>
       {% endfor %}
     </table>
-
   <a href="{{ url_for('home') }}" class="link">Volver</a>
   <a href="{{ url_for('register') }}" class="link">Nuevo</a>
-
 {% endblock %}

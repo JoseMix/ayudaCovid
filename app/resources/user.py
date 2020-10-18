@@ -10,20 +10,16 @@ def index():
     if not authenticated(session):
         abort(401)
     conn = SQLAlchemy()
-    # conn = connection()
     users = User.all(conn)
-
     return render_template("user/index.html", users=users)
 
 
-"""
 def show():
     if not authenticated(session):
         abort(401)
-    conn = SQLAlchemy()
-    user = User.find_by_email(conn, session.get("user"))
-    return render_template("user/show.html", user=user.get(1))    
-"""
+    user = User().find_by_id(1)
+    print(user)
+    return render_template("user/show.html", user=user)
 
 
 def new():
@@ -47,3 +43,8 @@ def validate(form):
         conn, form["email"].data, form["username"].data
     )
     return user
+
+
+def eliminar(user_id):
+    User().eliminar(id=user_id)
+    return render_template("user/eliminar.html")

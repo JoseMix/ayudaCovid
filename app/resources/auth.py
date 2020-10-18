@@ -18,6 +18,8 @@ def authenticate(form):
         flash("Usuario o clave incorrecto.")
         return redirect(url_for("login"))
     session["user"] = user["email"]
+    session["user_id"] = user["id"]
+    
     # return redirect(url_for("home"))
 
 
