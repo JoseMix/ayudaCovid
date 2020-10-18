@@ -48,9 +48,19 @@ class Configuracion(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-    def sitio(self, conn):
-        sitio = Configuracion.query.all()
+    def sitio():
+        s = Configuracion.query.all()  # no me funciono el limit(1)
+        sitio = s[0]
         return sitio
+
+    def edit(formulario):
+        sitio = Configuracion.sitio()
+        sitio.email = formulario["email"]
+        sitio.titulo = formulario["titulo"]
+        sitio.descripcion = formulario["descripcion"]
+        sitio.activo = eval(formulario["activo"])
+        sitio.paginas = formulario["paginas"]
+        db.session.commit()
 
 
 # Modelo Rol
@@ -59,7 +69,7 @@ class Rol(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
     permisos = db.relationship(
-        "Rol",
+        "Permiso",
         secondary=permiso_rol,
         lazy="subquery",
         backref=db.backref("roles", lazy=True),
@@ -146,8 +156,8 @@ class User(db.Model):
         user = User.query.filter_by(User.username == name)
         return user
 
-    def find_by_id(self, conn, id):
-        user = User.query.filter_by(User.id == id)
+    def find_by_id(self, id):
+        user = User.query.filter(User.id == id).first()
         return user
 
     def validate_user_creation(self, emailForm, usernameForm):
@@ -163,16 +173,14 @@ class User(db.Model):
         ).first()
         return user
 
-    """
-    def find_by_email(self, conn, email):
-        user = self.query.filter_by(User.email == email)
-    def find_by_id(self, id):
-        user = User.query.filter(User.id==id).first()
-        return user
+    def mis_roles(self, id):
+        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id)
+        return roles
 
-    def eliminar(self,id):
+    """.filter(Version.name == my_version).order_by(Group.number).order_by(Member.number)   """
+
+    def eliminar(self, id):
         user = User().find_by_id(id)
         user.activo = False
         db.session.commit()
-        return user
-    """
+        # return user

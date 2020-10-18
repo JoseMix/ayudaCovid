@@ -4,8 +4,9 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-<h1>Inicio</h1>   
+  
   {% if is_authenticated(session) %}
+  <h1>Inicio</h1>
   <table class="table table-hover" style="width:75%"  >
     <tr style="text-align: center;">
      
@@ -24,12 +25,12 @@
       {% endfor %}
     </table>
   {% else %}
-  {#  <a href="{{ url_for('login') }}" class="link">Iniciar sesión</a>#} 
-  <div>    
-    {# debe fijarse el estado del sitio #}
-    <h1> El sitio se encuentra mantenimiento </h1>       
-    <img class="card-img-top" src="{{ url_for('static', filename='mantenimiento.png') }}" alt="imagen página en mantenimiento">
-  </div>
+    {% if sitio.activo is false %}
+    <div>    
+      <h1> El sitio se encuentra mantenimiento </h1>       
+      <img class="card-img-top" src="{{ url_for('static', filename='mantenimiento.png') }}" alt="imagen página en mantenimiento">
+    </div>
+    {% endif %} 
   {% endif %}
 
 {% endblock %}

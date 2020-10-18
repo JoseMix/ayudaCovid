@@ -25,7 +25,7 @@ from app.resources.forms import RegistrationForm, LoginForm
 
 
 # from app.db import connection
-from app.models.modelos import User
+from app.models.modelos import User, Configuracion
 from app.helpers.auth import authenticated
 
 
@@ -65,7 +65,8 @@ def create_app(environment="development"):
             if auth.authenticate(form):
                 flash("Usuario logueado correctamente")
                 return redirect(url_for("home"))
-        return render_template("auth/login.html", form=form)
+        sitio = Configuracion.sitio()
+        return render_template("auth/login.html", form=form, sitio=sitio)
 
     # Rutas de Roles
     app.add_url_rule("/roles", "rol_index", rol.index)
@@ -78,16 +79,27 @@ def create_app(environment="development"):
     app.add_url_rule("/permisos/nueva", "permiso_new", permiso.new)
 
     # Rutas de Configuración
-    app.add_url_rule("/configuracion/nuevo", "configuracion_new", configuracion.new)
     app.add_url_rule(
-        "/configuracion", "configuracion_create", configuracion.create, methods=["POST"]
+        "/configuracion/editar", "configuracion_update", configuracion.update
     )
-    # app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
+    app.add_url_rule(
+        "/configuracion", "configuracion_edit", configuracion.edit, methods=["POST"]
+    )
+    app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
 
     # Rutas de Usuarios
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios/show", "user_show", user.show)
-
+    app.add_url_rule(
+        "/usuarios/roles/<int:user_id>",
+        "user_update_rol",
+        user.update_rol,
+        methods=["GET"],
+    )
+    # app.add_url_rule(
+    #   "/usuarios/roles/update", "user_edit_rol", user.edit_rol,methods=["POST"]
+    #  )
+    # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
     # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
     app.add_url_rule(
         "/usuarios/eliminar<int:user_id>",
@@ -114,12 +126,14 @@ def create_app(environment="development"):
                 ).decode("utf-8")
                 form.password.data = hashed_password
                 form.populate_obj(user)
+                user.setUpdate()
                 db.session.merge(user)
                 db.session.commit()
                 return redirect(url_for("user_index"))
             else:
                 flash("El usuario o el email ya existe")
-        return render_template("user/update.html", form=form)
+        sitio = Configuracion.sitio()
+        return render_template("user/update.html", form=form, sitio=sitio)
 
     @app.route("/usuarios/nuevo", methods=["GET", "POST"])
     def register():
@@ -135,15 +149,16 @@ def create_app(environment="development"):
                 return redirect(url_for("login"))
             else:
                 flash("El usuario o el email ya existe")
-        return render_template("user/new.html", form=form, title="Actualizar usuario")
+        sitio = Configuracion.sitio()
+        return render_template("user/new.html", form=form, sitio=sitio)
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
         conn = SQLAlchemy()
-        # conn = connection()
         us = User.all(conn)
-        return render_template("home.html", us=us)
+        sitio = Configuracion.sitio()
+        return render_template("home.html", us=us, sitio=sitio)
 
     # Rutas de API-rest
     #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
