@@ -1,4 +1,4 @@
-from flask import redirect, render_template, request, url_for, session, abort
+from flask import redirect, flash, render_template, request, url_for, session, abort
 from flask_sqlalchemy import SQLAlchemy
 
 # from app.db import connection
@@ -46,11 +46,21 @@ def validate(form):
 
 def eliminar(user_id):
     User().eliminar(id=user_id)
-    return render_template("user/eliminar.html")
+    conn = SQLAlchemy()
+    users = User.all(conn)
+    sitio = Configuracion.sitio()
+    flash("Usuario eliminado correctamente")
+    return render_template("user/index.html", users=users, sitio=sitio)
+    
 
 def activar(user_id):
     User().activar(id=user_id)
-    return render_template("user/activar.html")
+    conn = SQLAlchemy()
+    users = User.all(conn)
+    sitio = Configuracion.sitio()
+    flash("Usuario activado correctamente")
+    return render_template("user/index.html", users=users, sitio=sitio)
+    
     
 def update_rol(user_id):
    
