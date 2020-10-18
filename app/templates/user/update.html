@@ -1,41 +1,63 @@
-{# no pude usar mismo formulario para new y update --ver #}
-
 {% extends "layout.html" %}
-{% block title %}Usuarios{% endblock %}
+{% block title %} Modificar Usuario{% endblock %}
 {% block head %}
   {{ super() }}
 {% endblock %}
 {% block content %}
 
-  <h1>Modificar usuario</h1>
-  <div>
-    <form action="{{ url_for('user_create') }}" method="POST">
-      <p>
-        <label>Nombre </label>
-        <input type="text" name="user_name" placeholder="Nombre de Usuario"/>
-      </p>
-      <p>
-        <label>Email </label>
-        <input type="email"name="email" placeholder="Correo"/>
-      </p>
-      <p>
-        <label>Clave </label>
-        <input type="password" name="password" placeholder="Clave"/>
-      </p>
-      <p>
-        <label>Nombre </label>
-        <input type="text" name="first_name" placeholder="Nombre"/>
-      </p>
-      <p>
-        <label>Apellido </label>
-        <input type="text" name="last_name" placeholder="Apellido"/>
-      </p>
-      <p>
-        <input type="submit" value="Crear">
-        <button type="reset" >Limpiar</button>
-      </p>
-   
-    </form>
-    </div>
-  <a href="{{ url_for('user_index') }}" class="link">Volver</a>
+  
+<div id="formulario">
+  <form  method="POST">
+    
+    {{ form.csrf_token }}
+    {{form.username.label}}
+      {{form.username}}
+      <br>
+      {% for error in form.username.errors %}
+        <div style=color:red>{{ error }}</div>  
+    {% endfor %}
+      
+    <p>
+      <label>Email </label>
+      {{form.email}}
+      <br>
+      {% for error in form.email.errors %}
+      <div style=color:red>{{ error }}</div>
+  {% endfor %}
+
+    </p>
+    <p>
+      <label>Password </label>
+      {{form.password}}
+      <br>
+      {% for error in form.password.errors %}
+      <div style=color:red>{{ error }}</div>
+  {% endfor %}
+
+</p>
+    <p>
+      <label>Nombre </label>
+      {{form.first_name}}
+      <br>
+      {% for error in form.first_name.errors %}
+      <div style=color:red>{{ error }}</div>
+  {% endfor %}
+</p>
+    <p>
+      <label>Apellido </label>
+      {{form.last_name}}
+      <br>
+      {% for error in form.last_name.errors %}
+      <div style=color:red>{{ error }}</div>
+  {% endfor %}
+
+    </p>
+    
+    <p>
+      <input type="submit" value="Submit">
+      <button id="boton" type="reset" >Limpiar</button>
+    </p>
+  </form>
+  </div>
+<a href="{{ url_for('user_index') }}" class="link">Volver</a>
 {% endblock %}

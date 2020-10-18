@@ -140,11 +140,26 @@ class User(db.Model):
         user = User.query.filter_by(User.username == name)
         return user
 
+    def find_by_id(self, conn, id):
+        user = User.query.filter_by(User.id == id)
+        return user
+
     def validate_user_creation(self, conn, emailForm, usernameForm):
         user = User.query.filter(
             or_(User.email == emailForm, User.username == usernameForm)
         ).first()
         return user
+
+    def update(self, obj, formulario):
+        obj.email = formulario.email.data
+        obj.username = formulario.username.data
+        obj.password = formulario.password.data
+        obj.activo = True
+        obj.updated_at = date.today()
+        obj.first_name = formulario.first_name.data
+        obj.last_name = formulario.last_name.data
+        db.session.update()
+        db.session.commit()
 
     """
     def find_by_email(self, conn, email):

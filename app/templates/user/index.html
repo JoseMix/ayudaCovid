@@ -25,7 +25,7 @@
         <td> {{ user.last_name }} </td>
         <td> {{ user.email }}</td>
         <td> ROL - falta consulta - </td>
-        <td><a href="#" id="boton">Modificar</a> </td>
+        <td><a href="{{ url_for('update_user', user_id=user.id)}}" id="boton">Modificar</a> </td>
         <td><a> redireccion al controlador-activar/desact </a></td>
         <td><a> redireccion al controlador- borrar </a></td>
       </tr>

@@ -11,6 +11,7 @@ from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.modelos import initialize_db
 from app.resources.forms import RegistrationForm, LoginForm
+from app.models.modelos import User
 
 
 def create_app(environment="development"):
@@ -28,7 +29,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    ] = "mysql+pymysql://root:password@172.17.0.4/entrega1"
     db = SQLAlchemy(app)
     """db.init_app(app)"""
     initialize_db(app)
@@ -75,6 +76,18 @@ def create_app(environment="development"):
     # app.add_url_rule("/usuarios/modificar", "user_update", user.update)
     # app.add_url_rule("/usuarios", "user_", user., methods=["POST"])
 
+    @app.route("/usuarios/<int:user_id>/modificar", methods=["GET", "POST"])
+    def update_user(user_id):
+        user = User.query.get_or_404(user_id)
+        form = RegistrationForm(obj=user)
+        if form.validate_on_submit():
+            form.populate_obj(user)
+            db.session.merge(user)
+            db.session.commit()
+            # user.update(user, form)
+            return redirect(url_for("user_index"))
+        return render_template("user/update.html", form=form)
+
     @app.route("/usuarios/nuevo", methods=["GET", "POST"])
     def register():
         form = RegistrationForm()
@@ -85,7 +98,7 @@ def create_app(environment="development"):
                 return redirect(url_for("home"))
             else:
                 flash("El usuario o el email ya existe")
-        return render_template("user/new.html", form=form)
+        return render_template("user/new.html", form=form, title="Actualizar usuario")
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
