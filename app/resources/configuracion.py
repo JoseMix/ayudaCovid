@@ -10,14 +10,14 @@ def update():
         abort(401)
     
     sitio = Configuracion.sitio()
-    return render_template("configuracion/update.html", sitio=sitio[0])
+    return render_template("configuracion/update.html", sitio=sitio)
 
 
 def show():
     if not authenticated(session):
         abort(401)
     sitio = Configuracion.sitio()
-    return render_template("configuracion/show.html", sitio=sitio[0])
+    return render_template("configuracion/show.html", sitio=sitio)
 
 
 def edit():
@@ -26,4 +26,4 @@ def edit():
    
     Configuracion.edit(formulario=request.form)
     sitio = Configuracion.sitio()
-    return render_template("configuracion/show.html", sitio=sitio[0])
+    return render_template("configuracion/show.html", sitio=sitio)

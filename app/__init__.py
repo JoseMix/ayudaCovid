@@ -72,7 +72,10 @@ def create_app(environment="development"):
     # Rutas de Usuarios
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios/show", "user_show", user.show)
-
+    app.add_url_rule(
+        "/usuarios/roles<int:user_id>","user_update_rol", user.update_rol,methods=["GET"]
+        )
+    # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
     # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
     app.add_url_rule("/usuarios/eliminar<int:user_id>","user_eliminar", user.eliminar,methods=["GET"])
 

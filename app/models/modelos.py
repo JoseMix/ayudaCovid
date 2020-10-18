@@ -37,9 +37,6 @@ class Configuracion(db.Model):
     paginas = db.Column(db.Integer)
     activo = db.Column(db.Boolean, nullable=False)
 
-    def __setitem__(self, key, item):
-        self.__dict__[key] = item
-    
     def create(conn, formulario):
         nuevo = Configuracion(
             email=formulario["email"],
@@ -52,23 +49,17 @@ class Configuracion(db.Model):
         db.session.commit()
 
     def sitio():
-        sitio = Configuracion.query.all()
+        s = Configuracion.query.all() #no me funciono el limit(1)
+        sitio = s[0]
         return sitio
 
     def edit(formulario):
-        s = Configuracion.sitio()
-        sitio = s[0]
-        sitio.__setitem__("email", formulario["email"])
-        #sitio["email"]=formulario["email"]
-        sitio.__setitem__("titulo", formulario["titulo"])
-        #sitio["titulo"]=formulario["titulo"]
-        sitio.__setitem__("descripcion", formulario["descripcion"])
-        #sitio["activo"]=formulario["descripcion"]
-        sitio.__setitem__("activo", eval(formulario["activo"]))
-        #sitio["activo"]=eval(formulario["activo"])
-        sitio.__setitem__("paginas", formulario["paginas"])
-        #sitio["paginas"]=formulario["paginado"]
-        db.session.add(sitio)
+        sitio = Configuracion.sitio()
+        sitio.email = formulario["email"]
+        sitio.titulo = formulario["titulo"]
+        sitio.descripcion = formulario["descripcion"]
+        sitio.activo = eval(formulario["activo"])
+        sitio.paginas = formulario["paginas"]
         db.session.commit()
 
 # Modelo Rol

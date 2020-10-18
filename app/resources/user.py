@@ -2,7 +2,7 @@ from flask import redirect, render_template, request, url_for, session, abort
 from flask_sqlalchemy import SQLAlchemy
 
 # from app.db import connection
-from app.models.modelos import User
+from app.models.modelos import User, Rol
 from app.helpers.auth import authenticated
 
 # Protected resources
@@ -47,3 +47,8 @@ def validate(form):
 def eliminar(user_id):
     User().eliminar(id=user_id)
     return render_template("user/eliminar.html")
+
+def update_rol(user_id):
+    user = User().find_by_id(id=user_id)
+    roles = Rol().User().find_by(users_id=user_id)
+    return render_template("user/update_rol.html", user=user, roles=roles)
