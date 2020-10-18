@@ -44,7 +44,6 @@ def validate(form):
     user = User().validate_user_creation(form["email"].data, form["username"].data)
     return user
 
-
 def eliminar(user_id):
     User().eliminar(id=user_id)
     return render_template("user/eliminar.html")
