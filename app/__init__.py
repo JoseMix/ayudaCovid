@@ -45,7 +45,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    ] = "mysql+pymysql://root:@localhost/proyecto"
     db = SQLAlchemy(app)
     """db.init_app(app)"""
     initialize_db(app)
@@ -100,6 +100,7 @@ def create_app(environment="development"):
     # app.add_url_rule(
     #   "/usuarios/roles/update", "user_edit_rol", user.edit_rol,methods=["POST"]
     #  )
+<<<<<<< HEAD
     # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
     # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
     app.add_url_rule(
@@ -111,6 +112,11 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/usuarios/activar/<int:user_id>", "user_activar", user.activar, methods=["GET"]
     )
+=======
+    
+    app.add_url_rule("/usuarios/eliminar<int:user_id>","user_eliminar",user.eliminar, methods=["GET"])
+    app.add_url_rule("/usuarios/activar<int:user_id>","user_activar",user.activar, methods=["GET"])
+>>>>>>> feature/cata
 
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
