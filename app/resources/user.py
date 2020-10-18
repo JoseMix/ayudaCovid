@@ -38,10 +38,7 @@ def create(form):
 
 
 def validate(form):
-    conn = SQLAlchemy()
-    user = User().validate_user_creation(
-        conn, form["email"].data, form["username"].data
-    )
+    user = User().validate_user_creation(form["email"].data, form["username"].data)
     return user
 
 

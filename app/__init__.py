@@ -40,7 +40,9 @@ def create_app(environment="development"):
     Session(app)
 
     # Configure db
-    app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:@localhost/proyecto"
+    app.config[
+        "SQLALCHEMY_DATABASE_URI"
+    ] = "mysql+pymysql://root:password@172.17.0.4/entrega1"
     db = SQLAlchemy(app)
     """db.init_app(app)"""
     initialize_db(app)
@@ -101,11 +103,13 @@ def create_app(environment="development"):
         user = User.query.get_or_404(user_id)
         form = RegistrationForm(obj=user)
         if form.validate_on_submit():
-            form.populate_obj(user)
-            db.session.merge(user)
-            db.session.commit()
-            # user.update(user, form)
-            return redirect(url_for("user_index"))
+            if not user.validate_user_creation(form.email.data, form.username.data):
+                form.populate_obj(user)
+                db.session.merge(user)
+                db.session.commit()
+                return redirect(url_for("user_index"))
+            else:
+                flash("El usuario o el email ya existe")
         return render_template("user/update.html", form=form)
 
     @app.route("/usuarios/nuevo", methods=["GET", "POST"])

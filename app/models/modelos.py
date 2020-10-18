@@ -147,7 +147,7 @@ class User(db.Model):
         user = User.query.filter_by(User.id == id)
         return user
 
-    def validate_user_creation(self, conn, emailForm, usernameForm):
+    def validate_user_creation(self, emailForm, usernameForm):
         user = User.query.filter(
             or_(User.email == emailForm, User.username == usernameForm)
         ).first()
