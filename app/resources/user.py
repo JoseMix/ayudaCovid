@@ -44,3 +44,7 @@ def validate(form):
 def eliminar(user_id):
     User().eliminar(id=user_id)
     return render_template("user/eliminar.html")
+
+def activar(user_id):
+    User().activar(id=user_id)
+    return render_template("user/activar.html")

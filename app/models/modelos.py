@@ -158,6 +158,13 @@ class User(db.Model):
             user.activo = False
             db.session.commit()
             return user
+
+    def activar(self,id):
+            user = User().find_by_id(id)
+            user.activo = True
+            db.session.commit()
+            return user 
+                   
     """
     def find_by_email(self, conn, email):
         user = self.query.filter_by(User.email == email)
