@@ -54,11 +54,8 @@ def eliminar(user_id):
     sitio = Configuracion.sitio()
     flash("Usuario eliminado correctamente")
     return render_template("user/index.html", users=users, sitio=sitio)
-    
 
-<<<<<<< HEAD
 
-=======
 def activar(user_id):
     User().activar(id=user_id)
     conn = SQLAlchemy()
@@ -66,9 +63,8 @@ def activar(user_id):
     sitio = Configuracion.sitio()
     flash("Usuario activado correctamente")
     return render_template("user/index.html", users=users, sitio=sitio)
-    
-    
->>>>>>> development
+
+
 def update_rol(user_id):
     if not authenticated(session):
         abort(401)
@@ -79,8 +75,4 @@ def update_rol(user_id):
 
 
 def edit_rol(form):
-<<<<<<< HEAD
     return 1
-=======
-    return 1  
->>>>>>> development
