@@ -44,7 +44,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    ] = "mysql+pymysql://maruca:maruca@localhost/proyecto"
     db = SQLAlchemy(app)
     """db.init_app(app)"""
     initialize_db(app)
@@ -154,7 +154,7 @@ def create_app(environment="development"):
         conn = SQLAlchemy()
         us = User.all(conn)
         sitio = Configuracion.sitio()
-        return render_template("home.html", us=us, sitio=sitio)
+        return render_template("home.html", us=us[0:sitio.paginas], sitio=sitio)
 
     # Rutas de API-rest
     #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)

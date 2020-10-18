@@ -12,7 +12,7 @@ def index():
     conn = SQLAlchemy()
     users = User.all(conn)
     sitio = Configuracion.sitio()
-    return render_template("user/index.html", users=users, sitio=sitio)
+    return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
 
 
 def show():
@@ -50,7 +50,7 @@ def eliminar(user_id):
     users = User.all(conn)
     sitio = Configuracion.sitio()
     flash("Usuario eliminado correctamente")
-    return render_template("user/index.html", users=users, sitio=sitio)
+    return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
     
 
 def activar(user_id):
@@ -59,13 +59,11 @@ def activar(user_id):
     users = User.all(conn)
     sitio = Configuracion.sitio()
     flash("Usuario activado correctamente")
-    return render_template("user/index.html", users=users, sitio=sitio)
+    return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
     
     
 def update_rol(user_id):
-   
     roles = User().mis_roles(user_id)
-
     sitio = Configuracion.sitio()
     print(roles)
     return render_template("user/update_rol.html", roles=roles, sitio=sitio)
