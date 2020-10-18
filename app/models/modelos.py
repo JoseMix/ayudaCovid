@@ -146,6 +146,9 @@ class User(db.Model):
     def __getitem__(self, password):
         return self.__dict__[password]
 
+    def set_update_time(self):
+        self.updated_at = date.today()
+
     def find_by_email_and_pass(self, conn, emailForm, usernameForm):
         user = User.query.filter(
             and_(User.email == emailForm, User.password == usernameForm)

@@ -126,7 +126,7 @@ def create_app(environment="development"):
                 ).decode("utf-8")
                 form.password.data = hashed_password
                 form.populate_obj(user)
-                user.setUpdate()
+                user.set_update_time()
                 db.session.merge(user)
                 db.session.commit()
                 return redirect(url_for("user_index"))
