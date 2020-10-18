@@ -1,4 +1,4 @@
-from flask import redirect, render_template, request, url_for, session, abort
+from flask import redirect, flash, render_template, request, url_for, session, abort
 from flask_sqlalchemy import SQLAlchemy
 
 # from app.db import connection
@@ -49,9 +49,26 @@ def validate(form):
 
 def eliminar(user_id):
     User().eliminar(id=user_id)
-    return render_template("user/eliminar.html")
+    conn = SQLAlchemy()
+    users = User.all(conn)
+    sitio = Configuracion.sitio()
+    flash("Usuario eliminado correctamente")
+    return render_template("user/index.html", users=users, sitio=sitio)
+    
 
+<<<<<<< HEAD
 
+=======
+def activar(user_id):
+    User().activar(id=user_id)
+    conn = SQLAlchemy()
+    users = User.all(conn)
+    sitio = Configuracion.sitio()
+    flash("Usuario activado correctamente")
+    return render_template("user/index.html", users=users, sitio=sitio)
+    
+    
+>>>>>>> development
 def update_rol(user_id):
     if not authenticated(session):
         abort(401)
@@ -62,4 +79,8 @@ def update_rol(user_id):
 
 
 def edit_rol(form):
+<<<<<<< HEAD
     return 1
+=======
+    return 1  
+>>>>>>> development

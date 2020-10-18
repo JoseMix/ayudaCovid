@@ -186,4 +186,10 @@ class User(db.Model):
         user = User().find_by_id(id)
         user.activo = False
         db.session.commit()
-        # return user
+        return user
+
+    def activar(self, id):
+        user = User().find_by_id(id)
+        user.activo = True
+        db.session.commit()
+        return user
