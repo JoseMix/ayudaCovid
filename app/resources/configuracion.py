@@ -5,23 +5,25 @@ from flask_sqlalchemy import SQLAlchemy
 from app.models.modelos import Configuracion
 from app.helpers.auth import authenticated
 
-def new():
+def update():
     if not authenticated(session):
         abort(401)
-    return render_template("configuracion/new.html")
+    
+    sitio = Configuracion.sitio()
+    return render_template("configuracion/update.html", sitio=sitio)
 
-'''
+
 def show():
     if not authenticated(session):
         abort(401)
-    conn = SQLAlchemy()
-    sitio = Configuracion.sitio(conn)
+    sitio = Configuracion.sitio()
     return render_template("configuracion/show.html", sitio=sitio)
-'''
 
-def create():
+
+def edit():
     if not authenticated(session):
         abort(401)
-    conn = SQLAlchemy()
-    Configuracion.create(conn, request.form)
-    return render_template("configuracion/new.html")
+   
+    Configuracion.edit(formulario=request.form)
+    sitio = Configuracion.sitio()
+    return render_template("configuracion/show.html", sitio=sitio)

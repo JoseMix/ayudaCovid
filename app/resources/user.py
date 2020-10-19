@@ -1,8 +1,8 @@
-from flask import redirect, render_template, request, url_for, session, abort
+from flask import redirect, flash, render_template, request, url_for, session, abort
 from flask_sqlalchemy import SQLAlchemy
 
 # from app.db import connection
-from app.models.modelos import User
+from app.models.modelos import User, Rol, Configuracion, Permiso
 from app.helpers.auth import authenticated
 
 # Protected resources
@@ -11,26 +11,28 @@ def index():
         abort(401)
     conn = SQLAlchemy()
     users = User.all(conn)
-    print("HOOOLAA")
-    print(users)
-    return render_template("user/index.html", users=users)
+    sitio = Configuracion.sitio()
+    return render_template("user/index.html", users=users, sitio=sitio)
 
 
 def show():
     if not authenticated(session):
         abort(401)
-    user = User().find_by_id(1)
-    print(user)
-    return render_template("user/show.html", user=user)
+    user = User().find_by_id(session.get("user_id"))
+    sitio = Configuracion.sitio()
+    return render_template("user/show.html", user=user, sitio=sitio)
 
 
 def new():
     if not authenticated(session):
         abort(401)
-    return render_template("user/new.html")
+    sitio = Configuracion.sitio()
+    return render_template("user/new.html", sitio=sitio)
 
 
 def create(form):
+    if not authenticated(session):
+        abort(401)
     conn = SQLAlchemy()
     # conn = connection()
     user = User()
@@ -43,6 +45,33 @@ def validate(form):
     user = User().validate_user_creation(form["email"].data, form["username"].data)
     return user
 
+
 def eliminar(user_id):
     User().eliminar(id=user_id)
-    return render_template("user/eliminar.html")
+    conn = SQLAlchemy()
+    users = User.all(conn)
+    sitio = Configuracion.sitio()
+    flash("Usuario eliminado correctamente")
+    return render_template("user/index.html", users=users, sitio=sitio)
+
+
+def activar(user_id):
+    User().activar(id=user_id)
+    conn = SQLAlchemy()
+    users = User.all(conn)
+    sitio = Configuracion.sitio()
+    flash("Usuario activado correctamente")
+    return render_template("user/index.html", users=users, sitio=sitio)
+
+
+def update_rol(user_id):
+    if not authenticated(session):
+        abort(401)
+    roles = User().mis_roles(user_id)
+    sitio = Configuracion.sitio()
+    print(roles)
+    return render_template("user/update_rol.html", roles=roles, sitio=sitio)
+
+
+def edit_rol(form):
+    return 1

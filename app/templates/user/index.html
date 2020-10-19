@@ -31,14 +31,15 @@
         <td> {{ user.first_name }} </td>
         <td> {{ user.last_name }} </td>
         <td> {{ user.email }}</td>
-        <td> ROL - falta consulta - </td>
+        <td> ROL - falta consulta <br>
+          <a href="{{ url_for('user_update_rol', user_id=user.id) }}" id="boton">Modificar</a></td>
         
     
 <td><a href="{{ url_for('update_user', user_id=user.id)}}" id="boton">Modificar</a> </td>
         <td>  {% if user.activo == True %}
                 Usuario activo 
               {%else %}
-                Usuario Inactivo
+              <a href="{{ url_for('user_activar', user_id=user.id)}}" id="boton" type="submit">Activar Usuario</a></td>
                 {% endif %}
         </td>
         <td>

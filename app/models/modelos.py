@@ -48,9 +48,19 @@ class Configuracion(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-    def sitio(self, conn):
-        sitio = Configuracion.query.all()
+    def sitio():
+        s = Configuracion.query.all()  # no me funciono el limit(1)
+        sitio = s[0]
         return sitio
+
+    def edit(formulario):
+        sitio = Configuracion.sitio()
+        sitio.email = formulario["email"]
+        sitio.titulo = formulario["titulo"]
+        sitio.descripcion = formulario["descripcion"]
+        sitio.activo = eval(formulario["activo"])
+        sitio.paginas = formulario["paginas"]
+        db.session.commit()
 
 
 # Modelo Rol
@@ -59,7 +69,7 @@ class Rol(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
     permisos = db.relationship(
-        "Rol",
+        "Permiso",
         secondary=permiso_rol,
         lazy="subquery",
         backref=db.backref("roles", lazy=True),
@@ -133,6 +143,12 @@ class User(db.Model):
     def __getitem__(self, email):
         return self.__dict__[email]
 
+    def __getitem__(self, password):
+        return self.__dict__[password]
+
+    def set_update_time(self):
+        self.updated_at = date.today()
+
     def find_by_email_and_pass(self, conn, emailForm, usernameForm):
         user = User.query.filter(
             and_(User.email == emailForm, User.password == usernameForm)
@@ -153,19 +169,31 @@ class User(db.Model):
         ).first()
         return user
 
-    def eliminar(self,id):
-            user = User().find_by_id(id)
-            user.activo = False
-            db.session.commit()
-            return user
-    
+    def validate_user_update(self, emailForm, usernameForm, id):
+        user = User.query.filter(
+            or_(User.email == emailForm, User.username == usernameForm),
+            and_(User.id != id),
+        ).first()
+        return user
+
+    def mis_roles(self, id):
+        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id)
+        return roles
+
+    """.filter(Version.name == my_version).order_by(Group.number).order_by(Member.number)   """
+
+    def eliminar(self, id):
+        user = User().find_by_id(id)
+        user.activo = False
+        db.session.commit()
+        return user
+
+    def activar(self, id):
+        user = User().find_by_id(id)
+        user.activo = True
+        db.session.commit()
+        return user
+
     def serchByName(self,name):
         users = User().query.filter(User.first_name.ilike(f'%{name}%')).all()
-        return users
-    """
-    def find_by_email(self, conn, email):
-        user = self.query.filter_by(User.email == email)
-    def find_by_id(self, id):
-        user = User.query.filter(User.id==id).first()
-        return user
-    """
+        return users    

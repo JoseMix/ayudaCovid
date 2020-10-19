@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Usuarios{% endblock %}
+{% block title %}Informacion del sitio{% endblock %}
 {% block head %}
   {{ super() }}
 {% endblock %}
@@ -10,15 +10,24 @@
       <div class="col p-4 d-flex flex-column position-static">
         <p style="font-size: 20px">
            
-            <b>Titulo:</b>{{ sitio.titulo }}   <br>
-            <b>Descripcion: </b><br>
-            <b>Email de contacto: </b><br>
-            <b>Estado: </b><br>
-            <b>Cantidad para paginado: </b><br>
+            <b>Titulo: </b> {{ sitio.titulo }} <br>
+            <b>Descripcion: </b> {{ sitio.descripcion }}<br>
+            <b>Email de contacto: </b>{{ sitio.email }} <br>
+            <b>Estado: </b>
+            {% if sitio.activo is true %}
+            Habilitado
+         {% else %}
+             Deshabilitado
+         {% endif %}
+         <br>
+            <b>Cantidad para paginado: </b>{{ sitio.paginas }} <br>
         </p>
       </div>
+      
     </div>
+    <a href="{{ url_for('configuracion_update') }}" id="boton">Modificar</a>
   </div>
+
 </div>
 
   {% endblock %}
