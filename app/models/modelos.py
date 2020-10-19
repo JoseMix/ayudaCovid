@@ -196,6 +196,7 @@ class User(db.Model):
     ''' roles = db.session.query(Rol)\
         .join(Rol, User.roles)\
             .filter(~Rol.id.in_(User().mis_roles(id))) tiro error. ver '''
+            
     def eliminar(self,id):
             user = User().find_by_id(id)
             user.activo = False

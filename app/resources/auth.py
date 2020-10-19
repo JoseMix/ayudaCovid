@@ -14,14 +14,16 @@ def login():
 def authenticate(form):
     conn = SQLAlchemy()
     bcrypt = Bcrypt()
-    user = User().query.filter(and_(User.email==form.email.data, User.activo==True)).first()
-
-           
+    user = (
+        User()
+        .query.filter(and_(User.email == form.email.data, User.activo == True))
+        .first()
+    )
     if user and bcrypt.check_password_hash(user.password, form.password.data):
         session["user"] = user["email"]
         session["user_id"] = user["id"]
         return redirect(url_for("home"))
-    else: 
+    else:
         return redirect(url_for("home"))
     # return redirect(url_for("home"))
 

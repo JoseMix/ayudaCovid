@@ -18,8 +18,7 @@ def index():
 def show():
     if not authenticated(session):
         abort(401)
-    user = User().find_by_id(1)
-    print(user)
+    user = User().find_by_id(session.get("user_id"))
     sitio = Configuracion.sitio()
     return render_template("user/show.html", user=user, sitio=sitio)
 
@@ -32,6 +31,8 @@ def new():
 
 
 def create(form):
+    if not authenticated(session):
+        abort(401)
     conn = SQLAlchemy()
     # conn = connection()
     user = User()
@@ -43,6 +44,7 @@ def create(form):
 def validate(form):
     user = User().validate_user_creation(form["email"].data, form["username"].data)
     return user
+
 
 def eliminar(user_id):
     User().eliminar(id=user_id)
@@ -65,8 +67,16 @@ def activar(user_id):
 def update_rol(user_id):
     roles = User().mis_roles(user_id)
     otros_roles = User().otros_roles(user_id)
+    return render_template("user/index.html", users=users, sitio=sitio)
+
+
+def update_rol(user_id):
+    if not authenticated(session):
+        abort(401)
+    roles = User().mis_roles(user_id)
     sitio = Configuracion.sitio()
     return render_template("user/update_rol.html", roles=roles,otros_roles=otros_roles, sitio=sitio)
 
+
 def edit_rol(form):
-    return 1  
+    return 1

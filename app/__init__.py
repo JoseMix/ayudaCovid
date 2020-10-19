@@ -9,6 +9,7 @@ from flask import (
     abort,
     url_for,
     flash,
+    abort,
 )
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
@@ -99,8 +100,7 @@ def create_app(environment="development"):
     # app.add_url_rule(
     #   "/usuarios/roles/update", "user_edit_rol", user.edit_rol,methods=["POST"]
     #  )
-    # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
-    # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
+    
     app.add_url_rule("/usuarios/eliminar<int:user_id>","user_eliminar",user.eliminar, methods=["GET"])
     app.add_url_rule("/usuarios/activar<int:user_id>","user_activar",user.activar, methods=["GET"])
 
@@ -109,8 +109,10 @@ def create_app(environment="development"):
     # app.add_url_rule("/usuarios/modificar", "user_update", user.update)
     # app.add_url_rule("/usuarios", "user_", user., methods=["POST"])
 
-    @app.route("/usuarios/<int:user_id>/modificar", methods=["GET", "POST"])
+    @app.route("/usuarios/modificar/<int:user_id>", methods=["GET", "POST"])
     def update_user(user_id):
+        if not authenticated(session):
+            abort(401)
         user = User.query.get_or_404(user_id)
         form = RegistrationForm(obj=user)
         if form.validate_on_submit():
@@ -133,6 +135,8 @@ def create_app(environment="development"):
 
     @app.route("/usuarios/nuevo", methods=["GET", "POST"])
     def register():
+        if not authenticated(session):
+            abort(401)
         form = RegistrationForm()
         if form.validate_on_submit():
             if not user.validate(form):
