@@ -65,15 +65,10 @@ def activar(user_id):
     
 
 def update_rol(user_id):
-    roles = User().mis_roles(user_id)
-    otros_roles = User().otros_roles(user_id)
-    return render_template("user/index.html", users=users, sitio=sitio)
-
-
-def update_rol(user_id):
     if not authenticated(session):
         abort(401)
     roles = User().mis_roles(user_id)
+    otros_roles = User().otros_roles(user_id)
     sitio = Configuracion.sitio()
     return render_template("user/update_rol.html", roles=roles,otros_roles=otros_roles, sitio=sitio)
 
