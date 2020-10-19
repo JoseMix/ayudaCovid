@@ -22,7 +22,7 @@ from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.modelos import initialize_db
-from app.resources.forms import RegistrationForm, LoginForm
+from app.resources.forms import RegistrationForm, LoginForm, FilterForm
 
 
 # from app.db import connection
@@ -159,6 +159,17 @@ def create_app(environment="development"):
         us = User.all(conn)
         sitio = Configuracion.sitio()
         return render_template("home.html", us=us[0:sitio.paginas], sitio=sitio)
+
+    #Ruta para el filtro de busqueda por nombre
+    #app.add_url_rule("/usuarios/filter", "user_create", user.create, methods=["POST"])
+    @app.route("/usuarios/filter", methods=["GET", "POST"])
+    def filterByName():
+            form = FilterForm()
+            if request.method == "POST":
+                users = User().serchByName(form.nombre.data)
+                sitio = Configuracion.sitio()
+                return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
+            return render_template("user/filtroDeBusqueda.html", form=form)
 
     # Rutas de API-rest
     #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)

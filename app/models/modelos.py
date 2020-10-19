@@ -207,6 +207,8 @@ class User(db.Model):
             db.session.commit()
             return user 
                    
-   
+    def serchByName(self,name):
+        users = User().query.filter(User.first_name.ilike(f'%{name}%')).all()
+        return users  
     
   
