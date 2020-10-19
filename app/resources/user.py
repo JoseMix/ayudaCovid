@@ -61,12 +61,12 @@ def activar(user_id):
     flash("Usuario activado correctamente")
     return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
     
-    
+
 def update_rol(user_id):
     roles = User().mis_roles(user_id)
+    otros_roles = User().otros_roles(user_id)
     sitio = Configuracion.sitio()
-    print(roles)
-    return render_template("user/update_rol.html", roles=roles, sitio=sitio)
+    return render_template("user/update_rol.html", roles=roles,otros_roles=otros_roles, sitio=sitio)
 
 def edit_rol(form):
     return 1  
