@@ -11,6 +11,8 @@ def index():
         abort(401)
     conn = SQLAlchemy()
     users = User.all(conn)
+    print("HOOOLAA")
+    print(users)
     return render_template("user/index.html", users=users)
 
 

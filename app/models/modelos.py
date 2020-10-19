@@ -158,6 +158,10 @@ class User(db.Model):
             user.activo = False
             db.session.commit()
             return user
+    
+    def serchByName(self,name):
+        users = User().query.filter(User.first_name.ilike(f'%{name}%')).all()
+        return users
     """
     def find_by_email(self, conn, email):
         user = self.query.filter_by(User.email == email)
@@ -165,5 +169,3 @@ class User(db.Model):
         user = User.query.filter(User.id==id).first()
         return user
     """
-    
-  

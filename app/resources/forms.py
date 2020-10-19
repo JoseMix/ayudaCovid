@@ -65,3 +65,7 @@ class LoginForm(FlaskForm):
         ],
     )
     submit = SubmitField("Enviar")
+
+class FilterForm(FlaskForm):
+    nombre = StringField()   
+    submit = SubmitField("Enviar")
