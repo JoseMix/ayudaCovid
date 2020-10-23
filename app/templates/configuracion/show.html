@@ -4,7 +4,9 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-<div id="derecha"><a href="{{ url_for('configuracion_update') }}" class="btn btn-primary btn-lg">Modificar</a></div>
+<div id="derecha">
+  <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">Volver</a>
+</div>
   <div id="show">
   <strong id="texto" style="font-size: xx-large;">INFORMACIÓN DEL SITIO:</strong>
   <table class="table table-hover">
@@ -33,7 +35,13 @@
       <td><strong id="texto-show">Cantidad para paginado:</strong></td>
       <td><strong id="text-text">{{ sitio.paginas }}</strong></td>
     </tr>
+    <tr>
+      <td></td>
+      <td>
+        <a href="{{ url_for('configuracion_update') }}" class="btn btn-primary btn-lg">Modificar</a>
+      </td>
+    </tr>
   </table>
-  </div>
+</div>
 
   {% endblock %}

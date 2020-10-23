@@ -27,8 +27,8 @@
   {% else %}
     {% if sitio.activo is false %}
     <div>    
-      <h1> El sitio se encuentra mantenimiento </h1>       
-      <img class="card-img-top" src="{{ url_for('static', filename='mantenimiento.png') }}" alt="imagen página en mantenimiento">
+      <h1 style="text-align: center;"> El sitio se encuentra mantenimiento </h1>       
+      <img id="img" src="{{ url_for('static', filename='mantenimiento.png') }}" alt="imagen página en mantenimiento">
     </div>
     {% endif %} 
   {% endif %}

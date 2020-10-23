@@ -35,7 +35,7 @@ body {
   min-height: 400px;
 }
 /*---------------------------------*/
-img {
+#img {
   border-radius: 22px;
   display: block;
   margin-left: auto;
@@ -100,7 +100,7 @@ div #formulario {
 }
 
 #login{
-  margin-top: 15%;
+  margin-top: 5%;
   margin-left: 30%;
   margin-right: 30%;
     
