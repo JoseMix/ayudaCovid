@@ -9,9 +9,8 @@ from app.helpers.auth import authenticated
 def index():
     if not authenticated(session):
         abort(401)
-    conn = SQLAlchemy()
-    # conn = connection()
-    roles = Rol.all(conn)
+    
+    roles = Rol.all()
     sitio = Configuracion.sitio()
     return render_template("rol/index.html", roles=roles, sitio=sitio)
 
@@ -26,8 +25,7 @@ def new():
 def create():
     if not authenticated(session):
         abort(401)
-    conn = SQLAlchemy()
-    # conn = connection()
-    Rol.create(conn, request.form)
+    
+    Rol.create(request.form)
     sitio = Configuracion.sitio()
     return redirect(url_for("rol_index", sitio=sitio))

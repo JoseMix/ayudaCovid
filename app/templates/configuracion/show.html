@@ -4,30 +4,36 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Informacion del sitio:</h1>
-  <div class="col-md-6">
-    <div class="row no-gutters border rounded overflow-hidden flex-md-row mb-4 h-md-250 position-relative">
-      <div class="col p-4 d-flex flex-column position-static">
-        <p style="font-size: 20px">
-           
-            <b>Titulo: </b> {{ sitio.titulo }} <br>
-            <b>Descripcion: </b> {{ sitio.descripcion }}<br>
-            <b>Email de contacto: </b>{{ sitio.email }} <br>
-            <b>Estado: </b>
+<div id="derecha"><a href="{{ url_for('configuracion_update') }}" class="btn btn-primary btn-lg">Modificar</a></div>
+  <div id="show">
+  <strong id="texto" style="font-size: xx-large;">INFORMACIÓN DEL SITIO:</strong>
+  <table class="table table-hover">
+    <tr>
+      <td><strong id="texto-show">Titulo: </strong> </td>
+      <td><strong id="text-text"> {{ sitio.titulo }} </strong></td>
+    </tr>
+    <tr>
+      <td><strong id="texto-show">Descripcion:</strong></td>
+      <td><strong id="text-text">{{ sitio.descripcion }}</strong></td>
+    </tr>
+    <tr>
+      <td><strong id="texto-show">Email de contacto: </strong></td>
+      <td><strong id="text-text">{{ sitio.email }}</strong></td>
+    </tr>
+      <td><strong id="texto-show">Estado: </strong></td>
+      <td><strong id="text-text"> 
             {% if sitio.activo is true %}
-            Habilitado
-         {% else %}
-             Deshabilitado
-         {% endif %}
-         <br>
-            <b>Cantidad para paginado: </b>{{ sitio.paginas }} <br>
-        </p>
-      </div>
-      
-    </div>
-    <a href="{{ url_for('configuracion_update') }}" id="boton">Modificar</a>
+              Habilitado
+            {% else %}
+                Deshabilitado
+            {% endif %}
+          </strong></td>
+    </tr>
+    <tr>
+      <td><strong id="texto-show">Cantidad para paginado:</strong></td>
+      <td><strong id="text-text">{{ sitio.paginas }}</strong></td>
+    </tr>
+  </table>
   </div>
-
-</div>
 
   {% endblock %}

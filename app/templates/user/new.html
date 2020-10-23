@@ -4,58 +4,54 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Cargar nuevo usuario</h1>
+  <div id="derecha">
+    <a href="{{ url_for('user_index') }}" class="btn btn-primary btn-lg">Volver</a>
+  </div>
   <div id="formulario">
+    <strong id="texto">CARGAR UN NUEVO USUARIO</strong>
     <form action="{{ url_for('register') }}" method="POST">
       
       {{ form.csrf_token }}
       {{form.username.label}}
-        {{form.username}}
+        {{form.username(class_="form-control", placeholder='ingrese un nombre de usuario')}}
         <br>
         {% for error in form.username.errors %}
           <div style=color:red>{{ error }}</div>  
-      {% endfor %}
+        {% endfor %}
         
-      <p>
         <label>Email </label>
-        {{form.email}}
+        {{form.email(class_="form-control", placeholder='ingrese un email')}}
         <br>
         {% for error in form.email.errors %}
-        <div style=color:red>{{ error }}</div>
-    {% endfor %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
 
-      </p>
-      <p>
         <label>Password </label>
-        {{form.password}}
+        {{form.password(class_="form-control", placeholder='ingrese una contraseña')}}
         <br>
         {% for error in form.password.errors %}
-        <div style=color:red>{{ error }}</div>
-    {% endfor %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
 
-  </p>
-      <p>
         <label>Nombre </label>
-        {{form.first_name}}
+        {{form.first_name(class_="form-control", placeholder='ingrese un nombre')}}
         <br>
         {% for error in form.first_name.errors %}
-        <div style=color:red>{{ error }}</div>
-    {% endfor %}
-  </p>
-      <p>
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
         <label>Apellido </label>
-        {{form.last_name}}
+        {{form.last_name(class_="form-control", placeholder='ingrese un apellido')}}
         <br>
         {% for error in form.last_name.errors %}
-        <div style=color:red>{{ error }}</div>
-    {% endfor %}
-
-      </p>
-      <p>
-        <input type="submit" value="Submit">
-        <button id="boton" type="reset" >Limpiar</button>
-      </p>
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+        <br>
+        <div id="centrar">
+          <input type="submit" value="Cargar usuario" class="btn btn-primary btn-lg">
+          <button type="reset" class="btn btn-secundary btn-lg" >Limpiar formulario</button>
+        </div>
     </form>
     </div>
-  <a href="{{ url_for('user_index') }}" class="link">Volver</a>
+  
 {% endblock %}

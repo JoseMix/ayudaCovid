@@ -6,7 +6,5 @@ from app.models.modelos import Rol
 
 
 def index():
-    conn = SQLAlchemy()
-    # conn = connection()
-    roles = Rol.all(conn)
+    roles = Rol.all()
     return jsonify(roles=roles)

@@ -9,9 +9,8 @@ from app.helpers.auth import authenticated
 def index():
     if not authenticated(session):
         abort(401)
-    conn = SQLAlchemy()
-    # conn = connection()
-    permisos = Permiso.all(conn)
+   
+    permisos = Permiso.all()
     sitio = Configuracion.sitio()
     return render_template("permiso/index.html", permisos=permisos, sitio=sitio)
 
@@ -26,8 +25,6 @@ def new():
 def create():
     if not authenticated(session):
         abort(401)
-    conn = SQLAlchemy()
-    # conn = connection()
-    Permiso.create(conn, request.form)
+    Permiso.create(request.form)
     sitio = Configuracion.sitio()
     return redirect(url_for("permiso_index", sitio=sitio))

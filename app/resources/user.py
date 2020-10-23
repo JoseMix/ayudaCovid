@@ -9,8 +9,8 @@ from app.helpers.auth import authenticated
 def index():
     if not authenticated(session):
         abort(401)
-    conn = SQLAlchemy()
-    users = User.all(conn)
+
+    users = User.all()
     sitio = Configuracion.sitio()
     return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
 
@@ -33,10 +33,8 @@ def new():
 def create(form):
     if not authenticated(session):
         abort(401)
-    conn = SQLAlchemy()
-    # conn = connection()
     user = User()
-    user.create(conn, form)
+    user.create(form)
     # Crear y redirigir logueado
     return redirect(url_for("login"))
 
@@ -48,8 +46,8 @@ def validate(form):
 
 def eliminar(user_id):
     User().eliminar(id=user_id)
-    conn = SQLAlchemy()
-    users = User.all(conn)
+    
+    users = User.all()
     sitio = Configuracion.sitio()
     flash("Usuario eliminado correctamente")
     return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
@@ -57,8 +55,8 @@ def eliminar(user_id):
 
 def activar(user_id):
     User().activar(id=user_id)
-    conn = SQLAlchemy()
-    users = User.all(conn)
+    
+    users = User.all()
     sitio = Configuracion.sitio()
     flash("Usuario activado correctamente")
     return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)

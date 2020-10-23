@@ -37,7 +37,7 @@ class Configuracion(db.Model):
     paginas = db.Column(db.Integer)
     activo = db.Column(db.Boolean, nullable=False)
 
-    def create(conn, formulario):
+    def create(formulario):
         nuevo = Configuracion(
             email=formulario["email"],
             titulo=formulario["titulo"],
@@ -75,11 +75,11 @@ class Rol(db.Model):
         backref=db.backref("roles", lazy=True),
     )
 
-    def all(conn):
+    def all():
         roles = Rol.query.all()
         return roles
 
-    def create(conn, formulario):
+    def create(formulario):
         nuevo = Rol(nombre=formulario["rol"])
         db.session.add(nuevo)
         db.session.commit()
@@ -91,11 +91,11 @@ class Permiso(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
 
-    def all(conn):
+    def all():
         permisos = Permiso.query.all()
         return permisos
 
-    def create(conn, formulario):
+    def create(formulario):
         nuevo = Permiso(nombre=formulario["permiso"])
         db.session.add(nuevo)
         db.session.commit()
@@ -120,7 +120,7 @@ class User(db.Model):
         backref=db.backref("users", lazy=True),
     )
 
-    def create(self, conn, formulario):
+    def create(self, formulario):
         nuevo = User(
             email=formulario["email"].data,
             username=formulario["username"].data,
@@ -133,7 +133,7 @@ class User(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-    def all(conn):
+    def all():
         users = User.query.all()
         return users
 
@@ -149,13 +149,13 @@ class User(db.Model):
     def set_update_time(self):
         self.updated_at = date.today()
 
-    def find_by_email_and_pass(self, conn, emailForm, usernameForm):
+    def find_by_email_and_pass(self, emailForm, usernameForm):
         user = User.query.filter(
             and_(User.email == emailForm, User.password == usernameForm)
         ).first()
         return user
 
-    def find_by_username(self, conn, name):
+    def find_by_username(self, name):
         user = User.query.filter_by(User.username == name)
         return user
 

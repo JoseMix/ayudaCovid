@@ -45,7 +45,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    ] = "mysql+pymysql://maruca:maruca@localhost/proyecto"
     db = SQLAlchemy(app)
     """db.init_app(app)"""
     initialize_db(app)
@@ -155,8 +155,7 @@ def create_app(environment="development"):
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
-        conn = SQLAlchemy()
-        us = User.all(conn)
+        us = User.all()
         sitio = Configuracion.sitio()
         return render_template("home.html", us=us[0:sitio.paginas], sitio=sitio)
 

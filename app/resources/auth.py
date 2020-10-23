@@ -12,7 +12,7 @@ def login():
 
 
 def authenticate(form):
-    conn = SQLAlchemy()
+    
     bcrypt = Bcrypt()
     user = (
         User()
@@ -37,9 +37,8 @@ def logout():
 
 
 def validate(form):
-    conn = SQLAlchemy()
-    # conn = connection()
+    
     user = User().validate_user_creation(
-        conn, form["email"].data, form["username"].data
+         form["email"].data, form["username"].data
     )
     return user
