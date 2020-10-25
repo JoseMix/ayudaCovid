@@ -27,7 +27,7 @@
         {% endfor %}
 
         <label>Password </label>
-        {{form.password(class_="form-control", placeholder='ingrese una contraseña')}}
+        {{form.password(class_="form-control", placeholder='ingrese una password')}}
         <br>
         {% for error in form.password.errors %}
           <div style=color:red>{{ error }}</div>

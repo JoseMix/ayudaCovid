@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_, or_
 from datetime import date
-
 db = SQLAlchemy()
 
 
@@ -13,89 +12,55 @@ def initialize_db(app):
 
 
 # Relaciones many to many
-permiso_rol = db.Table(
-    "permiso_rol",
-    db.Column("roles_id", db.Integer, db.ForeignKey("roles.id"), primary_key=True),
-    db.Column(
-        "permisos_id", db.Integer, db.ForeignKey("permisos.id"), primary_key=True
-    ),
-)
-
 usuario_rol = db.Table(
     "usuario_rol",
-    db.Column("roles_id", db.Integer, db.ForeignKey("roles.id"), primary_key=True),
-    db.Column("users_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
+    db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True)
 )
 
-# Modelo configuracion
-class Configuracion(db.Model):
-    __tablename__ = "configuracion"
-    id = db.Column(db.Integer, primary_key=True)
-    titulo = db.Column(db.String(255))
-    descripcion = db.Column(db.String(255))
-    email = db.Column(db.String(255))
-    paginas = db.Column(db.Integer)
-    activo = db.Column(db.Boolean, nullable=False)
-
-    def create(formulario):
-        nuevo = Configuracion(
-            email=formulario["email"],
-            titulo=formulario["titulo"],
-            descripcion=formulario["descripcion"],
-            activo=eval(formulario["activo"]),
-            paginas=formulario["paginado"],
-        )
-        db.session.add(nuevo)
-        db.session.commit()
-
-    def sitio():
-        s = Configuracion.query.all()  # no me funciono el limit(1)
-        sitio = s[0]
-        return sitio
-
-    def edit(formulario):
-        sitio = Configuracion.sitio()
-        sitio.email = formulario["email"]
-        sitio.titulo = formulario["titulo"]
-        sitio.descripcion = formulario["descripcion"]
-        sitio.activo = eval(formulario["activo"])
-        sitio.paginas = formulario["paginas"]
-        db.session.commit()
+permiso_rol = db.Table(
+    "permiso_rol",
+    db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
+    db.Column(
+        "permiso_id", db.Integer, db.ForeignKey("permiso.id"), primary_key=True
+    )
+)
 
 
 # Modelo Rol
 class Rol(db.Model):
-    __tablename__ = "roles"
+    __tablename__ = "rol"
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
-    permisos = db.relationship(
+    permiso = db.relationship(
         "Permiso",
         secondary=permiso_rol,
         lazy="subquery",
-        backref=db.backref("roles", lazy=True),
+        backref=db.backref("rol", lazy=True),
     )
 
-    def all():
+    def all(self):
         roles = Rol.query.all()
         return roles
 
-    def create(formulario):
+    def create(self, formulario):
         nuevo = Rol(nombre=formulario["rol"])
         db.session.add(nuevo)
         db.session.commit()
 
 
+
 # Modelo Permiso
 class Permiso(db.Model):
-    __tablename__ = "permisos"
+    __tablename__ = "permiso"
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
 
-    def all():
+    def all(self):
         permisos = Permiso.query.all()
         return permisos
 
-    def create(formulario):
+    def create(self, formulario):
         nuevo = Permiso(nombre=formulario["permiso"])
         db.session.add(nuevo)
         db.session.commit()
@@ -103,7 +68,7 @@ class Permiso(db.Model):
 
 # Modelo Usuario
 class User(db.Model):
-    __tablename__ = "users"
+    __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     username = db.Column(db.String(255), unique=True, nullable=False)
@@ -114,10 +79,10 @@ class User(db.Model):
     first_name = db.Column(db.String(255), nullable=False)
     last_name = db.Column(db.String(255), nullable=False)
     roles = db.relationship(
-        "Rol",
+        Rol,
         secondary=usuario_rol,
         lazy="subquery",
-        backref=db.backref("users", lazy=True),
+        backref=db.backref("user", lazy=True),
     )
 
     def create(self, formulario):
@@ -133,25 +98,19 @@ class User(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-    def all():
+    def all(self):
         users = User.query.all()
         return users
 
     def __getitem__(self, id):
         return self.__dict__[id]
 
-    def __getitem__(self, email):
-        return self.__dict__[email]
-
-    def __getitem__(self, password):
-        return self.__dict__[password]
-
     def set_update_time(self):
         self.updated_at = date.today()
 
-    def find_by_email_and_pass(self, emailForm, usernameForm):
+    def find_by_email(self, emailForm):
         user = User.query.filter(
-            and_(User.email == emailForm, User.password == usernameForm)
+            and_(User.email == emailForm, User.activo == True)
         ).first()
         return user
 
@@ -185,7 +144,7 @@ class User(db.Model):
             .join(Rol, User.roles).filter(User.id == id)
         return permisos
 
-    def roles_usuarios():
+    def roles_usuarios(self):
         roles_y_usuarios = db.session.query(Rol, User).join(Rol, User.roles).all()
         return roles_y_usuarios
     

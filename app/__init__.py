@@ -1,32 +1,23 @@
 from os import path, environ
-from flask import (
-    Flask,
-    render_template,
-    g,
-    request,
-    redirect,
-    session,
-    abort,
-    url_for,
-    flash,
-    abort,
-)
+from flask import Flask, render_template, g, request, redirect, session, abort, url_for, flash, abort
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from config import config
 from app import db
-from app.resources import user, rol, permiso, configuracion
+from app.resources import user
+from app.resources import rol
+from app.resources import permiso
+from app.resources import configuracion
 from app.resources import auth
 from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
-from app.models.modelos import initialize_db
 from app.resources.forms import RegistrationForm, LoginForm, FilterForm
 
-
 # from app.db import connection
-from app.models.modelos import User, Configuracion
+from app.models.configuracion import Configuracion, configuracion_initialize_db
+from app.models.models import Rol, Permiso, User, initialize_db
 from app.helpers.auth import authenticated
 
 
@@ -47,8 +38,8 @@ def create_app(environment="development"):
         "SQLALCHEMY_DATABASE_URI"
     ] = "mysql+pymysql://maruca:maruca@localhost/proyecto"
     db = SQLAlchemy(app)
-    """db.init_app(app)"""
     initialize_db(app)
+    configuracion_initialize_db(app)
     bcrypt = Bcrypt(app)
 
     # Funciones que se exportan al contexto de Jinja2
@@ -63,11 +54,19 @@ def create_app(environment="development"):
     def login():
         form = LoginForm()
         if form.validate_on_submit():
-            if auth.authenticate(form):
+            user = User().find_by_email(form.email.data)
+            if user and bcrypt.check_password_hash(user.password, form.password.data):
+                session["user"] = user["email"]
+                session["user_id"] = user["id"]
                 flash("Usuario logueado correctamente")
+                #si se loguea correctamente lo nota con + funcionalidades
                 return redirect(url_for("home"))
-        sitio = Configuracion.sitio()
+            else:    
+                flash("Usuario o Password incorrecto")
+        sitio = Configuracion().sitio()
         return render_template("auth/login.html", form=form, sitio=sitio)
+
+
 
     # Rutas de Roles
     app.add_url_rule("/roles", "rol_index", rol.index)
@@ -130,7 +129,7 @@ def create_app(environment="development"):
                 return redirect(url_for("user_index"))
             else:
                 flash("El usuario o el email ya existe")
-        sitio = Configuracion.sitio()
+        sitio = Configuracion().sitio()
         return render_template("user/update.html", form=form, sitio=sitio)
 
     @app.route("/usuarios/nuevo", methods=["GET", "POST"])
@@ -146,18 +145,17 @@ def create_app(environment="development"):
                 form.password.data = hashed_password
                 flash("Usuario creado con éxito")
                 user.create(form)
-                return redirect(url_for("login"))
+                return redirect(url_for("user_index"))
             else:
                 flash("El usuario o el email ya existe")
-        sitio = Configuracion.sitio()
+        sitio = Configuracion().sitio()
         return render_template("user/new.html", form=form, sitio=sitio)
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
-        us = User.all()
-        sitio = Configuracion.sitio()
-        return render_template("home.html", us=us[0:sitio.paginas], sitio=sitio)
+        sitio = Configuracion().sitio()
+        return render_template("home.html", sitio=sitio)
 
     #Ruta para el filtro de busqueda por nombre
     #app.add_url_rule("/usuarios/filter", "user_create", user.create, methods=["POST"])
@@ -166,7 +164,7 @@ def create_app(environment="development"):
             form = FilterForm()
             if request.method == "POST":
                 users = User().serchByName(form.nombre.data)
-                sitio = Configuracion.sitio()
+                sitio = Configuracion().sitio()
                 return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
             return render_template("user/filtroDeBusqueda.html", form=form)
 
