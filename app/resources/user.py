@@ -5,13 +5,12 @@ from app.models.configuracion import Configuracion
 from app.helpers.auth import authenticated
 
 # Protected resources
-def index():
+def index(page=1):
     if not authenticated(session):
         abort(401)
-
-    users = User().all()
     sitio = Configuracion().sitio()
-    return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
+    index_pag = User().all_paginado(page, sitio.paginas)
+    return render_template("user/index.html", index_pag=index_pag, sitio=sitio)
 
 
 def show():
@@ -42,19 +41,18 @@ def validate(form):
 
 def eliminar(user_id):
     User().eliminar(id=user_id)
-    users = User().all()
     sitio = Configuracion().sitio()
+    index_pag = User().all_paginado(1, sitio.paginas)
     flash("Usuario eliminado correctamente")
-    return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
+    return render_template("user/index.html", index_pag=index_pag, sitio=sitio)
     
 
 def activar(user_id):
     User().activar(id=user_id)
-    
-    users = User().all()
     sitio = Configuracion().sitio()
+    index_pag = User().all_paginado(1, sitio.paginas)
     flash("Usuario activado correctamente")
-    return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
+    return render_template("user/index.html", index_pag=index_pag, sitio=sitio)
     
 
 def update_rol(user_id):

@@ -5,13 +5,12 @@ from app.models.configuracion import Configuracion
 from app.helpers.auth import authenticated
 
 # Public resources
-def index():
+def index(page=1):
     if not authenticated(session):
         abort(401)
-   
-    permisos = Permiso().all()
     sitio = Configuracion().sitio()
-    return render_template("permiso/index.html", permisos=permisos, sitio=sitio)
+    index_pag = Permiso().all_paginado(page, sitio.paginas)
+    return render_template("permiso/index.html", index_pag=index_pag, sitio=sitio)
 
 
 def new():

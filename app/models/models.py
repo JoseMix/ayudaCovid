@@ -60,6 +60,11 @@ class Permiso(db.Model):
         permisos = Permiso.query.all()
         return permisos
 
+    #page= página actual, per_page = elementos x página
+    def all_paginado(self, page, per_page):
+        return Permiso.query.order_by(Permiso.id.desc()).\
+            paginate(page=page, per_page=per_page, error_out=False)
+
     def create(self, formulario):
         nuevo = Permiso(nombre=formulario["permiso"])
         db.session.add(nuevo)
@@ -101,6 +106,11 @@ class User(db.Model):
     def all(self):
         users = User.query.all()
         return users
+
+    #page= página actual, per_page = elementos x página
+    def all_paginado(self, page, per_page):
+        return User.query.order_by(User.id.desc()).\
+            paginate(page=page, per_page=per_page, error_out=False)
 
     def __getitem__(self, id):
         return self.__dict__[id]
@@ -166,8 +176,9 @@ class User(db.Model):
             db.session.commit()
             return user 
                    
-    def serchByName(self,name):
-        users = User().query.filter(User.first_name.ilike(f'%{name}%')).all()
+    def serchByName(self,name, page, per_page):
+        users = User().query.filter(User.first_name.ilike(f'%{name}%')).\
+            paginate(page=page, per_page=per_page, error_out=False)
         return users  
     
   

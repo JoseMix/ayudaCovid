@@ -28,7 +28,7 @@
                       
             {% if is_authenticated(session) %}
             <li class="nav-item">
-              <a href="{{ url_for('user_index') }}" class="nav-link">Usuarios</a>
+              <a href="{{ url_for('user_index', page=1) }}" class="nav-link">Usuarios</a>
             </li>  
             <li class="nav-item">
               <a href="{{ url_for('configuracion_show') }}" class="nav-link">Configuracion</a>
@@ -37,7 +37,7 @@
               <a href="{{ url_for('rol_index') }}" class="nav-link">Roles</a>
             </li>   
             <li class="nav-item">
-              <a href="{{ url_for('permiso_index') }}" class="nav-link">Permisos</a>
+              <a href="{{ url_for('permiso_index', page=1) }}" class="nav-link">Permisos</a>
             </li>               
             
             <li class="nav-item dropdown">

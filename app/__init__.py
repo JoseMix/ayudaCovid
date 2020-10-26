@@ -74,7 +74,8 @@ def create_app(environment="development"):
     app.add_url_rule("/roles/nueva", "rol_new", rol.new)
 
     # Rutas de Permisos
-    app.add_url_rule("/permisos", "permiso_index", permiso.index)
+    app.add_url_rule("/permisos/<int:page>", "permiso_index", permiso.index, methods=["GET"])
+    
     app.add_url_rule("/permisos", "permiso_create", permiso.create, methods=["POST"])
     app.add_url_rule("/permisos/nueva", "permiso_new", permiso.new)
 
@@ -88,7 +89,7 @@ def create_app(environment="development"):
     app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
 
     # Rutas de Usuarios
-    app.add_url_rule("/usuarios", "user_index", user.index)
+    app.add_url_rule("/usuarios/<int:page>", "user_index", user.index, methods=["GET"])
     app.add_url_rule("/usuarios/show", "user_show", user.show)
     app.add_url_rule(
         "/usuarios/roles/<int:user_id>",
@@ -100,8 +101,8 @@ def create_app(environment="development"):
     #   "/usuarios/roles/update", "user_edit_rol", user.edit_rol,methods=["POST"]
     #  )
     
-    app.add_url_rule("/usuarios/eliminar<int:user_id>","user_eliminar",user.eliminar, methods=["GET"])
-    app.add_url_rule("/usuarios/activar<int:user_id>","user_activar",user.activar, methods=["GET"])
+    app.add_url_rule("/usuarios/eliminar/<int:user_id>","user_eliminar",user.eliminar, methods=["GET"])
+    app.add_url_rule("/usuarios/activar/<int:user_id>","user_activar",user.activar, methods=["GET"])
 
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
@@ -126,7 +127,7 @@ def create_app(environment="development"):
                 user.set_update_time()
                 db.session.merge(user)
                 db.session.commit()
-                return redirect(url_for("user_index"))
+                return redirect(url_for("user_index", page=1))
             else:
                 flash("El usuario o el email ya existe")
         sitio = Configuracion().sitio()
@@ -145,7 +146,7 @@ def create_app(environment="development"):
                 form.password.data = hashed_password
                 flash("Usuario creado con éxito")
                 user.create(form)
-                return redirect(url_for("user_index"))
+                return redirect(url_for("user_index", page=1))
             else:
                 flash("El usuario o el email ya existe")
         sitio = Configuracion().sitio()
@@ -163,9 +164,10 @@ def create_app(environment="development"):
     def filterByName():
             form = FilterForm()
             if request.method == "POST":
-                users = User().serchByName(form.nombre.data)
                 sitio = Configuracion().sitio()
-                return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
+                index_pag = User().serchByName(form.nombre.data, 1, sitio.paginas)
+                
+                return render_template("user/index.html", index_pag=index_pag, sitio=sitio)
             return render_template("user/filtroDeBusqueda.html", form=form)
 
     # Rutas de API-rest

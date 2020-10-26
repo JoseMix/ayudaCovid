@@ -23,7 +23,7 @@
       <th>Activar</th>
       <th>Borrar</th>
     </tr>
-    {% for user in users %}
+    {% for user in index_pag.items %}
       <tr>
         <td> {{user.username}} </td>
         <td> {{ user.first_name }} </td>
@@ -47,6 +47,32 @@
       </tr>
       {% endfor %}
     </table>
+  {#-----------------------------PAGINADO------------------------------------#}
+    <nav aria-label="...">
+      <ul class="pagination" style="margin-left: 35%;">   
+      {% for page in index_pag.iter_pages() %}
+        {% if page %}
+          {% if page != index_pag.page %}
+            <li class="page-item">
+              <a class="page-link" href="{{ url_for('permiso_index', page=page) }}">{{ page }}</a>
+            </li>
+          {% else %}
+            <li class="page-item active">
+              <span class="page-link">
+              {{ page }}
+              <span class="sr-only">(current)</span>
+              </span>
+            </li>
+          {% endif %}
+        {% else %}
+          <span class=ellipsis>…</span>
+        {% endif %}
+      {% endfor %}
+      </ul>
+    </nav>
+    {#----------------------------------------------------------------------#}
+
+
   <a href="{{ url_for('home') }}" class="link">Volver</a>
   <a href="{{ url_for('register') }}" class="link">Nuevo</a>
 {% endblock %}
