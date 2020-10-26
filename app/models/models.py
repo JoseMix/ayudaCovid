@@ -146,7 +146,12 @@ class User(db.Model):
         return user
 
     def mis_roles(self, id):
-        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id)
+        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id).all()
+        return roles
+    
+    #fijarse si funcionó la consulta jajaja
+    def otros_roles(self, id):
+        roles = Rol().query.filter(~Rol.id.in_(User().mis_roles(id))).all()
         return roles
     
     def mis_permisos(self, id):
@@ -157,11 +162,7 @@ class User(db.Model):
     def roles_usuarios(self):
         roles_y_usuarios = db.session.query(Rol, User).join(Rol, User.roles).all()
         return roles_y_usuarios
-    
-    def otros_roles(self, id):
-        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id != id)
-        return roles
-    
+
     ''' roles = db.session.query(Rol).join(Rol, User.roles).filter(~Rol.id.in_(User().mis_roles(id))) tiro error. ver '''
             
     def eliminar(self,id):

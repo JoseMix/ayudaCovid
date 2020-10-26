@@ -16,8 +16,11 @@
       <input class="form-control" type="text" name="titulo" required value="{{ sitio.titulo }}"/><br>
 
       <label>Descripción: </label><br>
-      {#<textarea name="descripcion" value="" rows="5" cols="40"required> </textarea>#}
-      <input class="form-control" type="text" name="descripcion" required value=" {{ sitio.descripcion }}"/><br>
+      <textarea class="form-control" name="descripcion" value="{{ sitio.descripcion }}" 
+       rows="2" maxlength="255" required>
+        {{ sitio.descripcion }} 
+      </textarea><br>
+      {# <input class="form-control" type="text" name="descripcion" required value="{{ sitio.descripcion }}"/><br>#}
 
       <label>Mail de contacto: </label><br>
       <input class="form-control" type="email" name="email" required value="{{ sitio.email }}"/><br>

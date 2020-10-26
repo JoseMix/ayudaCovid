@@ -59,9 +59,12 @@ def update_rol(user_id):
     if not authenticated(session):
         abort(401)
     roles = User().mis_roles(user_id)
+    print('mis roles:', roles)
     otros_roles = User().otros_roles(user_id)
+    print(otros_roles)
+    print('mis no roles:', otros_roles)
     sitio = Configuracion().sitio()
-    return render_template("user/update_rol.html", roles=roles,otros_roles=otros_roles, sitio=sitio)
+    return render_template("user/update_rol.html", roles=roles, otros_roles=otros_roles, sitio=sitio)
 
 
 def edit_rol(form):
