@@ -4,44 +4,34 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-sm">
-      <div > 
-          <form  action="{{ url_for('login') }}" onsubmit="" method="POST" enctype="multipart/form-data" >
-            {{ form.csrf_token }}
-            
-            <fieldset>
-                <div class="form-group " >
-                  <legend> Iniciar Sesion</legend>
-                </div>
-                <div class="form-group " >
-                  {{form.email.label}}
-                  {{form.email}}
-                  <br>
-                  {% for error in form.email.errors %}
-                    <div style=color:red>{{ error }}</div>  
-                {% endfor %}
-                </div>
-                <div >
-                  <div class="form-group " >
-                  {{form.password.label}}
-                  {{form.password}}
-                  <br>
-                  {% for error in form.password.errors %}
-                    <div style=color:red>{{ error }}</div>  
-                {% endfor %}
-                </div>
-                <div ><br> <input type="submit"  class="btn btn-primary" value="Iniciar Sesion"></div>
-              </fieldset>
-          </form>
-      </div>
-    </div>
-    <div class="col-sm">
-    </div>
-    <div class="col-sm">
+
+  <div id="login" > 
+    <form  action="{{ url_for('login') }}" onsubmit="" method="POST" enctype="multipart/form-data" >
+      {{ form.csrf_token }}
       
-    </div>
+      <fieldset>
+        <strong class="texto"> Iniciar Sesion</strong><br><br>
+          
+        {{form.email.label}}
+        {{form.email(class_="form-control", placeholder='ingrese su email')}}
+        <br>
+        {% for error in form.email.errors %}
+          <div style=color:red>{{ error }}</div>  
+        {% endfor %}
+      
+        {{form.password.label}}
+        {{form.password(class_="form-control", placeholder='ingrese su password')}}
+        <br>
+        {% for error in form.password.errors %}
+          <div style=color:red>{{ error }}</div>  
+        {% endfor %}
+        <br>
+        <div >
+          <input type="submit"  class="btn btn-primary" style="float: left; margin-left: 25%; " value="Iniciar Sesion">
+          <a href="{{ url_for('home') }}" class="btn btn-primary" style="float: right; margin-right: 33%; ">Volver</a>
+        </div>
+      </fieldset>
+    </form>
   </div>
-</div>
+    
 {% endblock %}

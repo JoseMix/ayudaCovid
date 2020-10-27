@@ -1,7 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_, or_
 from datetime import date
-
 db = SQLAlchemy()
 
 
@@ -13,89 +12,60 @@ def initialize_db(app):
 
 
 # Relaciones many to many
-permiso_rol = db.Table(
-    "permiso_rol",
-    db.Column("roles_id", db.Integer, db.ForeignKey("roles.id"), primary_key=True),
-    db.Column(
-        "permisos_id", db.Integer, db.ForeignKey("permisos.id"), primary_key=True
-    ),
-)
-
 usuario_rol = db.Table(
     "usuario_rol",
-    db.Column("roles_id", db.Integer, db.ForeignKey("roles.id"), primary_key=True),
-    db.Column("users_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
+    db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True)
 )
 
-# Modelo configuracion
-class Configuracion(db.Model):
-    __tablename__ = "configuracion"
-    id = db.Column(db.Integer, primary_key=True)
-    titulo = db.Column(db.String(255))
-    descripcion = db.Column(db.String(255))
-    email = db.Column(db.String(255))
-    paginas = db.Column(db.Integer)
-    activo = db.Column(db.Boolean, nullable=False)
-
-    def create(conn, formulario):
-        nuevo = Configuracion(
-            email=formulario["email"],
-            titulo=formulario["titulo"],
-            descripcion=formulario["descripcion"],
-            activo=eval(formulario["activo"]),
-            paginas=formulario["paginado"],
-        )
-        db.session.add(nuevo)
-        db.session.commit()
-
-    def sitio():
-        s = Configuracion.query.all()  # no me funciono el limit(1)
-        sitio = s[0]
-        return sitio
-
-    def edit(formulario):
-        sitio = Configuracion.sitio()
-        sitio.email = formulario["email"]
-        sitio.titulo = formulario["titulo"]
-        sitio.descripcion = formulario["descripcion"]
-        sitio.activo = eval(formulario["activo"])
-        sitio.paginas = formulario["paginas"]
-        db.session.commit()
+permiso_rol = db.Table(
+    "permiso_rol",
+    db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
+    db.Column(
+        "permiso_id", db.Integer, db.ForeignKey("permiso.id"), primary_key=True
+    )
+)
 
 
 # Modelo Rol
 class Rol(db.Model):
-    __tablename__ = "roles"
+    __tablename__ = "rol"
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
-    permisos = db.relationship(
+    permiso = db.relationship(
         "Permiso",
         secondary=permiso_rol,
         lazy="subquery",
-        backref=db.backref("roles", lazy=True),
+        backref=db.backref("rol", lazy=True),
     )
 
-    def all(conn):
+    def all(self):
         roles = Rol.query.all()
         return roles
 
-    def create(conn, formulario):
+    def create(self, formulario):
         nuevo = Rol(nombre=formulario["rol"])
         db.session.add(nuevo)
         db.session.commit()
 
 
+
 # Modelo Permiso
 class Permiso(db.Model):
-    __tablename__ = "permisos"
+    __tablename__ = "permiso"
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
 
-    def all(conn):
+    def all(self):
         permisos = Permiso.query.all()
         return permisos
 
-    def create(conn, formulario):
+    #page= página actual, per_page = elementos x página
+    def all_paginado(self, page, per_page):
+        return Permiso.query.order_by(Permiso.id.desc()).\
+            paginate(page=page, per_page=per_page, error_out=False)
+
+    def create(self, formulario):
         nuevo = Permiso(nombre=formulario["permiso"])
         db.session.add(nuevo)
         db.session.commit()
@@ -103,7 +73,7 @@ class Permiso(db.Model):
 
 # Modelo Usuario
 class User(db.Model):
-    __tablename__ = "users"
+    __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
     username = db.Column(db.String(255), unique=True, nullable=False)
@@ -114,13 +84,13 @@ class User(db.Model):
     first_name = db.Column(db.String(255), nullable=False)
     last_name = db.Column(db.String(255), nullable=False)
     roles = db.relationship(
-        "Rol",
+        Rol,
         secondary=usuario_rol,
         lazy="subquery",
-        backref=db.backref("users", lazy=True),
+        backref=db.backref("user", lazy=True),
     )
 
-    def create(self, conn, formulario):
+    def create(self, formulario):
         nuevo = User(
             email=formulario["email"].data,
             username=formulario["username"].data,
@@ -133,29 +103,28 @@ class User(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-    def all(conn):
+    def all(self):
         users = User.query.all()
         return users
+
+    #page= página actual, per_page = elementos x página
+    def all_paginado(self, page, per_page):
+        return User.query.order_by(User.id.desc()).\
+            paginate(page=page, per_page=per_page, error_out=False)
 
     def __getitem__(self, id):
         return self.__dict__[id]
 
-    def __getitem__(self, email):
-        return self.__dict__[email]
-
-    def __getitem__(self, password):
-        return self.__dict__[password]
-
     def set_update_time(self):
         self.updated_at = date.today()
 
-    def find_by_email_and_pass(self, conn, emailForm, usernameForm):
+    def find_by_email(self, emailForm):
         user = User.query.filter(
-            and_(User.email == emailForm, User.password == usernameForm)
+            and_(User.email == emailForm, User.activo == True)
         ).first()
         return user
 
-    def find_by_username(self, conn, name):
+    def find_by_username(self, name):
         user = User.query.filter_by(User.username == name)
         return user
 
@@ -177,19 +146,55 @@ class User(db.Model):
         return user
 
     def mis_roles(self, id):
-        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id)
+        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id).all()
         return roles
+    
+    #fijarse si funcionó la consulta jajaja
+    def otros_roles(self, id):
+        roles = Rol().query.filter(~Rol.id.in_(User().mis_roles(id))).all()
+        return roles
+    
+    def mis_permisos(self, id):
+        permisos = db.session.query(Permiso).join(Permiso, Rol.permisos)\
+            .join(Rol, User.roles).filter(User.id == id)
+        return permisos
 
-    """.filter(Version.name == my_version).order_by(Group.number).order_by(Member.number)   """
+    def roles_usuarios(self):
+        roles_y_usuarios = db.session.query(Rol, User).join(Rol, User.roles).all()
+        return roles_y_usuarios
 
-    def eliminar(self, id):
+    ''' roles = db.session.query(Rol).join(Rol, User.roles).filter(~Rol.id.in_(User().mis_roles(id))) tiro error. ver '''
+            
+    def eliminar(self,id):
         user = User().find_by_id(id)
         user.activo = False
         db.session.commit()
         return user
 
-    def activar(self, id):
+    def activar(self,id):
         user = User().find_by_id(id)
         user.activo = True
         db.session.commit()
+        return user 
+
+    def serchByName(self,name, page, per_page):
+        users = User().query.filter(User.first_name.ilike(f'%{name}%')).\
+            paginate(page=page, per_page=per_page, error_out=False)
+        return users  
+    
+    def update_roles(self, form, user):
+        user.roles.append(form.roles)
+        db.session.commit()
         return user
+        
+    '''
+    p = Parent()
+    c = Child()
+    p.children.append(c)
+    db.session.add(p)
+    db.session.commit()
+    
+    db.session.merge(user)
+    db.session.commit()
+    '''
+

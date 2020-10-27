@@ -1,32 +1,23 @@
 from os import path, environ
-from flask import (
-    Flask,
-    render_template,
-    g,
-    request,
-    redirect,
-    session,
-    abort,
-    url_for,
-    flash,
-    abort,
-)
+from flask import Flask, render_template, g, request, redirect, session, abort, url_for, flash, abort
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from config import config
 from app import db
-from app.resources import user, rol, permiso, configuracion
+from app.resources import user
+from app.resources import rol
+from app.resources import permiso
+from app.resources import configuracion
 from app.resources import auth
 from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
-from app.models.modelos import initialize_db
-from app.resources.forms import RegistrationForm, LoginForm
-
+from app.resources.forms import RegistrationForm, LoginForm, FilterForm
 
 # from app.db import connection
-from app.models.modelos import User, Configuracion
+from app.models.configuracion import Configuracion, configuracion_initialize_db
+from app.models.models import Rol, Permiso, User, initialize_db
 from app.helpers.auth import authenticated
 
 
@@ -45,10 +36,15 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
+<<<<<<< HEAD
     ] = "mysql+pymysql://root:password@172.17.0.4/grupo13"
+=======
+    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+>>>>>>> 5aa48b3781343f7b42a1f43cbd4413855e709c2f
     db = SQLAlchemy(app)
-    """db.init_app(app)"""
     initialize_db(app)
+    configuracion_initialize_db(app)
     bcrypt = Bcrypt(app)
 
     # Funciones que se exportan al contexto de Jinja2
@@ -63,11 +59,19 @@ def create_app(environment="development"):
     def login():
         form = LoginForm()
         if form.validate_on_submit():
-            if auth.authenticate(form):
+            user = User().find_by_email(form.email.data)
+            if user and bcrypt.check_password_hash(user.password, form.password.data):
+                session["user"] = user["email"]
+                session["user_id"] = user["id"]
                 flash("Usuario logueado correctamente")
+                #si se loguea correctamente lo nota con + funcionalidades
                 return redirect(url_for("home"))
-        sitio = Configuracion.sitio()
+            else:    
+                flash("Usuario o Password incorrecto")
+        sitio = Configuracion().sitio()
         return render_template("auth/login.html", form=form, sitio=sitio)
+
+
 
     # Rutas de Roles
     app.add_url_rule("/roles", "rol_index", rol.index)
@@ -75,7 +79,8 @@ def create_app(environment="development"):
     app.add_url_rule("/roles/nueva", "rol_new", rol.new)
 
     # Rutas de Permisos
-    app.add_url_rule("/permisos", "permiso_index", permiso.index)
+    app.add_url_rule("/permisos/<int:page>", "permiso_index", permiso.index, methods=["GET"])
+    
     app.add_url_rule("/permisos", "permiso_create", permiso.create, methods=["POST"])
     app.add_url_rule("/permisos/nueva", "permiso_new", permiso.new)
 
@@ -89,17 +94,18 @@ def create_app(environment="development"):
     app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
 
     # Rutas de Usuarios
-    app.add_url_rule("/usuarios", "user_index", user.index)
+    app.add_url_rule("/usuarios/<int:page>", "user_index", user.index, methods=["GET"])
     app.add_url_rule("/usuarios/show", "user_show", user.show)
     app.add_url_rule(
         "/usuarios/roles/<int:user_id>",
         "user_update_rol",
         user.update_rol,
-        methods=["GET"],
+        methods=["GET","POST"],
     )
     # app.add_url_rule(
     #   "/usuarios/roles/update", "user_edit_rol", user.edit_rol,methods=["POST"]
     #  )
+<<<<<<< HEAD
     # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
     # app.add_url_rule("/usuarios/eliminar<int:id>", 'update_user', controlador_principal.update_user, methods=['GET'])
     app.add_url_rule(
@@ -111,6 +117,11 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/usuarios/activar/<int:user_id>", "user_activar", user.activar, methods=["GET"]
     )
+=======
+    
+    app.add_url_rule("/usuarios/eliminar/<int:user_id>","user_eliminar",user.eliminar, methods=["GET"])
+    app.add_url_rule("/usuarios/activar/<int:user_id>","user_activar",user.activar, methods=["GET"])
+>>>>>>> 5aa48b3781343f7b42a1f43cbd4413855e709c2f
 
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
@@ -135,10 +146,10 @@ def create_app(environment="development"):
                 user.set_update_time()
                 db.session.merge(user)
                 db.session.commit()
-                return redirect(url_for("user_index"))
+                return redirect(url_for("user_index", page=1))
             else:
                 flash("El usuario o el email ya existe")
-        sitio = Configuracion.sitio()
+        sitio = Configuracion().sitio()
         return render_template("user/update.html", form=form, sitio=sitio)
 
     @app.route("/usuarios/nuevo", methods=["GET", "POST"])
@@ -154,19 +165,29 @@ def create_app(environment="development"):
                 form.password.data = hashed_password
                 flash("Usuario creado con éxito")
                 user.create(form)
-                return redirect(url_for("login"))
+                return redirect(url_for("user_index", page=1))
             else:
                 flash("El usuario o el email ya existe")
-        sitio = Configuracion.sitio()
+        sitio = Configuracion().sitio()
         return render_template("user/new.html", form=form, sitio=sitio)
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
-        conn = SQLAlchemy()
-        us = User.all(conn)
-        sitio = Configuracion.sitio()
-        return render_template("home.html", us=us, sitio=sitio)
+        sitio = Configuracion().sitio()
+        return render_template("home.html", sitio=sitio)
+
+    #Ruta para el filtro de busqueda por nombre
+    #app.add_url_rule("/usuarios/filter", "user_create", user.create, methods=["POST"])
+    @app.route("/usuarios/filter", methods=["GET", "POST"])
+    def filterByName():
+            form = FilterForm()
+            if request.method == "POST":
+                sitio = Configuracion().sitio()
+                index_pag = User().serchByName(form.nombre.data, 1, sitio.paginas)
+                
+                return render_template("user/index.html",form=form, index_pag=index_pag, sitio=sitio)
+            return render_template("user/filtroDeBusqueda.html", form=form)
 
     # Rutas de API-rest
     #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
