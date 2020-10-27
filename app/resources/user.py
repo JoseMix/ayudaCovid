@@ -1,18 +1,62 @@
 from flask import redirect, flash, render_template, request, url_for, session, abort
 from app.models.models import User
 from app.models.configuracion import Configuracion
-from app.resources.forms import RegistrationForm
+from app.resources.forms import FilterForm, RegistrationForm
 from app.helpers.auth import authenticated
+from flask_bcrypt import Bcrypt
 
 # Protected resources
 def index(page=1):
     if not authenticated(session):
         abort(401)
-    form = RegistrationForm()
-    
+    form = FilterForm()
     sitio = Configuracion().sitio()
-    index_pag = User().all_paginado(page, sitio.paginas)
+    if request.method == "POST":
+        index_pag = User().search_by(form.username.data,form.estado.data, page, sitio.paginas)
+    else:
+        index_pag = User().all_paginado(page, sitio.paginas)
     return render_template("user/index.html", form=form, index_pag=index_pag, sitio=sitio)
+
+
+def register():
+    if not authenticated(session):
+        abort(401)
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        if not validate(form):
+            bcrypt = Bcrypt()
+            hashed_password = bcrypt.generate_password_hash(
+                form.password.data).decode("utf-8")
+            form.password.data = hashed_password
+            flash("Usuario creado con éxito")
+            create(form)
+            return redirect(url_for("user_index", page=1))
+        else:
+            flash("El usuario o el email ya existe")
+    sitio = Configuracion().sitio()
+    return render_template("user/new.html", form=form, sitio=sitio)
+
+
+def update(user_id):
+    if not authenticated(session):
+        abort(401)
+    user = User.query.get_or_404(user_id)   #ver metodo
+    form = RegistrationForm(obj=user)
+    if form.validate_on_submit():
+        if not user.validate_user_update(
+            form.email.data, form.username.data, user_id
+        ):
+            bcrypt = Bcrypt()
+            form.password.data = bcrypt.generate_password_hash(
+                form.password.data
+            ).decode("utf-8")
+            form.populate_obj(user)
+            User().update(user)
+            return redirect(url_for("user_index", page=1))
+        else:
+            flash("El usuario o el email ya existe")
+    sitio = Configuracion().sitio()
+    return render_template("user/update.html", form=form, sitio=sitio)
 
 
 def show():
@@ -46,7 +90,7 @@ def eliminar(user_id):
     sitio = Configuracion().sitio()
     index_pag = User().all_paginado(1, sitio.paginas)
     flash("Usuario eliminado correctamente")
-    form = RegistrationForm()
+    form = FilterForm()
     return render_template("user/index.html",form=form, index_pag=index_pag, sitio=sitio)
     
 
@@ -55,9 +99,9 @@ def activar(user_id):
     sitio = Configuracion().sitio()
     index_pag = User().all_paginado(1, sitio.paginas)
     flash("Usuario activado correctamente")
-    form = RegistrationForm()
+    form = FilterForm()
     return render_template("user/index.html",form=form, index_pag=index_pag, sitio=sitio)
-    
+
 
 def update_rol(user_id):
     if not authenticated(session):

@@ -7,36 +7,27 @@
   <strong class="texto" style="font-size: xx-large;">USUARIOS</strong>
   <div id="derecha">
     <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">Volver</a>
-    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Nuevo</a>
+    <a href="{{ url_for('user_register') }}" class="btn btn-primary btn-lg">Nuevo</a>
   </div>
 
   {#-------------busqueda de usuarios--------------#}
+  
   <div id="formBusqueda">
     <strong class="texto" style="font-size: medium;">Busqueda de usuarios:</strong>
     <br><br>
-    <form action="#" method="POST" class="form-inline my-5 my-lg-0">
+    <form action="{{ url_for('user_index',page=1)}}" method="POST" class="form-inline my-5 my-lg-0">
       {{ form.csrf_token }}
       <div class="busqueda">
         <strong>Username</strong><br>
-        <input type="text" class="form-control mr-sm-5", placeholder='ingrese un username'>
-        {#------------- comento esta linea porque se rompe cuando vuelve del filterByName
-          {{form.username( class="form-control mr-sm-5", placeholder='ingrese un username')}}  
-        #}
+        {{form.username( class="form-control mr-sm-5", placeholder='ingrese un username')}}  
       </div>
       <div class="busqueda">
         <strong>Estado</strong><br>
-        <select name="activo" class="form-control mr-sm-5">
-          {#<option> </option> #}
-          <option value="1">Activo</option>
-          <option value="0">Bloqueado</option>
-        </select>
+        {{ form.estado(class="form-control mr-sm-5")}}
       </div>
-      <div>
-        {#<input type="submit"  class="btn btn-primary" value="Buscar">#}
-
-        {#---- falta eliminar .html provisorio y redireccionar bien -----#}
-
-        <a href="{{ url_for('filterByName')}}" class="btn btn-primary">Buscar</a>
+      <div class="busqueda">
+        <input type="submit"  class="btn btn-primary" value="Buscar">
+        <button type="reset" class="btn btn-secundary btn-lg" >Limpiar búsqueda</button>
       </div>
     </form>
   </div>
@@ -62,7 +53,7 @@
         <a href="{{ url_for('user_update_rol', user_id=user.id) }}" class="btn btn-dark">Asignar</a>
       </td>    
       <td>
-        <a href="{{ url_for('update_user', user_id=user.id)}}" class="btn btn-warning">Modificar</a>
+        <a href="{{ url_for('user_update', user_id=user.id)}}" class="btn btn-warning">Modificar</a>
       </td>
       <td>  
         {% if user.activo == True %}
@@ -92,7 +83,7 @@
         {% if page %}
           {% if page != index_pag.page %}
             <li class="page-item">
-              <a class="page-link" href="{{ url_for('permiso_index', page=page) }}">{{ page }}</a>
+              <a class="page-link" href="{{ url_for('user_index', page=page) }}">{{ page }}</a>
             </li>
           {% else %}
             <li class="page-item active">

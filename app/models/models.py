@@ -103,6 +103,11 @@ class User(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
+    def update(self, user):
+        user.set_update_time()
+        db.session.merge(user)
+        db.session.commit()
+
     def all(self):
         users = User.query.all()
         return users
@@ -177,16 +182,16 @@ class User(db.Model):
         db.session.commit()
         return user 
 
-    def serchByName(self,name, page, per_page):
-        users = User().query.filter(User.first_name.ilike(f'%{name}%')).\
+    def search_by(self,username, estado, page, per_page):
+        users = User().query.filter(and_(User.username.ilike(f'%{username}%'), User.activo == estado)).\
             paginate(page=page, per_page=per_page, error_out=False)
         return users  
-    
+
     def update_roles(self, form, user):
         user.roles.append(form.roles)
         db.session.commit()
         return user
-        
+
     '''
     p = Parent()
     c = Child()
