@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_, or_
 from datetime import date
+
 db = SQLAlchemy()
 
 
@@ -15,15 +16,13 @@ def initialize_db(app):
 usuario_rol = db.Table(
     "usuario_rol",
     db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
 )
 
 permiso_rol = db.Table(
     "permiso_rol",
     db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
-    db.Column(
-        "permiso_id", db.Integer, db.ForeignKey("permiso.id"), primary_key=True
-    )
+    db.Column("permiso_id", db.Integer, db.ForeignKey("permiso.id"), primary_key=True),
 )
 
 
@@ -49,7 +48,6 @@ class Rol(db.Model):
         db.session.commit()
 
 
-
 # Modelo Permiso
 class Permiso(db.Model):
     __tablename__ = "permiso"
@@ -60,10 +58,11 @@ class Permiso(db.Model):
         permisos = Permiso.query.all()
         return permisos
 
-    #page= página actual, per_page = elementos x página
+    # page= página actual, per_page = elementos x página
     def all_paginado(self, page, per_page):
-        return Permiso.query.order_by(Permiso.id.desc()).\
-            paginate(page=page, per_page=per_page, error_out=False)
+        return Permiso.query.order_by(Permiso.id.desc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
     def create(self, formulario):
         nuevo = Permiso(nombre=formulario["permiso"])
@@ -107,10 +106,11 @@ class User(db.Model):
         users = User.query.all()
         return users
 
-    #page= página actual, per_page = elementos x página
+    # page= página actual, per_page = elementos x página
     def all_paginado(self, page, per_page):
-        return User.query.order_by(User.id.desc()).\
-            paginate(page=page, per_page=per_page, error_out=False)
+        return User.query.order_by(User.id.desc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
     def __getitem__(self, id):
         return self.__dict__[id]
@@ -118,9 +118,19 @@ class User(db.Model):
     def set_update_time(self):
         self.updated_at = date.today()
 
-    def find_by_email(self, emailForm):
+    """def find_by_email(self, emailForm):
         user = User.query.filter(
-            and_(User.email == emailForm, User.activo == True)
+            and_(User.email == emailForm, User.activo == 1)
+        ).first()
+        print(user)
+        return user
+"""
+
+    def find_by_email_and_password(self, emailForm, passwordForm):
+        user = User.query.filter(
+            and_(
+                User.email == emailForm, User.password == passwordForm, User.activo == 1
+            )
         ).first()
         return user
 
@@ -148,46 +158,53 @@ class User(db.Model):
     def mis_roles(self, id):
         roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id).all()
         return roles
-    
-    #fijarse si funcionó la consulta jajaja
+
+    # fijarse si funcionó la consulta jajaja
     def otros_roles(self, id):
         roles = Rol().query.filter(~Rol.id.in_(User().mis_roles(id))).all()
         return roles
-    
+
     def mis_permisos(self, id):
-        permisos = db.session.query(Permiso).join(Permiso, Rol.permisos)\
-            .join(Rol, User.roles).filter(User.id == id)
+        permisos = (
+            db.session.query(Permiso)
+            .join(Permiso, Rol.permisos)
+            .join(Rol, User.roles)
+            .filter(User.id == id)
+        )
         return permisos
 
     def roles_usuarios(self):
         roles_y_usuarios = db.session.query(Rol, User).join(Rol, User.roles).all()
         return roles_y_usuarios
 
-    ''' roles = db.session.query(Rol).join(Rol, User.roles).filter(~Rol.id.in_(User().mis_roles(id))) tiro error. ver '''
-            
-    def eliminar(self,id):
+    """ roles = db.session.query(Rol).join(Rol, User.roles).filter(~Rol.id.in_(User().mis_roles(id))) tiro error. ver """
+
+    def eliminar(self, id):
         user = User().find_by_id(id)
         user.activo = False
         db.session.commit()
         return user
 
-    def activar(self,id):
+    def activar(self, id):
         user = User().find_by_id(id)
         user.activo = True
         db.session.commit()
-        return user 
+        return user
 
-    def serchByName(self,name, page, per_page):
-        users = User().query.filter(User.first_name.ilike(f'%{name}%')).\
-            paginate(page=page, per_page=per_page, error_out=False)
-        return users  
-    
+    def serchByName(self, name, page, per_page):
+        users = (
+            User()
+            .query.filter(User.first_name.ilike(f"%{name}%"))
+            .paginate(page=page, per_page=per_page, error_out=False)
+        )
+        return users
+
     def update_roles(self, form, user):
         user.roles.append(form.roles)
         db.session.commit()
         return user
-        
-    '''
+
+    """
     p = Parent()
     c = Child()
     p.children.append(c)
@@ -196,5 +213,4 @@ class User(db.Model):
     
     db.session.merge(user)
     db.session.commit()
-    '''
-
+    """
