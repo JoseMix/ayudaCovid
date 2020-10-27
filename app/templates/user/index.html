@@ -4,17 +4,46 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Usuarios</h1>
-  <a href="{{ url_for('filterByName')}}" id="boton" type="">Buscar</a></td>
-  <br>
-  <br>
-  <!--<input class="form-control" id="busqueda" type="text" placeholder="Buscar por nombre" style="width:25%">
-  <button id="botonBusqueda" type="button" class="btn btn-default">Usuarios Activos</button>
-  <button id="botonBusqueda" type="button" class="btn btn-default">Usuarios Bloqueados</button>
-  -->
-  <table class="table table-hover" style="width:75%"  >
-    <tr style="text-align: center;"></tr>
-      <th>Nombre usuario</th>
+  <strong class="texto" style="font-size: xx-large;">USUARIOS</strong>
+  <div id="derecha">
+    <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">Volver</a>
+    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Nuevo</a>
+  </div>
+
+  {#-------------busqueda de usuarios--------------#}
+  <div id="formBusqueda">
+    <strong class="texto" style="font-size: medium;">Busqueda de usuarios:</strong>
+    <br><br>
+    <form action="#" method="POST" class="form-inline my-5 my-lg-0">
+      {{ form.csrf_token }}
+      <div class="busqueda">
+        <strong>Username</strong><br>
+        <input type="text" class="form-control mr-sm-5", placeholder='ingrese un username'>
+        {#------------- comento esta linea porque se rompe cuando vuelve del filterByName
+          {{form.username( class="form-control mr-sm-5", placeholder='ingrese un username')}}  
+        #}
+      </div>
+      <div class="busqueda">
+        <strong>Estado</strong><br>
+        <select name="activo" class="form-control mr-sm-5">
+          {#<option> </option> #}
+          <option value="1">Activo</option>
+          <option value="0">Bloqueado</option>
+        </select>
+      </div>
+      <div>
+        {#<input type="submit"  class="btn btn-primary" value="Buscar">#}
+
+        {#---- falta eliminar .html provisorio y redireccionar bien -----#}
+
+        <a href="{{ url_for('filterByName')}}" class="btn btn-primary">Buscar</a>
+      </div>
+    </form>
+  </div>
+<div id="index-table">
+  <table class="table table-hover" >
+    <tr style="text-align: center;">
+      <th>Username</th>
       <th>Nombre</th>
       <th>Apellido</th>
       <th>Mail</th>
@@ -24,31 +53,40 @@
       <th>Borrar</th>
     </tr>
     {% for user in index_pag.items %}
-      <tr>
-        <td> {{user.username}} </td>
-        <td> {{ user.first_name }} </td>
-        <td> {{ user.last_name }} </td>
-        <td> {{ user.email }}</td>
-        <td><a href="{{ url_for('user_update_rol', user_id=user.id) }}" id="boton">Asignar/Desasignar</a></td>
-        
-    
-<td><a href="{{ url_for('update_user', user_id=user.id)}}" id="boton">Modificar</a> </td>
-        <td>  {% if user.activo == True %}
-                Usuario activo 
-              {%else %}
-              <a href="{{ url_for('user_activar', user_id=user.id)}}" id="boton" type="submit">Activar Usuario</a></td>
-                {% endif %}
+    <tr>
+      <td> {{user.username}} </td>
+      <td> {{ user.first_name }} </td>
+      <td> {{ user.last_name }} </td>
+      <td> {{ user.email }}</td>
+      <td>
+        <a href="{{ url_for('user_update_rol', user_id=user.id) }}" class="btn btn-dark">Asignar</a>
+      </td>    
+      <td>
+        <a href="{{ url_for('update_user', user_id=user.id)}}" class="btn btn-warning">Modificar</a>
+      </td>
+      <td>  
+        {% if user.activo == True %}
+          <strong style="color: rgba(4, 128, 0, 0.856);">Usuario activo</strong> 
+        {%else %}
+          <a href="{{ url_for('user_activar', user_id=user.id)}}" class="btn btn-success" 
+          type="submit">Activar Usuario</a>
+        {% endif %}
         </td>
         <td>
-          {% if user.activo == True %}
-              <a href="{{ url_for('user_eliminar', user_id=user.id)}}" id="boton" onclick="return confirmation()" type="submit">Eliminar</a></td>
-              <script src="{{ url_for('static', filename='validac.js') }}"> </script>       
-          {% endif %}
+        {% if user.activo == True %}
+          <a href="{{ url_for('user_eliminar', user_id=user.id)}}" 
+          onclick="return confirmation()" class="btn btn-danger" type="submit">Eliminar</a>
+          <script src="{{ url_for('static', filename='validac.js') }}"> </script>    
+          {%else %}
+          <strong style="color: rgba(197, 11, 5, 0.89);">Usuario eliminado</strong>
+        {% endif %}
+        </td>
       </tr>
       {% endfor %}
     </table>
+
   {#-----------------------------PAGINADO------------------------------------#}
-    <nav aria-label="...">
+    <nav aria-label="..." style="margin-left:15%;" >
       <ul class="pagination" style="margin-left: 35%;">   
       {% for page in index_pag.iter_pages() %}
         {% if page %}
@@ -71,8 +109,6 @@
       </ul>
     </nav>
     {#----------------------------------------------------------------------#}
+  </div>
 
-
-  <a href="{{ url_for('home') }}" class="link">Volver</a>
-  <a href="{{ url_for('register') }}" class="link">Nuevo</a>
 {% endblock %}

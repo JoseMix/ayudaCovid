@@ -4,34 +4,42 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-
-  <h2> <strong> Asignación de Roles </strong></h2><br><br>
-  <form action="#" method="POST">
+<div id="derecha">
+  <a href="{{ url_for('user_index', page=1) }}" class="btn btn-primary btn-lg">Volver</a>
+</div>
+  <br>
+  <div id="formulario">
+    <strong class="texto">ASIGNACIÓN DE ROLES</strong>
+  <form action="{{ url_for('user_update_rol', user_id=user_id) }}" method="POST">
   {% if roles %}
-    <h4><strong>Desea DESASIGNAR algun rol?</strong></h4>
+    <strong>Desea DESASIGNAR algun rol?</strong>
     {% for rol in roles %} 
       <label>
-        <input type="checkbox" name="roles" checked value="{{ rol.nombre}}"/>{{ rol.nombre}}</label><br>
+        <input type="checkbox" name="roles" checked value="{{ rol.nombre}}"/>{{ rol.nombre}}
+      </label><br>
     {% endfor %}
   {% else %}
-    <h4><strong>El usuario no tiene roles para DESASIGNAR</strong></h4>
+  <br>
+    <strong class="texto-show" style="font-size: medium;">El usuario no tiene roles para DESASIGNAR</strong>
   {% endif %}<br><br>
-        
-  {% if otros_roles is not none %}
-          <h4><strong>Desea ASIGNAR algun rol?</strong></h4>
-          {% for otro_rol in otros_roles %} 
 
-          <label>
-            <input type="checkbox" name="roles" value="{{ otro_rol.nombre}}"/>
-            {{ otro_rol.nombre}}
-          </label><br>
-            {% endfor %}
-        {% else %}
-        <h4><strong>El usuario no tiene roles para ASIGNAR</strong></h4>
-        {% endif %}
-      <input type="submit" value="Crear">
-      <button type="reset">Limpiar</button>
+  {% if otros_roles is not none %}
+    <strong class="texto-show" style="font-size: medium;">Desea ASIGNAR algun rol?</strong><br>
+    {% for otro_rol in otros_roles %} 
+
+      <label>
+        <input type="checkbox" name="otros_roles" value="{{ otro_rol.nombre}}"/>
+          {{ otro_rol.nombre}}
+        </label><br>
+    {% endfor %}
+  {% else %}
+    <strong class="texto-show" style="font-size: medium;">El usuario no tiene roles para ASIGNAR</strong>
+  {% endif %}
+    <input type="hidden" name="user_id" value="{{ user_id }}">
+    <div id="centrar">
+      <input type="submit" class="btn btn-primary btn-lg" value="Asignar">
+      <button type="reset" class="btn btn-secundary btn-lg">Limpiar</button>
+    </div>
   </form>
-  <a href="{{ url_for('user_index', page=1) }}" class="link">Volver</a>
- 
+</div>
 {% endblock %}

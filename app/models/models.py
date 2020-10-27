@@ -166,20 +166,35 @@ class User(db.Model):
     ''' roles = db.session.query(Rol).join(Rol, User.roles).filter(~Rol.id.in_(User().mis_roles(id))) tiro error. ver '''
             
     def eliminar(self,id):
-            user = User().find_by_id(id)
-            user.activo = False
-            db.session.commit()
-            return user
+        user = User().find_by_id(id)
+        user.activo = False
+        db.session.commit()
+        return user
 
     def activar(self,id):
-            user = User().find_by_id(id)
-            user.activo = True
-            db.session.commit()
-            return user 
-                   
+        user = User().find_by_id(id)
+        user.activo = True
+        db.session.commit()
+        return user 
+
     def serchByName(self,name, page, per_page):
         users = User().query.filter(User.first_name.ilike(f'%{name}%')).\
             paginate(page=page, per_page=per_page, error_out=False)
         return users  
     
-  
+    def update_roles(self, form, user):
+        user.roles.append(form.roles)
+        db.session.commit()
+        return user
+        
+    '''
+    p = Parent()
+    c = Child()
+    p.children.append(c)
+    db.session.add(p)
+    db.session.commit()
+    
+    db.session.merge(user)
+    db.session.commit()
+    '''
+

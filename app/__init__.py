@@ -36,7 +36,8 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://maruca:maruca@localhost/proyecto"
+    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db = SQLAlchemy(app)
     initialize_db(app)
     configuracion_initialize_db(app)
@@ -95,7 +96,7 @@ def create_app(environment="development"):
         "/usuarios/roles/<int:user_id>",
         "user_update_rol",
         user.update_rol,
-        methods=["GET"],
+        methods=["GET","POST"],
     )
     # app.add_url_rule(
     #   "/usuarios/roles/update", "user_edit_rol", user.edit_rol,methods=["POST"]
@@ -167,7 +168,7 @@ def create_app(environment="development"):
                 sitio = Configuracion().sitio()
                 index_pag = User().serchByName(form.nombre.data, 1, sitio.paginas)
                 
-                return render_template("user/index.html", index_pag=index_pag, sitio=sitio)
+                return render_template("user/index.html",form=form, index_pag=index_pag, sitio=sitio)
             return render_template("user/filtroDeBusqueda.html", form=form)
 
     # Rutas de API-rest

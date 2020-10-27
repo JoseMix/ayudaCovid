@@ -8,21 +8,21 @@
   <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">Volver</a>
 </div>
   <div id="show">
-  <strong id="texto" style="font-size: xx-large;">INFORMACIÓN DEL SITIO:</strong>
+  <strong class="texto" style="font-size: xx-large;">INFORMACIÓN DEL SITIO:</strong>
   <table class="table table-hover">
     <tr>
-      <td><strong id="texto-show">Titulo: </strong> </td>
+      <td><strong class="texto-show">Titulo: </strong> </td>
       <td><strong id="text-text"> {{ sitio.titulo }} </strong></td>
     </tr>
     <tr>
-      <td><strong id="texto-show">Descripcion:</strong></td>
+      <td><strong class="texto-show">Descripcion:</strong></td>
       <td><strong id="text-text">{{ sitio.descripcion }}</strong></td>
     </tr>
     <tr>
-      <td><strong id="texto-show">Email de contacto: </strong></td>
+      <td><strong class="texto-show">Email de contacto: </strong></td>
       <td><strong id="text-text">{{ sitio.email }}</strong></td>
     </tr>
-      <td><strong id="texto-show">Estado: </strong></td>
+      <td><strong class="texto-show">Estado: </strong></td>
       <td><strong id="text-text"> 
             {% if sitio.activo is true %}
               Habilitado
@@ -32,7 +32,7 @@
           </strong></td>
     </tr>
     <tr>
-      <td><strong id="texto-show">Cantidad para paginado:</strong></td>
+      <td><strong class="texto-show">Cantidad para paginado:</strong></td>
       <td><strong id="text-text">{{ sitio.paginas }}</strong></td>
     </tr>
     <tr>

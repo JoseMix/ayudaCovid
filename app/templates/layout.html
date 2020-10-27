@@ -16,14 +16,15 @@
   </head>
 
   <body> 
+    <header>
       <nav class="navbar justify-content-center  navbar-expand-lg navbar-light bg-light">
         <div id="izquierda">           
           <a href="{{ url_for('home') }}"> <img  src="{{ url_for('static', filename='donaciones.png') }}" alt="imagen" > </a>
         </div>
 
         <h1> <strong style="color: rgb(56, 62, 90);"> {{ sitio.titulo }} </strong></h1>
-       
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">        
+
+        <div class="collapse navbar-collapse" id="navbarNavDropdown" >        
           <ul class="nav justify-content-end">
                       
             {% if is_authenticated(session) %}
@@ -53,13 +54,10 @@
               {% block logIn %}{% endblock %}
             </li> 
             {% endif %}
-                          
           </ul> 
-
         </div>
-  
       </nav>
-      
+    </header>
       <div id="content">
       {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -74,16 +72,18 @@
       {% block content %}
       {% endblock %}
     </div>
-  </body>
 
-  {% block footer %}
+    {% block footer %}
     <footer id="footer" >
       <div class="footer-copyright text-center py-3">
-        <strong id="texto-show" style="font-size: medium; float: center;">
+        <strong class="texto-show" style="font-size: medium;">
           Ante cualquier inquietud, ¡contactanos! {{sitio.email}} 
         </strong>
       </div>
     </footer>
   {% endblock %}
+  
+
+  </body>
 
 </html>
