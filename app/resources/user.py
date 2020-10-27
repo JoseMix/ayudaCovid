@@ -9,12 +9,10 @@ def index(page=1):
     if not authenticated(session):
         abort(401)
     form = RegistrationForm()
-
+    
     sitio = Configuracion().sitio()
     index_pag = User().all_paginado(page, sitio.paginas)
-    return render_template(
-        "user/index.html", form=form, index_pag=index_pag, sitio=sitio
-    )
+    return render_template("user/index.html", form=form, index_pag=index_pag, sitio=sitio)
 
 
 def show():
@@ -38,7 +36,6 @@ def create(form):
     user = User()
     user.create(form)
 
-
 def validate(form):
     user = User().validate_user_creation(form["email"].data, form["username"].data)
     return user
@@ -50,10 +47,8 @@ def eliminar(user_id):
     index_pag = User().all_paginado(1, sitio.paginas)
     flash("Usuario eliminado correctamente")
     form = RegistrationForm()
-    return render_template(
-        "user/index.html", form=form, index_pag=index_pag, sitio=sitio
-    )
-
+    return render_template("user/index.html",form=form, index_pag=index_pag, sitio=sitio)
+    
 
 def activar(user_id):
     User().activar(id=user_id)
@@ -61,10 +56,8 @@ def activar(user_id):
     index_pag = User().all_paginado(1, sitio.paginas)
     flash("Usuario activado correctamente")
     form = RegistrationForm()
-    return render_template(
-        "user/index.html", form=form, index_pag=index_pag, sitio=sitio
-    )
-
+    return render_template("user/index.html",form=form, index_pag=index_pag, sitio=sitio)
+    
 
 def update_rol(user_id):
     if not authenticated(session):
@@ -72,30 +65,18 @@ def update_rol(user_id):
     roles = User().mis_roles(user_id)
     otros_roles = User().otros_roles(user_id)
 
-    print("mis roles:", roles)
-    print("mis no roles:", otros_roles)
+    print('mis roles:', roles)
+    print('mis no roles:', otros_roles)
 
     sitio = Configuracion().sitio()
-    return render_template(
-        "user/update_rol.html",
-        user_id=user_id,
-        roles=roles,
-        otros_roles=otros_roles,
-        sitio=sitio,
-    )
+    return render_template("user/update_rol.html",user_id=user_id, roles=roles, otros_roles=otros_roles, sitio=sitio)
 
 
 def edit_roles(form):
     user = User().find_by_id(form.id)
     print(user)
     print(form.roles)
-    print("aca esta por entrar al")
+    print('aca esta por entrar al')
     User.update_roles(form, user)
-    print("aca llegaaaaaaaaaaaaaaaaaaaaaaaa")
+    print('aca llegaaaaaaaaaaaaaaaaaaaaaaaa')
     update_rol(user_id=form.id)
-
-
-def find_by_email_and_password(email, password):
-    user = User().find_by_email_and_password(email, password)
-
-    return user
