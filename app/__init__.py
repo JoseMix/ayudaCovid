@@ -45,7 +45,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    ] = "mysql+pymysql://root:password@172.17.0.4/grupo13"
     db = SQLAlchemy(app)
     """db.init_app(app)"""
     initialize_db(app)
