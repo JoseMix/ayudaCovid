@@ -33,8 +33,8 @@ class Configuracion(db.Model):
         db.session.commit()
 
     def sitio(self):
-        s = Configuracion.query.all()  # no me funciono el limit(1)
-        sitio = s[0]
+        sitio = Configuracion.query.first()
+        #sitio = s[0]
         return sitio
 
     def edit(self, formulario):

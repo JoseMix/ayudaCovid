@@ -22,7 +22,6 @@ def show():
 def edit():
     if not authenticated(session):
         abort(401)
-   
     Configuracion().edit(formulario=request.form)
     sitio = Configuracion().sitio()
     return render_template("configuracion/show.html", sitio=sitio)
