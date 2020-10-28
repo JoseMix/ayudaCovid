@@ -22,7 +22,9 @@ def login():
         return render_template("auth/login.html", form=form)
 
 def logout():
-    del session['user']
+    #del session['user']
+    session.pop('user',None)
+    session.pop('user_id',None)    
     session.clear()
     flash("La sesión se cerró correctamente.")
     return redirect(url_for("home"))
