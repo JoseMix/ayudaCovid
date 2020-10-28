@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.validators import DataRequired, Length, Email
 
 
@@ -60,12 +60,13 @@ class LoginForm(FlaskForm):
     password = PasswordField(
         "Password",
         validators=[
-            DataRequired(),
-            Length(min=8, max=20, message="El Nombre debe tener entre 8-20 caracteres"),
+            DataRequired(message="El campo password no puede estar vacio"),
+            Length(min=8, max=20, message="La password debe tener entre 8-20 caracteres"),
         ],
     )
     submit = SubmitField("Enviar")
 
 class FilterForm(FlaskForm):
-    nombre = StringField()   
+    username = StringField()
+    estado = SelectField(choices=[('1', 'Activo'), ('0', 'Bloqueado')])
     submit = SubmitField("Enviar")

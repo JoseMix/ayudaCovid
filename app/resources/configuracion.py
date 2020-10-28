@@ -7,7 +7,6 @@ from app.helpers.auth import authenticated
 def update():
     if not authenticated(session):
         abort(401)
-    
     sitio = Configuracion().sitio()
     return render_template("configuracion/update.html", sitio=sitio)
 
