@@ -17,8 +17,7 @@ def login():
             return redirect(url_for("home"))
         else:    
             flash("Usuario o Password incorrecto")
-    sitio = Configuracion().sitio()
-    return render_template("auth/login.html", form=form, sitio=sitio)
+    return render_template("auth/login.html", form=form)
 
 def logout():
     del session["user"]

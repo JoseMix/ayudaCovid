@@ -36,12 +36,12 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://maruca:maruca@localhost/proyecto"
+    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db = SQLAlchemy(app)
     initialize_db(app)
     configuracion_initialize_db(app)
-    bcrypt = Bcrypt(app)
+    #bcrypt = Bcrypt(app)
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
@@ -75,8 +75,8 @@ def create_app(environment="development"):
     app.add_url_rule("/usuarios/show", "user_show", user.show)
     app.add_url_rule("/usuarios/roles/<int:user_id>",
         "user_update_rol", user.update_rol, methods=["GET","POST"])
-    app.add_url_rule("/usuarios/eliminar/<int:user_id>","user_eliminar",user.eliminar, methods=["GET"])
-    app.add_url_rule("/usuarios/activar/<int:user_id>","user_activar",user.activar, methods=["GET"])
+    app.add_url_rule("/usuarios/eliminar/<int:user_id>,<int:page>","user_eliminar",user.eliminar, methods=["GET"])
+    app.add_url_rule("/usuarios/activar/<int:user_id>,<int:page>","user_activar",user.activar, methods=["GET"])
     app.add_url_rule("/usuarios/nuevo", "user_register", user.register, methods=["GET", "POST"])
     app.add_url_rule("/usuarios/modificar/<int:user_id>", "user_update", user.update, methods=["GET", "POST"])
 

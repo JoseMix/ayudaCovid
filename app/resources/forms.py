@@ -61,7 +61,7 @@ class LoginForm(FlaskForm):
         "Password",
         validators=[
             DataRequired(message="El campo password no puede estar vacio"),
-            Length(min=8, max=20, message="El Nombre debe tener entre 8-20 caracteres"),
+            Length(min=8, max=20, message="La password debe tener entre 8-20 caracteres"),
         ],
     )
     submit = SubmitField("Enviar")

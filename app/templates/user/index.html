@@ -25,7 +25,7 @@
         <strong>Estado</strong><br>
         {{ form.estado(class="form-control mr-sm-5")}}
       </div>
-      <div class="busqueda">
+      <div class="busqueda"><br>
         <input type="submit"  class="btn btn-primary" value="Buscar">
         <button type="reset" class="btn btn-secundary btn-lg" >Limpiar búsqueda</button>
       </div>
@@ -59,13 +59,13 @@
         {% if user.activo == True %}
           <strong style="color: rgba(4, 128, 0, 0.856);">Usuario activo</strong> 
         {%else %}
-          <a href="{{ url_for('user_activar', user_id=user.id)}}" class="btn btn-success" 
+          <a href="{{ url_for('user_activar', user_id=user.id, page=index_pag.page)}}" class="btn btn-success" 
           type="submit">Activar Usuario</a>
         {% endif %}
         </td>
         <td>
         {% if user.activo == True %}
-          <a href="{{ url_for('user_eliminar', user_id=user.id)}}" 
+          <a href="{{ url_for('user_eliminar', user_id=user.id, page=index_pag.page)}}" 
           onclick="return confirmation()" class="btn btn-danger" type="submit">Eliminar</a>
           <script src="{{ url_for('static', filename='validac.js') }}"> </script>    
           {%else %}
@@ -94,7 +94,7 @@
             </li>
           {% endif %}
         {% else %}
-          <span class=ellipsis>…</span>
+          <span class=ellipsis> . . . </span>
         {% endif %}
       {% endfor %}
       </ul>
