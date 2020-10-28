@@ -5,7 +5,7 @@ from app.models.configuracion import Configuracion
 from app.helpers.auth import authenticated
 
 # Public resources
-def index(page=1):
+def index(page):
     if not authenticated(session):
         abort(401)
     sitio = Configuracion().sitio()

@@ -6,7 +6,7 @@ from app.helpers.auth import authenticated
 from flask_bcrypt import Bcrypt
 
 # Protected resources
-def index(page=1):
+def index(page):
     if not authenticated(session):
         abort(401)
     form = FilterForm()
