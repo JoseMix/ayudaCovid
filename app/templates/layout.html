@@ -11,14 +11,14 @@
 
   <body> 
     <header>
-      <nav class="navbar justify-content-center  navbar-expand-lg navbar-light bg-light">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div id="izquierda">           
           <a href="{{ url_for('home') }}"> <img  src="{{ url_for('static', filename='donaciones.png') }}" alt="imagen" > </a>
         </div>
 
-        <h1> <strong style="color: rgb(56, 62, 90);"> Donaciones por covid 19 </strong></h1>
+        <h1> <strong style="color: rgb(56, 62, 90);"> Donaciones - covid 19 </strong></h1>
 
-        <div class="collapse navbar-collapse" id="navbarNavDropdown" >        
+        <div class="collapse navbar-collapse">        
           <ul class="nav justify-content-end">
                       
             {% if is_authenticated(session) %}
@@ -41,7 +41,7 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                   <a class="dropdown-item" href="{{ url_for('user_show') }}">Perfil</a>
                   <a class="dropdown-item" href="{{ url_for('auth_logout') }}">Cerrar Sesion</a>                                   
-                </div>                
+                </div>            
             </li> 
             {%else %}                
             <li>

@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
 <div id="derecha">
-  <a href="{{ url_for('user_index', page=1) }}" class="btn btn-primary btn-lg">Volver</a>
+  <a href="{{ url_for('user_index', page=1) }}" class="btn btn-primary">Volver</a>
 </div>
   <br>
   <div id="formulario">
@@ -37,8 +37,8 @@
   {% endif %}
     <input type="hidden" name="user_id" value="{{ user_id }}">
     <div id="centrar">
-      <input type="submit" class="btn btn-primary btn-lg" value="Asignar">
-      <button type="reset" class="btn btn-secundary btn-lg">Limpiar</button>
+      <input type="submit" class="btn btn-primary" value="Asignar">
+      <button type="reset" class="btn btn-secundary">Limpiar</button>
     </div>
   </form>
 </div>

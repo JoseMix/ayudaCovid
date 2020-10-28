@@ -6,8 +6,8 @@
 {% block content %}
   <strong class="texto" style="font-size: xx-large;">USUARIOS</strong>
   <div id="derecha">
-    <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">Volver</a>
-    <a href="{{ url_for('user_register') }}" class="btn btn-primary btn-lg">Nuevo</a>
+    <a href="{{ url_for('home') }}" class="btn btn-primary">Volver</a>
+    <a href="{{ url_for('user_register') }}" class="btn btn-primary">Nuevo</a>
   </div>
 
   {#-------------busqueda de usuarios--------------#}
@@ -15,19 +15,19 @@
   <div id="formBusqueda">
     <strong class="texto" style="font-size: medium;">Busqueda de usuarios:</strong>
     <br><br>
-    <form action="{{ url_for('user_index',page=1)}}" method="POST" class="form-inline my-5 my-lg-0">
+    <form action="{{ url_for('user_index',page=1)}}" method="POST" class="form-inline my-1">
       {{ form.csrf_token }}
       <div class="busqueda">
         <strong>Username</strong><br>
-        {{form.username( class="form-control mr-sm-5", placeholder='ingrese un username')}}  
+        {{form.username( class="form-control mr-sm-1", placeholder='ingrese un username')}}  
       </div>
       <div class="busqueda">
         <strong>Estado</strong><br>
-        {{ form.estado(class="form-control mr-sm-5")}}
+        {{ form.estado(class="form-control mr-sm-1")}}
       </div>
-      <div class="busqueda"><br>
+      <div>
         <input type="submit"  class="btn btn-primary" value="Buscar">
-        <button type="reset" class="btn btn-secundary btn-lg" >Limpiar búsqueda</button>
+        <button type="reset" class="btn btn-secundary" >Limpiar búsqueda</button>
       </div>
     </form>
   </div>
