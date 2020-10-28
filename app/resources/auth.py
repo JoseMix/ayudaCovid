@@ -18,11 +18,8 @@ def login():
             return redirect(url_for("home"))
         else:
             flash("Usuario o Password incorrecto")
-            return redirect(url_for("home"))
-            # render_template("auth/login.html", form=form)
+            return render_template("auth/login.html", form=form)
     else:
-        flash("pruebaaa")
-        print("lalalaal")
         return render_template("auth/login.html", form=form)
 
 
