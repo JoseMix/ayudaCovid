@@ -10,19 +10,17 @@ def index(page=1):
         abort(401)
     sitio = Configuracion().sitio()
     index_pag = Permiso().all_paginado(page, sitio.paginas)
-    return render_template("permiso/index.html", index_pag=index_pag, sitio=sitio)
-
+    return render_template("permiso/index.html", index_pag=index_pag)
 
 def new():
     if not authenticated(session):
         abort(401)
-    sitio = Configuracion().sitio()
-    return render_template("permiso/new.html", sitio=sitio)
-
+    return render_template("permiso/new.html")
 
 def create():
     if not authenticated(session):
         abort(401)
     Permiso().create(request.form)
     sitio = Configuracion().sitio()
-    return redirect(url_for("permiso_index", sitio=sitio))
+    index_pag = Permiso().all_paginado(1, sitio.paginas)
+    return render_template("permiso/index.html", index_pag=index_pag)

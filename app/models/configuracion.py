@@ -34,7 +34,6 @@ class Configuracion(db.Model):
 
     def sitio(self):
         sitio = Configuracion.query.first()
-        #sitio = s[0]
         return sitio
 
     def edit(self, formulario):

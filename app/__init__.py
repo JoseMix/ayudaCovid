@@ -52,36 +52,14 @@ def create_app(environment="development"):
     db = SQLAlchemy(app)
     initialize_db(app)
     configuracion_initialize_db(app)
-    bcrypt = Bcrypt(app)
+    #bcrypt = Bcrypt(app)
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
 
     # Autenticación
-    # app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
+    app.add_url_rule("/iniciar_sesion", "auth_login", auth.login, methods=["GET", "POST"])
     app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
-    # app.add_url_rule("/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"])
-
-    @app.route("/iniciar_sesion", methods=["GET", "POST"])
-    def login():
-        form = LoginForm()
-        if form.validate_on_submit():
-            userLog = user.find_by_email_and_password(
-                form.email.data, form.password.data
-            )
-
-            # if user and bcrypt.check_password_hash(user.password, form.password.data):
-            if userLog:
-                session["user"] = userLog["email"]
-                session["user_id"] = userLog["id"]
-                flash("Usuario logueado correctamente")
-                # si se loguea correctamente lo nota con + funcionalidades
-                return redirect(url_for("home"))
-            else:
-                print(userLog)
-                flash("Usuario o Password incorrecto")
-        sitio = Configuracion().sitio()
-        return render_template("auth/login.html", form=form, sitio=sitio)
 
     # Rutas de Roles
     app.add_url_rule("/roles", "rol_index", rol.index)
@@ -106,95 +84,20 @@ def create_app(environment="development"):
     app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
 
     # Rutas de Usuarios
-    app.add_url_rule("/usuarios/<int:page>", "user_index", user.index, methods=["GET"])
+    app.add_url_rule("/usuarios/<int:page>", "user_index", user.index, methods=["GET", "POST"])
     app.add_url_rule("/usuarios/show", "user_show", user.show)
-    app.add_url_rule(
-        "/usuarios/roles/<int:user_id>",
-        "user_update_rol",
-        user.update_rol,
-        methods=["GET", "POST"],
-    )
-    # app.add_url_rule(
-    #   "/usuarios/roles/update", "user_edit_rol", user.edit_rol,methods=["POST"]
-    #  )
-
-    app.add_url_rule(
-        "/usuarios/eliminar/<int:user_id>",
-        "user_eliminar",
-        user.eliminar,
-        methods=["GET"],
-    )
-    app.add_url_rule(
-        "/usuarios/activar/<int:user_id>", "user_activar", user.activar, methods=["GET"]
-    )
-
-    app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
-    # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
-    # app.add_url_rule("/usuarios/modificar", "user_update", user.update)
-    # app.add_url_rule("/usuarios", "user_", user., methods=["POST"])
-
-    @app.route("/usuarios/modificar/<int:user_id>", methods=["GET", "POST"])
-    def update_user(user_id):
-        if not authenticated(session):
-            abort(401)
-        user = User.query.get_or_404(user_id)
-        form = RegistrationForm(obj=user)
-        if form.validate_on_submit():
-            if not user.validate_user_update(
-                form.email.data, form.username.data, user_id
-            ):
-                hashed_password = bcrypt.generate_password_hash(
-                    form.password.data
-                ).decode("utf-8")
-                form.password.data = hashed_password
-                form.populate_obj(user)
-                user.set_update_time()
-                db.session.merge(user)
-                db.session.commit()
-                return redirect(url_for("user_index", page=1))
-            else:
-                flash("El usuario o el email ya existe")
-        sitio = Configuracion().sitio()
-        return render_template("user/update.html", form=form, sitio=sitio)
-
-    @app.route("/usuarios/nuevo", methods=["GET", "POST"])
-    def register():
-        if not authenticated(session):
-            abort(401)
-        form = RegistrationForm()
-        if form.validate_on_submit():
-            if not user.validate(form):
-                hashed_password = bcrypt.generate_password_hash(
-                    form.password.data
-                ).decode("utf-8")
-                form.password.data = hashed_password
-                flash("Usuario creado con éxito")
-                user.create(form)
-                return redirect(url_for("user_index", page=1))
-            else:
-                flash("El usuario o el email ya existe")
-        sitio = Configuracion().sitio()
-        return render_template("user/new.html", form=form, sitio=sitio)
+    app.add_url_rule("/usuarios/roles/<int:user_id>",
+        "user_update_rol", user.update_rol, methods=["GET","POST"])
+    app.add_url_rule("/usuarios/eliminar/<int:user_id>,<int:page>","user_eliminar",user.eliminar, methods=["GET"])
+    app.add_url_rule("/usuarios/activar/<int:user_id>,<int:page>","user_activar",user.activar, methods=["GET"])
+    app.add_url_rule("/usuarios/nuevo", "user_register", user.register, methods=["GET", "POST"])
+    app.add_url_rule("/usuarios/modificar/<int:user_id>", "user_update", user.update, methods=["GET", "POST"])
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
         sitio = Configuracion().sitio()
         return render_template("home.html", sitio=sitio)
-
-    # Ruta para el filtro de busqueda por nombre
-    # app.add_url_rule("/usuarios/filter", "user_create", user.create, methods=["POST"])
-    @app.route("/usuarios/filter", methods=["GET", "POST"])
-    def filterByName():
-        form = FilterForm()
-        if request.method == "POST":
-            sitio = Configuracion().sitio()
-            index_pag = User().serchByName(form.nombre.data, 1, sitio.paginas)
-
-            return render_template(
-                "user/index.html", form=form, index_pag=index_pag, sitio=sitio
-            )
-        return render_template("user/filtroDeBusqueda.html", form=form)
 
     # Rutas de API-rest
     #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)

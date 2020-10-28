@@ -102,6 +102,11 @@ class User(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
+    def update(self, user):
+        user.set_update_time()
+        db.session.merge(user)
+        db.session.commit()
+
     def all(self):
         users = User.query.all()
         return users
@@ -118,19 +123,9 @@ class User(db.Model):
     def set_update_time(self):
         self.updated_at = date.today()
 
-    """def find_by_email(self, emailForm):
+    def find_by_email(self, emailForm):
         user = User.query.filter(
             and_(User.email == emailForm, User.activo == 1)
-        ).first()
-        print(user)
-        return user
-"""
-
-    def find_by_email_and_password(self, emailForm, passwordForm):
-        user = User.query.filter(
-            and_(
-                User.email == emailForm, User.password == passwordForm, User.activo == 1
-            )
         ).first()
         return user
 
@@ -177,8 +172,6 @@ class User(db.Model):
         roles_y_usuarios = db.session.query(Rol, User).join(Rol, User.roles).all()
         return roles_y_usuarios
 
-    """ roles = db.session.query(Rol).join(Rol, User.roles).filter(~Rol.id.in_(User().mis_roles(id))) tiro error. ver """
-
     def eliminar(self, id):
         user = User().find_by_id(id)
         user.activo = False
@@ -199,18 +192,12 @@ class User(db.Model):
         )
         return users
 
+    def search_by(self,username, estado, page, per_page):
+        users = User().query.filter(and_(User.username.ilike(f'%{username}%'), User.activo == estado)).\
+            paginate(page=page, per_page=per_page, error_out=False)
+        return users  
+
     def update_roles(self, form, user):
         user.roles.append(form.roles)
         db.session.commit()
         return user
-
-    """
-    p = Parent()
-    c = Child()
-    p.children.append(c)
-    db.session.add(p)
-    db.session.commit()
-    
-    db.session.merge(user)
-    db.session.commit()
-    """
