@@ -48,6 +48,8 @@ class Rol(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
+    def find_by_id(self, id):
+        return Rol.query.filter(Rol.id == id).first()
 
 
 # Modelo Permiso
@@ -162,17 +164,37 @@ class User(db.Model):
         return user 
 
     def search_by(self,username, estado, page, per_page):
-        users = User().query.filter(and_(User.username.ilike(f'%{username}%'), User.activo == estado)).\
+        if estado == '2':
+            users = User().query.filter(User.username.ilike(f'%{username}%')).\
             paginate(page=page, per_page=per_page, error_out=False)
-        return users  
+        else:
+            users = User().query.\
+            filter(and_(User.username.ilike(f'%{username}%'), User.activo == estado)).\
+            paginate(page=page, per_page=per_page, error_out=False)
+        return users
+
+    def is_admin(self, id):
+        return db.session.query(User).join(Rol, User.roles).\
+        filter(and_(User.id== id, Rol.nombre == "administrador")).first()
+
+
+    def mis_roles(self, id):
+        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id).all()
+        return roles
+
+    def delete_roles(self, rol, user):
+        ob = Rol().find_by_id(rol)
+        user.roles.remove(ob)
+        db.session.commit()
+
+    def add_rol(self, rol, user):
+        ob = Rol().find_by_id(rol)
+        user.roles.append(ob)
+        db.session.commit()
 
 
     def mis_roles_id(self, id):
         roles = db.session.query(Rol.id).join(Rol, User.roles).filter(User.id == id).all()
-        return roles
-    
-    def mis_roles(self, id):
-        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id).all()
         return roles
     
     #fijarse si funcionó la consulta
@@ -188,9 +210,8 @@ class User(db.Model):
     #lo que quiere probar jose
     def roles_usuarios(self):
         #grup_by por usuario 
-        #roles_y_usuarios = db.session.query(Rol, User).join(Rol, User.roles).all()
-        roles_y_usuarios = db.session.query(User).join(User.roles)
-        
+        roles_y_usuarios = db.session.query(Rol, User).join(Rol, User.roles).all()
+        #roles_y_usuarios = db.session.query(User).join(User.roles)
         return roles_y_usuarios
 
     #todavia no lo probe pero creo que no funciona

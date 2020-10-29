@@ -84,10 +84,12 @@ def create_app(environment="development"):
     app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
 
     # Rutas de Usuarios
-    app.add_url_rule("/usuarios/<int:page>", "user_index", user.index, methods=["GET", "POST"])
+    app.add_url_rule("/usuarios/<int:page>/<string:username>", "user_index", user.index, methods=["GET", "POST"])
+    #app.add_url_rule("/usuarios/<int:page>/<username>/<estado>", "user_index", user.index, methods=["GET"])
     app.add_url_rule("/usuarios/show", "user_show", user.show)
     app.add_url_rule("/usuarios/roles/<int:user_id>",
         "user_update_rol", user.update_rol, methods=["GET","POST"])
+    
     app.add_url_rule("/usuarios/eliminar/<int:user_id>,<int:page>","user_eliminar",user.eliminar, methods=["GET"])
     app.add_url_rule("/usuarios/activar/<int:user_id>,<int:page>","user_activar",user.activar, methods=["GET"])
     app.add_url_rule("/usuarios/nuevo", "user_register", user.register, methods=["GET", "POST"])

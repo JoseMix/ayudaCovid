@@ -68,5 +68,5 @@ class LoginForm(FlaskForm):
 
 class FilterForm(FlaskForm):
     username = StringField()
-    estado = SelectField(choices=[('1', 'Activo'), ('0', 'Bloqueado')])
+    estado = SelectField(choices=[('2','Todos'),('1', 'Activo'), ('0', 'Bloqueado')])
     submit = SubmitField("Enviar")

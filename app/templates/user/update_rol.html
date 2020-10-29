@@ -5,30 +5,19 @@
 {% endblock %}
 {% block content %}
 <div id="derecha">
-  <a href="{{ url_for('user_index', page=1) }}" class="btn btn-primary">Volver</a>
+  <a href="{{ url_for('user_index', page=1, username='vacio') }}" class="btn btn-primary">Volver</a>
 </div>
   <br>
   <div id="formulario">
-    <strong class="texto">ASIGNACIÓN DE ROLES</strong><br>
-    <strong class="texto-show" style="font-size: medium;">el usuario x posee los sig roles:</strong><br>
-    {% if roles %}
-      {% for rol in roles %} 
-        <label>{{ rol.nombre}}</label><br>
-      {% endfor %}
-  {% endif %}
-
-
+    <strong class="texto">MODIFICACIÓN DE ROLES</strong>
   <form action="{{ url_for('user_update_rol', user_id=user_id) }}" method="POST">
-  
-  
-    {% if roles %}
-    <strong class="texto-show" style="font-size: medium;">Desea ASIGNAR o DESASIGNAR algun rol?</strong><br>
+  {% if roles %}
+    <strong class="texto-show" style="font-size: medium;">Desea DESASIGNAR algun rol?</strong><br>
     {% for rol in roles %} 
       <label>
-        <input type="checkbox" name="desasignar" checked value="{{ rol.id}}"/>{{ rol.nombre}}
+        <input type="checkbox" name="roles" value="{{ rol.id }}"/>{{ rol.nombre }}
       </label><br>
     {% endfor %}
-
   {% else %}
   <br>
     <strong class="texto-show" style="font-size: medium;">El usuario no tiene roles para DESASIGNAR</strong>
@@ -39,12 +28,14 @@
     {% for otro_rol in otros_roles %} 
 
       <label>
-      <input type="checkbox" name="asignar" value="{{ otro_rol.id}}"/>{{ otro_rol.nombre}}
-    </label><br>
+        <input type="checkbox" name="otros_roles" value="{{ otro_rol.id}}"/>
+          {{ otro_rol.nombre}}
+        </label><br>
     {% endfor %}
+  {% else %}
+    <strong class="texto-show" style="font-size: medium;">El usuario no tiene roles para ASIGNAR</strong>
   {% endif %}
-  
-    <input type="hidden" name="user_id" value="{{ user_id }}">
+
     <div id="centrar">
       <input type="submit" class="btn btn-primary" value="Modificar roles">
       <button type="reset" class="btn btn-secundary">Limpiar</button>

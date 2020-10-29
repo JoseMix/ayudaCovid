@@ -11,12 +11,16 @@
   </div>
 
   {#-------------busqueda de usuarios--------------#}
-  
+{% if form.username.data %}
+  {% set username = form.username.data %}
+{% else %}
+  {% set username = 'vacio' %}
+{% endif %}
   <div id="formBusqueda">
     <strong class="texto" style="font-size: medium;">Busqueda de usuarios:</strong>
     <br><br>
-    <form action="{{ url_for('user_index',page=1)}}" method="POST" class="form-inline my-1">
-      {{ form.csrf_token }}
+    <form action="{{ url_for('user_index',page=1, username=username)}}" method="POST" class="form-inline my-1">
+      {# {{ form.csrf_token }} #}
       <div class="busqueda">
         <strong>Username</strong><br>
         {{form.username( class="form-control mr-sm-1", placeholder='ingrese un username')}}  
@@ -31,6 +35,7 @@
       </div>
     </form>
   </div>
+
 <div id="index-table">
   <table class="table table-hover" >
     <tr style="text-align: center;">
@@ -51,7 +56,7 @@
       <td> {{ user.email }}</td>
       <td>
         <a href="{{ url_for('user_update_rol', user_id=user.id) }}" class="btn btn-dark">Asignar</a>
-      </td>    
+      </td>
       <td>
         <a href="{{ url_for('user_update', user_id=user.id)}}" class="btn btn-warning">Modificar</a>
       </td>
@@ -60,7 +65,7 @@
           <strong style="color: rgba(4, 128, 0, 0.856);">Usuario activo</strong> 
         {%else %}
           <a href="{{ url_for('user_activar', user_id=user.id, page=index_pag.page)}}" class="btn btn-success" 
-          type="submit">Activar Usuario</a>
+          type="submit">Activar</a>
         {% endif %}
         </td>
         <td>
@@ -76,6 +81,8 @@
       {% endfor %}
     </table>
 
+    {{ form.username.data , form.estado.data }}
+
   {#-----------------------------PAGINADO------------------------------------#}
     <nav aria-label="..." style="margin-left:15%;" >
       <ul class="pagination" style="margin-left: 35%;">   
@@ -83,7 +90,7 @@
         {% if page %}
           {% if page != index_pag.page %}
             <li class="page-item">
-              <a class="page-link" href="{{ url_for('user_index', page=page) }}">{{ page }}</a>
+              <a class="page-link" href="{{ url_for('user_index', page=page, username=username) }}">{{ page }}</a>
             </li>
           {% else %}
             <li class="page-item active">

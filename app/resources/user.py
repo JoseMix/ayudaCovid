@@ -6,17 +6,16 @@ from app.helpers.auth import authenticated
 from flask_bcrypt import Bcrypt
 
 # Protected resources
-def index(page):
+def index(page, username):
     if not authenticated(session):
         abort(401)
     form = FilterForm()
     sitio = Configuracion().sitio()
-    if request.method == "POST":
+    if username != 'vacio' or request.method == "POST": #si estan seteados
         index_pag = User().search_by(form.username.data,form.estado.data, page, sitio.paginas)
     else:
         index_pag = User().all_paginado(page, sitio.paginas)
-    
-    print(User().roles_usuarios())
+
     return render_template("user/index.html", form=form, index_pag=index_pag)
 
 
@@ -32,7 +31,7 @@ def register():
             form.password.data = hashed_password
             flash("Usuario creado con éxito")
             create(form)
-            return redirect(url_for("user_index", page=1))
+            return redirect(url_for("user_index", page=1, username='vacio'))
         else:
             flash("El usuario o el email ya existe")
     return render_template("user/new.html", form=form)
@@ -53,7 +52,7 @@ def update(user_id):
             ).decode("utf-8")
             form.populate_obj(user)
             User().update(user)
-            return redirect(url_for("user_index", page=1))
+            return redirect(url_for("user_index", page=1, username='vacio'))
         else:
             flash("El usuario o el email ya existe")
     return render_template("user/update.html", form=form)
@@ -84,13 +83,18 @@ def validate(form):
 
 
 def eliminar(user_id, page):
-    User().eliminar(id=user_id)
+    #busco si el usuario tiene rol admin
+    user = User().is_admin(user_id)
+    if user:
+        flash("no se puede eliminar, usuario administrador")
+    else:
+        User().eliminar(id=user_id)
+        flash("Usuario eliminado correctamente")
     sitio = Configuracion().sitio()
     index_pag = User().all_paginado(page, sitio.paginas)
-    flash("Usuario eliminado correctamente")
     form = FilterForm()
     return render_template("user/index.html",form=form, index_pag=index_pag, sitio=sitio)
-    
+
 
 def activar(user_id, page):
     User().activar(id=user_id)
@@ -104,20 +108,14 @@ def activar(user_id, page):
 def update_rol(user_id):
     if not authenticated(session):
         abort(401)
+    if request.method == "POST":
+        user = User().find_by_id(user_id) #busco el usuario para modificar roles
+        form = request.form
+                #el problema ahora es que solo obtengo 1 del formulario - checkbox multiple -
+        #User().delete_roles(form['roles'], user)
+        #User().add_rol(form['otros_roles'],user)
     roles = User().mis_roles(user_id)
+    
     #otros_roles = User().otros_roles(user_id)
 
-    print('mis roles:', roles)
-    #print('mis no roles:', otros_roles)
-    #otros_roles= roles
     return render_template("user/update_rol.html",user_id=user_id, roles=roles)
-
-
-def edit_roles(form):
-    user = User().find_by_id(form.user_id) #busco el usuario para modificar roles
-    print(user)
-    print(form.roles)
-    print('aca esta por entrar al')
-    User.update_roles(form, user)
-    print('aca llegaaaaaaaaaaaaaaaaaaaaaaaa')
-    update_rol(user_id=form.id)
