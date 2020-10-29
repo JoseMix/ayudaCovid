@@ -21,8 +21,8 @@ from app.resources import rol
 from app.resources import permiso
 from app.resources import configuracion
 from app.resources import auth
-from app.resources.api import issue as api_issue
-from app.helpers import handler
+
+# from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.resources.forms import RegistrationForm, LoginForm, FilterForm
 
@@ -47,18 +47,20 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    ] = "mysql+pymysql://root:password@172.17.0.3/grupo13"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     initialize_db(app)
     configuracion_initialize_db(app)
-    #bcrypt = Bcrypt(app)
+    # bcrypt = Bcrypt(app)
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
 
     # Autenticación
-    app.add_url_rule("/iniciar_sesion", "auth_login", auth.login, methods=["GET", "POST"])
+    app.add_url_rule(
+        "/iniciar_sesion", "auth_login", auth.login, methods=["GET", "POST"]
+    )
     app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
 
     # Rutas de Roles
@@ -84,14 +86,37 @@ def create_app(environment="development"):
     app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
 
     # Rutas de Usuarios
-    app.add_url_rule("/usuarios/<int:page>", "user_index", user.index, methods=["GET", "POST"])
+    app.add_url_rule(
+        "/usuarios/<int:page>", "user_index", user.index, methods=["GET", "POST"]
+    )
     app.add_url_rule("/usuarios/show", "user_show", user.show)
-    app.add_url_rule("/usuarios/roles/<int:user_id>",
-        "user_update_rol", user.update_rol, methods=["GET","POST"])
-    app.add_url_rule("/usuarios/eliminar/<int:user_id>,<int:page>","user_eliminar",user.eliminar, methods=["GET"])
-    app.add_url_rule("/usuarios/activar/<int:user_id>,<int:page>","user_activar",user.activar, methods=["GET"])
-    app.add_url_rule("/usuarios/nuevo", "user_register", user.register, methods=["GET", "POST"])
-    app.add_url_rule("/usuarios/modificar/<int:user_id>", "user_update", user.update, methods=["GET", "POST"])
+    app.add_url_rule(
+        "/usuarios/roles/<int:user_id>",
+        "user_update_rol",
+        user.update_rol,
+        methods=["GET", "POST"],
+    )
+    app.add_url_rule(
+        "/usuarios/eliminar/<int:user_id>,<int:page>",
+        "user_eliminar",
+        user.eliminar,
+        methods=["GET"],
+    )
+    app.add_url_rule(
+        "/usuarios/activar/<int:user_id>,<int:page>",
+        "user_activar",
+        user.activar,
+        methods=["GET"],
+    )
+    app.add_url_rule(
+        "/usuarios/nuevo", "user_register", user.register, methods=["GET", "POST"]
+    )
+    app.add_url_rule(
+        "/usuarios/modificar/<int:user_id>",
+        "user_update",
+        user.update,
+        methods=["GET", "POST"],
+    )
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
@@ -103,8 +128,8 @@ def create_app(environment="development"):
     #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
 
     # Handlers
-    app.register_error_handler(404, handler.not_found_error)
-    app.register_error_handler(401, handler.unauthorized_error)
+    # app.register_error_handler(404, handler.not_found_error)
+    # app.register_error_handler(401, handler.unauthorized_error)
     # Implementar lo mismo para el error 500 y 401
 
     # Retornar la instancia de app configurada
