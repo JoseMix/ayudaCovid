@@ -15,6 +15,8 @@ def index(page):
         index_pag = User().search_by(form.username.data,form.estado.data, page, sitio.paginas)
     else:
         index_pag = User().all_paginado(page, sitio.paginas)
+    
+    print(User().roles_usuarios())
     return render_template("user/index.html", form=form, index_pag=index_pag)
 
 
@@ -103,18 +105,19 @@ def update_rol(user_id):
     if not authenticated(session):
         abort(401)
     roles = User().mis_roles(user_id)
-    otros_roles = User().otros_roles(user_id)
+    #otros_roles = User().otros_roles(user_id)
 
-    #print('mis roles:', roles)
+    print('mis roles:', roles)
     #print('mis no roles:', otros_roles)
-    return render_template("user/update_rol.html",user_id=user_id, roles=roles, otros_roles=otros_roles)
+    #otros_roles= roles
+    return render_template("user/update_rol.html",user_id=user_id, roles=roles)
 
 
 def edit_roles(form):
-    user = User().find_by_id(form.id)
-    #print(user)
-    #print(form.roles)
-    #print('aca esta por entrar al')
+    user = User().find_by_id(form.user_id) #busco el usuario para modificar roles
+    print(user)
+    print(form.roles)
+    print('aca esta por entrar al')
     User.update_roles(form, user)
-    #print('aca llegaaaaaaaaaaaaaaaaaaaaaaaa')
+    print('aca llegaaaaaaaaaaaaaaaaaaaaaaaa')
     update_rol(user_id=form.id)

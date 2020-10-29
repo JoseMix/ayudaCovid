@@ -149,24 +149,6 @@ class User(db.Model):
         ).first()
         return user
 
-    def mis_roles(self, id):
-        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id).all()
-        return roles
-    
-    #fijarse si funcionó la consulta jajaja
-    def otros_roles(self, id):
-        roles = Rol().query.filter(~Rol.id.in_(User().mis_roles(id))).all()
-        return roles
-    
-    def mis_permisos(self, id):
-        permisos = db.session.query(Permiso).join(Permiso, Rol.permisos)\
-            .join(Rol, User.roles).filter(User.id == id)
-        return permisos
-
-    def roles_usuarios(self):
-        roles_y_usuarios = db.session.query(Rol, User).join(Rol, User.roles).all()
-        return roles_y_usuarios
-
     def eliminar(self, id):
         user = User().find_by_id(id)
         user.activo = False
@@ -184,6 +166,34 @@ class User(db.Model):
             paginate(page=page, per_page=per_page, error_out=False)
         return users  
 
+
+    def mis_roles_id(self, id):
+        roles = db.session.query(Rol.id).join(Rol, User.roles).filter(User.id == id).all()
+        return roles
+    
+    def mis_roles(self, id):
+        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id).all()
+        return roles
+    
+    #fijarse si funcionó la consulta
+    def otros_roles(self, id):
+        roles = Rol().query.filter(~Rol.id.in_(User().mis_roles_id(id))).all()
+        return roles
+
+    def mis_permisos(self, id):
+        permisos = db.session.query(Permiso).join(Permiso, Rol.permisos)\
+            .join(Rol, User.roles).filter(User.id == id)
+        return permisos
+
+    #lo que quiere probar jose
+    def roles_usuarios(self):
+        #grup_by por usuario 
+        #roles_y_usuarios = db.session.query(Rol, User).join(Rol, User.roles).all()
+        roles_y_usuarios = db.session.query(User).join(User.roles)
+        
+        return roles_y_usuarios
+
+    #todavia no lo probe pero creo que no funciona
     def update_roles(self, form, user):
         user.roles.append(form.roles)
         db.session.commit()
