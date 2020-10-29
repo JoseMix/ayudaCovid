@@ -28,6 +28,7 @@ from app.resources.forms import RegistrationForm, LoginForm, FilterForm
 
 # from app.db import connection
 from app.models.configuracion import Configuracion, configuracion_initialize_db
+from app.models.centro import Bloque, Centro, centro_bloque_initialize_db
 from app.models.models import Rol, Permiso, User, initialize_db
 from app.helpers.auth import authenticated
 
@@ -47,11 +48,12 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://root:password@172.17.0.3/grupo13"
+    ] = "mysql+pymysql://root:password@172.17.0.4/grupo13"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     initialize_db(app)
     configuracion_initialize_db(app)
+    centro_bloque_initialize_db(app)
     # bcrypt = Bcrypt(app)
 
     # Funciones que se exportan al contexto de Jinja2
