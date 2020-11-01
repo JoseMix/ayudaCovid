@@ -21,12 +21,20 @@ class Centro(db.Model):
     tipo_centro = db.Column(db.String(20), nullable=False)
     municipio = db.Column(db.String(20), nullable=False)
     web = db.Column(db.String(255), nullable=False)
-    email = db.Column(db.DateTime, nullable=False)
+    email = db.Column(db.String(255), nullable=False)
     estado = db.Column(db.Boolean, nullable=False)
     # protocolo = db.Column(db.String(255), nullable=False)
     coordenadas = db.Column(db.String(20), nullable=False)
     turnos = db.relationship("Bloque", backref="centro", lazy=True)
 
+    def all(self):
+        centros = Centro.query.all()
+        return centros
+
+    #page= página actual, per_page = elementos x página
+    def all_paginado(self , page, per_page):
+        return Centro.query.order_by(Centro.id.desc()).\
+            paginate(page=page, per_page=per_page, error_out=False)
 
 class Bloque(db.Model):
     __tablename__ = "bloque"

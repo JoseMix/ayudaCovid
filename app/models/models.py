@@ -188,3 +188,15 @@ class User(db.Model):
         user.roles.append(form.roles)
         db.session.commit()
         return user
+
+# Inicializo contexto
+def centro_bloque_initialize_db(app):
+    app.app_context().push()
+    db.init_app(app)
+    db.create_all()
+
+
+
+
+    
+            

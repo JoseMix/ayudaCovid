@@ -21,6 +21,7 @@ from app.resources import rol
 from app.resources import permiso
 from app.resources import configuracion
 from app.resources import auth
+from app.resources import centro
 
 # from app.helpers import handler
 from app.helpers import auth as helper_auth
@@ -120,6 +121,9 @@ def create_app(environment="development"):
         methods=["GET", "POST"],
     )
 
+    # Rutas de Centros
+    app.add_url_rule("/centro/<int:page>", "centro_index", centro.index,  methods=["GET"])
+    
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
