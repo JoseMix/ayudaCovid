@@ -13,10 +13,10 @@ def index():
 
 def showOne(centro_id):
     centro = Centro().showOne(centro_id)
-
     result = centro_schema.dump(centro)
     return jsonify(result)
 
 
+"""
 def create(form):
-    #falta
+    #falta"""

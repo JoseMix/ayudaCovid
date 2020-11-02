@@ -127,7 +127,7 @@ def create_app(environment="development"):
 
     # Rutas de API-rest
     app.add_url_rule("/centros", "api_centro_index", centro.index)
-    app.add_url_rule("/centros", "api_centro_createx", centro.create, methods=["POST"])
+    # app.add_url_rule("/centros", "api_centro_createx", centro.create, methods=["POST"])
     app.add_url_rule("/centro/<int:centro_id>", "api_centro_showOne", centro.showOne)
 
     # Handlers
