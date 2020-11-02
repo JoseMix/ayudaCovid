@@ -37,19 +37,6 @@ class Centro(db.Model):
         centro = Centro.query.filter_by(id=id).first()
         return centro
 
-    """def create(self, formulario):
-        nuevo = Centro(
-            nombre=formulario["email"].data,
-            direccion=formulario["username"].data,
-            telefono=formulario["password"].data,
-            =True,  # formulario["activo"],
-            created_at=date.today(),
-            first_name=formulario["first_name"].data,
-            last_name=formulario["last_name"].data,
-        ) FALTA 
-        db.session.add(nuevo)
-        db.session.commit()"""
-
 
 class Bloque(db.Model):
     __tablename__ = "bloque"
