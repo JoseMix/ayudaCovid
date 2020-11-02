@@ -15,15 +15,25 @@
   <tr style="text-align: center;">
     <th>Nombre</th>
     <th>Direccion</th>
-    <th>Telefono</th>
     <th>Municipio</th>
+    <th>Mail</th>
+    <th>Estado</th>
+    <th>Modificar</th>
+    <th>Eliminar</th>
   </tr>
   {% for centro in index_pag.items %}
   <tr>
     <td> {{ centro.nombre }} </td>
     <td> {{ centro.direccion }} </td>
-    <td> {{ centro.telefono }} </td>
     <td> {{ centro.municipio }}</td>
+    <td> {{ centro.mail }} </td>
+    <td> {{ centro.estado }} </td>
+    <td>
+      <a href="" class="btn btn-warning">Modificar</a>
+    </td>
+    <td>
+      <a href="" class="btn btn-danger">Eliminar</a>
+    </td>
   </tr> 
   {% endfor %}
   </table>
