@@ -128,14 +128,17 @@ def activar(user_id, page):
 def update_rol(user_id):
     if not authenticated(session):
         abort(401)
+    roles = User().mis_roles(user_id)
+    #otros_roles = User().otros_roles(user_id)
     if request.method == "POST":
         user = User().find_by_id(user_id) #busco el usuario para modificar roles
         form = request.form
-                #el problema ahora es que solo obtengo 1 del formulario - checkbox multiple -
-        #User().delete_roles(form['roles'], user)
+        print(form)
+        
+        for rol in form:
+            #print(rol)
+            User().delete_rol(rol, user)
+        roles = User().mis_roles(user_id)
+
         #User().add_rol(form['otros_roles'],user)
-    roles = User().mis_roles(user_id)
-
-    #otros_roles = User().otros_roles(user_id)
-
     return render_template("user/update_rol.html",user_id=user_id, roles=roles)

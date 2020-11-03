@@ -33,10 +33,10 @@
   </div>
 
 <div id="index-table">
-  <table class="table table-hover" >
   {% if not index_pag.items %}
-    <strong style="color: red; margin-left:70px "> No se encontraron usuarios para las datos ingresados</strong>
+  <strong style="color: red; margin-left:70px "> No se encontraron usuarios para las datos ingresados</strong>
   {% else %}
+  <table class="table table-hover" >
     <tr style="text-align: center;">
       <th>Username</th>
       <th>Nombre</th>
@@ -47,10 +47,9 @@
       <th>Activar</th>
       <th>Borrar</th>
     </tr>
-    <tr>
 
     {% for user in index_pag.items %}
-
+    <tr>
       <td> {{user.username}} </td>
       <td> {{ user.first_name }} </td>
       <td> {{ user.last_name }} </td>
@@ -78,12 +77,12 @@
           <strong style="color: rgba(197, 11, 5, 0.89);">Usuario eliminado</strong>
         {% endif %}
         </td>
-
+      </tr>
       {% endfor %}
-    </tr>
-    {% endif %}
-    </table>
 
+
+    </table>
+    {% endif %}
   {#-----------------------------PAGINADO------------------------------------#}
     <nav aria-label="..." style="margin-left:15%;" >
       <ul class="pagination" style="margin-left: 35%;">   

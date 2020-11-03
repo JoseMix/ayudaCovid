@@ -172,17 +172,21 @@ class User(db.Model):
             filter(and_(User.username.ilike(f'%{username}%'), User.activo == estado)).\
             paginate(page=page, per_page=per_page, error_out=False)
         return users
-
+#------------------------------- Roles de usuario -----------------------------
     def is_admin(self, id):
         return db.session.query(User).join(Rol, User.roles).\
         filter(and_(User.id== id, Rol.nombre == "administrador")).first()
 
+    def is_operador(self, id):
+        return db.session.query(User).join(Rol, User.roles).\
+        filter(and_(User.id== id, Rol.nombre == "operador")).first()
+#-------------------------------------------------------------------
 
     def mis_roles(self, id):
         roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id).all()
         return roles
 
-    def delete_roles(self, rol, user):
+    def delete_rol(self, rol, user):
         ob = Rol().find_by_id(rol)
         user.roles.remove(ob)
         db.session.commit()
@@ -195,6 +199,9 @@ class User(db.Model):
 
     def mis_roles_id(self, id):
         roles = db.session.query(Rol.id).join(Rol, User.roles).filter(User.id == id).all()
+        #print("despues de la busqueda: ", roles)
+        #translation_table = dict.fromkeys(roles, None)
+        #print("translateeeeee: ",translation_table)
         return roles
     
     #fijarse si funcionó la consulta

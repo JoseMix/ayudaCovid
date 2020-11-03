@@ -15,7 +15,7 @@
     <strong class="texto-show" style="font-size: medium;">Desea DESASIGNAR algun rol?</strong><br>
     {% for rol in roles %} 
       <label>
-        <input type="checkbox" name="roles" value="{{ rol.id }}"/>{{ rol.nombre }}
+        <input type="checkbox" name="{{ rol.id }}" value="{{ rol.id }}"/>{{ rol.nombre }}
       </label><br>
     {% endfor %}
   {% else %}
@@ -28,7 +28,7 @@
     {% for otro_rol in otros_roles %} 
 
       <label>
-        <input type="checkbox" name="otros_roles" value="{{ otro_rol.id}}"/>
+        <input type="checkbox" name="{{ otro_rol.nombre}}" value="{{ otro_rol.id}}"/>
           {{ otro_rol.nombre}}
         </label><br>
     {% endfor %}
