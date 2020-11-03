@@ -11,19 +11,15 @@
   </div>
 
   {#-------------busqueda de usuarios--------------#}
-{% if form.username.data %}
-  {% set username = form.username.data %}
-{% else %}
-  {% set username = 'vacio' %}
-{% endif %}
+
   <div id="formBusqueda">
     <strong class="texto" style="font-size: medium;">Busqueda de usuarios:</strong>
     <br><br>
-    <form action="{{ url_for('user_index',page=1, username=username)}}" method="POST" class="form-inline my-1">
+    <form action="{{ url_for('user_index')}}" method="GET" class="form-inline my-1">
       {# {{ form.csrf_token }} #}
       <div class="busqueda">
         <strong>Username</strong><br>
-        {{form.username( class="form-control mr-sm-1", placeholder='ingrese un username')}}  
+        {{form.username( class="form-control mr-sm-1", placeholder='ingrese un username', value= mySearch['username'] if mySearch else '' )}}  
       </div>
       <div class="busqueda">
         <strong>Estado</strong><br>
@@ -31,13 +27,16 @@
       </div>
       <div>
         <input type="submit"  class="btn btn-primary" value="Buscar">
-        <button type="reset" class="btn btn-secundary" >Limpiar búsqueda</button>
+        <a href="{{ url_for('user_index') }}" class="btn btn-secundary" >Limpiar búsqueda</a>
       </div>
     </form>
   </div>
 
 <div id="index-table">
   <table class="table table-hover" >
+  {% if not index_pag.items %}
+    <strong style="color: red; margin-left:70px "> No se encontraron usuarios para las datos ingresados</strong>
+  {% else %}
     <tr style="text-align: center;">
       <th>Username</th>
       <th>Nombre</th>
@@ -48,8 +47,10 @@
       <th>Activar</th>
       <th>Borrar</th>
     </tr>
-    {% for user in index_pag.items %}
     <tr>
+
+    {% for user in index_pag.items %}
+
       <td> {{user.username}} </td>
       <td> {{ user.first_name }} </td>
       <td> {{ user.last_name }} </td>
@@ -64,24 +65,24 @@
         {% if user.activo == True %}
           <strong style="color: rgba(4, 128, 0, 0.856);">Usuario activo</strong> 
         {%else %}
-          <a href="{{ url_for('user_activar', user_id=user.id, page=index_pag.page)}}" class="btn btn-success" 
+          <a href="{{ url_for('user_activar', user_id=user.id, page=index_pag.page, username=mySearch['username'], estado=mySearch['estado'])}}" class="btn btn-success" 
           type="submit">Activar</a>
         {% endif %}
         </td>
         <td>
         {% if user.activo == True %}
-          <a href="{{ url_for('user_eliminar', user_id=user.id, page=index_pag.page)}}" 
+          <a href="{{ url_for('user_eliminar', user_id=user.id, page=index_pag.page, username=mySearch['username'], estado=mySearch['estado'])}}" 
           onclick="return confirmation()" class="btn btn-danger" type="submit">Eliminar</a>
           <script src="{{ url_for('static', filename='validac.js') }}"> </script>    
           {%else %}
           <strong style="color: rgba(197, 11, 5, 0.89);">Usuario eliminado</strong>
         {% endif %}
         </td>
-      </tr>
-      {% endfor %}
-    </table>
 
-    {{ form.username.data , form.estado.data }}
+      {% endfor %}
+    </tr>
+    {% endif %}
+    </table>
 
   {#-----------------------------PAGINADO------------------------------------#}
     <nav aria-label="..." style="margin-left:15%;" >
@@ -90,7 +91,7 @@
         {% if page %}
           {% if page != index_pag.page %}
             <li class="page-item">
-              <a class="page-link" href="{{ url_for('user_index', page=page, username=username) }}">{{ page }}</a>
+              <a class="page-link" href="{{ url_for('user_index', page=page, username=mySearch['username'], estado=mySearch['estado']) }}">{{ page }}</a>
             </li>
           {% else %}
             <li class="page-item active">

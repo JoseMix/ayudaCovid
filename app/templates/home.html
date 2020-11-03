@@ -7,7 +7,7 @@
 <a class="nav-link" href="{{ url_for('auth_login') }}" >Iniciar sesión</a>
 {% endblock %}
 {% block content %}
-  
+
   {% if is_authenticated(session) %}
   <h1>Inicio</h1>
   <table class="table table-hover" style="width:75%"  >

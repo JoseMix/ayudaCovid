@@ -6,17 +6,31 @@ from app.helpers.auth import authenticated
 from flask_bcrypt import Bcrypt
 
 # Protected resources
-def index(page, username):
+def index():
     if not authenticated(session):
         abort(401)
     form = FilterForm()
     sitio = Configuracion().sitio()
-    if username != 'vacio' or request.method == "POST": #si estan seteados
-        index_pag = User().search_by(form.username.data,form.estado.data, page, sitio.paginas)
+
+    page = request.args.get('page',1, type=int)
+    mySearch = {}
+    username = request.args.get("username")
+
+    estado = request.args.get("estado")
+    if username is None or username == '':
+        username = ""
+    if estado is None or estado == '':
+        estado = ""
+    
+    mySearch["username"] = username
+    mySearch["estado"] = estado
+    if username != "" or estado != "" or request.method == "POST":
+        #si estan seteados o se usó el buscador
+        index_pag = User().search_by(username,estado, page, sitio.paginas)
     else:
         index_pag = User().all_paginado(page, sitio.paginas)
 
-    return render_template("user/index.html", form=form, index_pag=index_pag)
+    return render_template("user/index.html",form=form, mySearch=mySearch, index_pag=index_pag)
 
 
 def register():
@@ -55,7 +69,7 @@ def update(user_id):
             return redirect(url_for("user_index", page=1, username='vacio'))
         else:
             flash("El usuario o el email ya existe")
-    return render_template("user/update.html", form=form)
+    return render_template("user/update.html", form=form, user_id=user_id)
 
 
 def show():
@@ -93,7 +107,10 @@ def eliminar(user_id, page):
     sitio = Configuracion().sitio()
     index_pag = User().all_paginado(page, sitio.paginas)
     form = FilterForm()
-    return render_template("user/index.html",form=form, index_pag=index_pag, sitio=sitio)
+    mySearch = {}
+    mySearch["username"] = request.args.get("username")
+    mySearch["estado"] = request.args.get("estado")
+    return render_template("user/index.html",form=form, index_pag=index_pag, sitio=sitio, mySearch=mySearch)
 
 
 def activar(user_id, page):
@@ -102,7 +119,10 @@ def activar(user_id, page):
     index_pag = User().all_paginado(page, sitio.paginas)
     flash("Usuario activado correctamente")
     form = FilterForm()
-    return render_template("user/index.html",form=form, index_pag=index_pag)
+    mySearch = {}
+    mySearch["username"] = request.args.get("username")
+    mySearch["estado"] = request.args.get("estado")
+    return render_template("user/index.html",form=form, index_pag=index_pag, mySearch=mySearch)
 
 
 def update_rol(user_id):
@@ -115,7 +135,7 @@ def update_rol(user_id):
         #User().delete_roles(form['roles'], user)
         #User().add_rol(form['otros_roles'],user)
     roles = User().mis_roles(user_id)
-    
+
     #otros_roles = User().otros_roles(user_id)
 
     return render_template("user/update_rol.html",user_id=user_id, roles=roles)

@@ -4,7 +4,7 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
- 
+
   <div id="derecha">
     <a href="{{ url_for('configuracion_show') }}" class="btn btn-primary">Volver</a>
   </div>
@@ -34,7 +34,8 @@
 
       <div id="centrar">
         <input type="submit" value="Modificar sitio" class="btn btn-primary">
-        <button type="reset" class="btn btn-secundary">Limpiar Formulario</button>
+        <button type="reset" class="btn btn-secundary"></button>
+        <a href="{{ url_for('configuracion_update') }}" class="btn btn-secundary">Limpiar Formulario</a>
       </div>
 
     </form>

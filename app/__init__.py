@@ -17,8 +17,7 @@ from flask_session import Session
 from config import config
 from app import db
 from app.resources import user
-from app.resources import rol
-from app.resources import permiso
+
 from app.resources import configuracion
 from app.resources import auth
 from app.resources.api import issue as api_issue
@@ -61,19 +60,7 @@ def create_app(environment="development"):
     app.add_url_rule("/iniciar_sesion", "auth_login", auth.login, methods=["GET", "POST"])
     app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
 
-    # Rutas de Roles
-    app.add_url_rule("/roles", "rol_index", rol.index)
-    app.add_url_rule("/roles", "rol_create", rol.create, methods=["POST"])
-    app.add_url_rule("/roles/nueva", "rol_new", rol.new)
-
-    # Rutas de Permisos
-    app.add_url_rule(
-        "/permisos/<int:page>", "permiso_index", permiso.index, methods=["GET"]
-    )
-
-    app.add_url_rule("/permisos", "permiso_create", permiso.create, methods=["POST"])
-    app.add_url_rule("/permisos/nueva", "permiso_new", permiso.new)
-
+    
     # Rutas de Configuración
     app.add_url_rule(
         "/configuracion/editar", "configuracion_update", configuracion.update
@@ -84,7 +71,8 @@ def create_app(environment="development"):
     app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
 
     # Rutas de Usuarios
-    app.add_url_rule("/usuarios/<int:page>/<string:username>", "user_index", user.index, methods=["GET", "POST"])
+    app.add_url_rule("/usuarios", "user_index", user.index, methods=["GET", "POST"])
+    #app.add_url_rule("/usuarios", "user_index", user.index, methods=["GET", "POST"])
     #app.add_url_rule("/usuarios/<int:page>/<username>/<estado>", "user_index", user.index, methods=["GET"])
     app.add_url_rule("/usuarios/show", "user_show", user.show)
     app.add_url_rule("/usuarios/roles/<int:user_id>",
