@@ -23,7 +23,7 @@ class Centro(db.Model):
     web = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     estado = db.Column(db.Enum("RECHAZADO","ACEPTADO","PENDIENTE"), nullable=False)
-    # protocolo = db.Column(db.String(255), nullable=False)
+    protocolo = db.Column(db.String(255), nullable=False)
     coordenadas = db.Column(db.String(20), nullable=False)
     turnos = db.relationship("Bloque", backref="centro", lazy=True)
 
@@ -33,8 +33,30 @@ class Centro(db.Model):
 
     #page= página actual, per_page = elementos x página
     def all_paginado(self , page, per_page):
-        return Centro.query.order_by(Centro.id.desc()).\
+        return Centro.query.order_by(Centro.id.asc()).\
             paginate(page=page, per_page=per_page, error_out=False)
+
+    def create(self, formulario):
+        nuevo = Centro(
+            nombre =formulario["nombre"].data,
+            direccion=formulario["direccion"].data,
+            telefono=formulario["telefono"].data,
+            apertura=formulario["apertura"].data,
+            cierre=formulario["cierre"].data,
+            tipo_centro=formulario["tipo_centro"].data,
+            municipio=formulario["municipio"].data,
+            web=formulario["web"].data,
+            email=formulario["email"].data,
+            estado="PENDIENTE",
+            protocolo="PROTONULL",
+            coordenadas="NULL",
+        )
+        db.session.add(nuevo)
+        db.session.commit()
+
+    def validate_centro_creation(self, emailForm):
+        centro = Centro.query.filter((Centro.email == emailForm)).first()
+        return centro
 
 class Bloque(db.Model):
     __tablename__ = "bloque"

@@ -25,7 +25,7 @@ from app.resources import centro
 
 # from app.helpers import handler
 from app.helpers import auth as helper_auth
-from app.resources.forms import RegistrationForm, LoginForm, FilterForm
+from app.resources.forms import RegistrationForm, LoginForm, FilterForm, CrearCentroForm
 
 # from app.db import connection
 from app.models.configuracion import Configuracion, configuracion_initialize_db
@@ -123,6 +123,8 @@ def create_app(environment="development"):
 
     # Rutas de Centros
     app.add_url_rule("/centro/<int:page>", "centro_index", centro.index,  methods=["GET"])
+    app.add_url_rule("/centro/nuevo", "centro_register", centro.register,  methods=["GET", "POST"])
+    app.config['UPLOAD_FOLDER'] = "./archivosPdf"
     
     # Ruta para el Home (usando decorator)
     @app.route("/")
