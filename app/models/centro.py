@@ -12,9 +12,9 @@ def centro_bloque_initialize_db(app):
 
 class Centro(db.Model):
     __tablename__ = "centro"
-    id = db.Column(db.Integer, primary_key=True)
-    nombre = db.Column(db.String(255), unique=True, nullable=False)
-    direccion = db.Column(db.String(255), unique=True, nullable=False)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    nombre = db.Column(db.String(255), nullable=False)
+    direccion = db.Column(db.String(255), nullable=False)
     telefono = db.Column(db.String(20), nullable=False)
     apertura = db.Column(db.Time, nullable=False)
     cierre = db.Column(db.Time, nullable=False)
@@ -36,7 +36,7 @@ class Centro(db.Model):
         return Centro.query.order_by(Centro.id.asc()).\
             paginate(page=page, per_page=per_page, error_out=False)
 
-    def create(self, formulario):
+    def create(self, formulario, nameProtocolo):
         nuevo = Centro(
             nombre =formulario["nombre"].data,
             direccion=formulario["direccion"].data,
@@ -48,7 +48,7 @@ class Centro(db.Model):
             web=formulario["web"].data,
             email=formulario["email"].data,
             estado="PENDIENTE",
-            protocolo="PROTONULL",
+            protocolo=nameProtocolo,
             coordenadas="NULL",
         )
         db.session.add(nuevo)

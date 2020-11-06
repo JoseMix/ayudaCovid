@@ -9,7 +9,7 @@
   </div>
   <div id="formulario">
     <strong class="texto">CARGAR UN NUEVO CENTRO</strong>
-    <form action="{{ url_for('centro_register') }}" method="POST">
+    <form action="{{ url_for('centro_register') }}" method="POST" enctype="multipart/form-data">
       
       {{ form.csrf_token }}
       {{form.nombre.label}}
@@ -70,13 +70,11 @@
         {% endfor %}
 
         {{form.protocolo.label}}        
-        {{form.protocolo(class_="form-control" ,type="file",  placeholder='Ingrese Protocolo')}}
+        {{form.protocolo(class_="form-control" ,type="file", placeholder='Ingrese Protocolo' )}}
         <br>
         {% for error in form.protocolo.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
-
-       
 
         <div id="centrar">
           <input type="submit" value="Cargar Centro" class="btn btn-primary">

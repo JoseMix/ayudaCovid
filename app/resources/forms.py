@@ -152,8 +152,6 @@ class CrearCentroForm(FlaskForm):
         ],
     )
 
-    protocolo = FileField(
-        "Protocolo",
-    )
+    protocolo=FileField("protocolo")
 
     submit = SubmitField("Enviar")

@@ -1,12 +1,14 @@
 import os
-from werkzeug import secure_filename
+from werkzeug.utils import secure_filename
 from flask import Flask,redirect, flash, render_template, request, url_for, session, abort
 # from app.db import connection
 from app.models.configuracion import Configuracion
 from app.models.centro import Centro
 from app.helpers.auth import authenticated
 from app.resources.forms import CrearCentroForm
-
+import app
+UPLOAD_FOLDER = "app/static/archivosPdf/" #Cambiar la carpeta a statics
+app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
 def index(page):
     if not authenticated(session):
@@ -19,26 +21,35 @@ def register():
     if not authenticated(session):
         abort(401)
     form = CrearCentroForm()
-    if form.validate_on_submit():
-        f = request.files['Protocolo'] 
-        filename = secure_filename(f.filename)
-        f.sase(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    if request.method == 'POST':
         if not validate(form):
-            flash("Centro creado con éxito")
-            create(form)
-            return redirect(url_for("centro_index", page=1))
+            file_protocolo = request.files['protocolo'] #Me quedo con el nombre del archivo
+            if file_protocolo:
+                if allowed_file(file_protocolo.filename): #Si esta todo ok 
+                    filename = secure_filename(file_protocolo.filename)
+                    file_protocolo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename)) #Se almacena el arch en la carpeta
+                    flash("Centro creado con éxito")
+                    create(form, file_protocolo.filename)  
+                    return redirect(url_for("centro_index", page=1))
+                else: flash("El archivo debe ser pdf")    
+            else:  #El protocolo no es obligatorio, llamar a crear con null en el protocolo
+                create(form,"NULL")   
+                return redirect(url_for("centro_index", page=1))   
         else:
-            flash("El usuario o el email ya existe")
+            flash("El email del centro ya existe")
     return render_template("centro/new.html", form=form)
 
-    
+def allowed_file(filename):
+    #Chequeo de la extension y que solo exista un solo . antes de la extencion
+    ALLOWED_EXTENSIONS = {'pdf'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def validate(form):
     centro = Centro().validate_centro_creation(form["email"].data)
     return centro
 
-def create(form):
+def create(form,nameProtocolo):
     if not authenticated(session):
         abort(401)
     centro = Centro()
-    centro.create(form)
+    centro.create(form,nameProtocolo)

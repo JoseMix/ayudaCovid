@@ -124,8 +124,9 @@ def create_app(environment="development"):
     # Rutas de Centros
     app.add_url_rule("/centro/<int:page>", "centro_index", centro.index,  methods=["GET"])
     app.add_url_rule("/centro/nuevo", "centro_register", centro.register,  methods=["GET", "POST"])
-    app.config['UPLOAD_FOLDER'] = "./archivosPdf"
     
+
+
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
