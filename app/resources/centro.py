@@ -23,6 +23,9 @@ def register():
     form = CrearCentroForm()
     if request.method == 'POST':
         if not validate(form):
+            if (validate_horarios(form) is False): #validacion de horarios de apertura y cierre
+                flash('El horario de apertura debe ser menor que el horario de cierre')
+                return render_template("centro/new.html", form=form)
             file_protocolo = request.files['protocolo'] #Me quedo con el nombre del archivo
             if file_protocolo:
                 if allowed_file(file_protocolo.filename): #Si esta todo ok 
@@ -44,6 +47,9 @@ def allowed_file(filename):
     ALLOWED_EXTENSIONS = {'pdf'}
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def validate_horarios(form):
+    return (form['apertura'].data < form['cierre'].data)
+    
 def validate(form):
     centro = Centro().validate_centro_creation(form["nombre"].data,form["direccion"].data,form["municipio"].data)
     return centro
