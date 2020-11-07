@@ -36,7 +36,7 @@ def register():
                 create(form,"NULL")   
                 return redirect(url_for("centro_index", page=1))   
         else:
-            flash("El email del centro ya existe")
+            flash("El centro que intenta crear ya existe.")
     return render_template("centro/new.html", form=form)
 
 def allowed_file(filename):
@@ -45,7 +45,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def validate(form):
-    centro = Centro().validate_centro_creation(form["email"].data)
+    centro = Centro().validate_centro_creation(form["nombre"].data,form["direccion"].data,form["municipio"].data)
     return centro
 
 def create(form,nameProtocolo):

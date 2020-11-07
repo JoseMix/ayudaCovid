@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from operator import and_
 
 db = SQLAlchemy()
 
@@ -54,8 +55,8 @@ class Centro(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-    def validate_centro_creation(self, emailForm):
-        centro = Centro.query.filter((Centro.email == emailForm)).first()
+    def validate_centro_creation(self, nombre,direccion,municipio):
+        centro = Centro.query.filter(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre)).first()
         return centro
 
 class Bloque(db.Model):
