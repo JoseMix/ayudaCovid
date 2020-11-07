@@ -152,6 +152,8 @@ class CrearCentroForm(FlaskForm):
         ],
     )
 
-    protocolo=FileField("protocolo")
+    protocolo=FileField("Protocolo")
+
+    coordenadas = StringField("lat,lng")
 
     submit = SubmitField("Enviar")

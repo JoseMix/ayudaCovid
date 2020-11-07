@@ -1,15 +1,17 @@
 {% extends "layout.html" %}
-{% block title %}Usuarios{% endblock %}
+{% block title %}Centros de Ayuda{% endblock %}
 {% block head %}
   {{ super() }}
 {% endblock %}
-{% block content %}
+
+
+{% block content %} 
   <div id="derecha">
-    <a href="{{ url_for('user_index', page=1) }}" class="btn btn-primary">Volver</a>
+    <a href="{{ url_for('centro_index', page=1) }}" class="btn btn-primary">Volver</a>
   </div>
   <div id="formulario">
     <strong class="texto">CARGAR UN NUEVO CENTRO</strong>
-    <form action="{{ url_for('centro_register') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ url_for('centro_register') }}" method="POST" onsubmit="submitHandler(event)" enctype="multipart/form-data">
       
       {{ form.csrf_token }}
       {{form.nombre.label}}
@@ -76,10 +78,23 @@
           <div style=color:red>{{ error }}</div>
         {% endfor %}
 
+        {{form.coordenadas.label}}
+         {{form.coordenadas(class_="form-control", type="text", placeholder='Ingrese Coordenadas' )}}
+        <br>
+        <div class="map-container">
+          <input type="text" name="lat" id=lat>
+          <input type="text" name="lng" id=lng>
+        
+          <div id="myMap" style="height: 180px;"></div> 
+        </div>
+        <script src="{{ url_for('static', filename='mapa.js') }}"> </script> 
+        
+        <!--<script src="{{ url_for('static', filename='nuevo.js') }}"> </script> -->          
         <div id="centrar">
           <input type="submit" value="Cargar Centro" class="btn btn-primary">
           <button type="reset" class="btn btn-secundary" >Limpiar formulario</button>
         </div>
+
     </form>
     </div>
   

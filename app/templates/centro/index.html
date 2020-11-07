@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Centros{% endblock %}
+{% block title %}Centros de Ayuda{% endblock %}
 {% block head %}
   {{ super() }}
 {% endblock %}
@@ -11,28 +11,31 @@
 </div>
 
 <div id="index-table">
-<table class="table table-hover" >
+  <table class="table table-hover" >
   <tr style="text-align: center;">
-    <th>Nombre</th>
-    <th>Direccion</th>
-    <th>Municipio</th>
-    <th>Mail</th>
-    <th>Estado</th>
-    <th>Modificar</th>
-    <th>Eliminar</th>
+  <th>Direccion</th>
+  <th>Direccion </th>
+  <th>Municipio</th>
+  <th>Estado</th>
+  <th> </th>
+  <th> </th>
+  <th> </th>
   </tr>
   {% for centro in index_pag.items %}
-  <tr>
+  <tr style="text-align: center;">
     <td> {{ centro.nombre }} </td>
     <td> {{ centro.direccion }} </td>
     <td> {{ centro.municipio }}</td>
-    <td> {{ centro.mail }} </td>
     <td> {{ centro.estado }} </td>
+    
     <td>
       <a href="" class="btn btn-warning">Modificar</a>
     </td>
     <td>
       <a href="" class="btn btn-danger">Eliminar</a>
+    </td>
+    <td>
+      <a href="" class="btn btn-link">Ver Mas</a>
     </td>
   </tr> 
   {% endfor %}

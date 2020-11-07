@@ -77,7 +77,7 @@ def create(form):
     user.create(form)
 
 def validate(form):
-    user = User()._user_creation(form["email"].data, form["username"].data)
+    user = User().validate_user_creation(form["email"].data, form["username"].data)
     return user
 
 

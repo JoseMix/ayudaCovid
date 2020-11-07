@@ -1,29 +1,9 @@
-function confirmation() 
-{
-    if(confirm("Esta seguro que desea eliminar Usuario?"))
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-}
-
-function activar() 
-{
-    if(confirm("Esta seguro que desea activar Usuario?"))
-    {
-      return true;
-    }
-    else
-    {
-      return false;
-    }
-}
-
 let map;
 let marker;
+const mymap = L.map('myMap').setView([-34.9187,-57.956], 13);
+const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const tiles = L.tileLayer(tileUrl);
+tiles.addTo(mymap);
 
 const mapClickHandler = (e) => {
     addMarker(e.latlng);
@@ -72,5 +52,5 @@ const submitHandler = (event) => {
 };
 
 window.onload = () => {
-    initializeMap('mapid');
+    initializeMap('myMap');
 };
