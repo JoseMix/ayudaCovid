@@ -23,7 +23,7 @@ class Centro(db.Model):
     municipio = db.Column(db.String(20), nullable=False)
     web = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
-    estado = db.Column(db.Enum("RECHAZADO","ACEPTADO","PENDIENTE"), nullable=False)
+    estado = db.Column(db.Enum("RECHAZADO","ACEPTADO","PENDIENTE","PUBLICADO","DESPUBLICADO"), nullable=False)
     protocolo = db.Column(db.String(255), nullable=False)
     coordenadas = db.Column(db.String(20), nullable=False)
     turnos = db.relationship("Bloque", backref="centro", lazy=True)
