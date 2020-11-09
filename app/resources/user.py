@@ -30,7 +30,6 @@ def index():
         index_pag = User().search_by(username,estado, page, sitio.paginas)
     else:
         index_pag = User().all_paginado(page, sitio.paginas)
-
     return render_template("user/index.html",form=form, mySearch=mySearch, index_pag=index_pag)
 
 
@@ -46,7 +45,7 @@ def register():
             form.password.data = hashed_password
             flash("Usuario creado con éxito")
             create(form)
-            return redirect(url_for("user_index", page=1, username='vacio'))
+            return redirect(url_for("user_index", page=1))
         else:
             flash("El usuario o el email ya existe")
     return render_template("user/new.html", form=form)
@@ -67,7 +66,7 @@ def update(user_id):
             ).decode("utf-8")
             form.populate_obj(user)
             User().update(user)
-            return redirect(url_for("user_index", page=1, username='vacio'))
+            return redirect(url_for("user_index", page=1))
         else:
             flash("El usuario o el email ya existe")
     return render_template("user/update.html", form=form, user_id=user_id)
