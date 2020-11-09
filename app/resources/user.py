@@ -1,5 +1,5 @@
 from flask import redirect, flash, render_template, request, url_for, session, abort
-from app.models.models import User
+from app.models.models import Rol, User
 from app.models.configuracion import Configuracion
 from app.resources.forms import FilterForm, RegistrationForm
 from app.helpers.auth import authenticated, tiene_permiso
@@ -100,7 +100,7 @@ def eliminar(user_id, page):
     if not authenticated(session) or not tiene_permiso(session, 'user_destroy'):
         abort(401)
     #busco si el usuario tiene rol admin
-    user = User().is_admin(user_id)
+    user = User().tiene_rol(user_id, "administrador")
     if user:
         flash("no se puede eliminar, usuario administrador")
     else:
@@ -128,21 +128,29 @@ def activar(user_id, page):
     mySearch["estado"] = request.args.get("estado")
     return render_template("user/index.html",form=form, index_pag=index_pag, mySearch=mySearch)
 
-
+#muestra vista para roles y, si se oprime submit, modifica roles de usuario
 def update_rol(user_id):
     if not authenticated(session) or not tiene_permiso(session, 'user_update'):
         abort(401)
-    roles = User().mis_roles(user_id)
-    #otros_roles = User().otros_roles(user_id)
-    if request.method == "POST":
-        user = User().find_by_id(user_id) #busco el usuario para modificar roles
-        form = request.form
-        print(form)
-        
-        for rol in form:
-            #print(rol)
-            User().delete_rol(rol, user)
-        roles = User().mis_roles(user_id)
+    roles = Rol().all()
+    user = User().find_by_id(user_id)
 
-        #User().add_rol(form['otros_roles'],user)
-    return render_template("user/update_rol.html",user_id=user_id, roles=roles)
+    if request.method == "POST": #si apretaron submit:
+        form = request.form
+        checked = []
+        for rol in form: #busco y guardo en una lista los roles seleccionados
+            act = Rol().find_by_id(form[rol])
+            checked.append(act)
+
+        #roles NO seleccionados
+        for rol in roles:
+            if (rol not in checked):
+                if (rol in user.roles): # si usuario lo tiene asignado: lo borro
+                    User().delete_rol(rol, user)
+        #roles seleccionados
+        for rol in checked:
+            if (rol not in user.roles): #asigna si no lo tiene
+                User().add_rol(rol, user)
+
+        user = User().find_by_id(user_id) #busco a usuario actualizado
+    return render_template("user/update_rol.html",user=user, roles=roles)

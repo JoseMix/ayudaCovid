@@ -72,9 +72,10 @@ div #centrar {
   color: rgb(56, 62, 90);
   margin: 3%;
 }
-#text-text{
+.text-text{
+  font-size: medium;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  font-size: 17px;
+  
   color: black;
 }
 

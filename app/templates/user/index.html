@@ -65,13 +65,13 @@
           <strong style="color: rgba(4, 128, 0, 0.856);">Usuario activo</strong> 
         {%else %}
           <a href="{{ url_for('user_activar', user_id=user.id, page=index_pag.page, username=mySearch['username'], estado=mySearch['estado'])}}" class="btn btn-success" 
-          type="submit">Activar</a>
+          >Activar</a>
         {% endif %}
         </td>
         <td>
         {% if user.activo == True %}
           <a href="{{ url_for('user_eliminar', user_id=user.id, page=index_pag.page, username=mySearch['username'], estado=mySearch['estado'])}}" 
-          onclick="return confirmation()" class="btn btn-danger" type="submit">Eliminar</a>
+          onclick="return confirmation()" class="btn btn-danger">Eliminar</a>
           <script src="{{ url_for('static', filename='validac.js') }}"> </script>    
           {%else %}
           <strong style="color: rgba(197, 11, 5, 0.89);">Usuario eliminado</strong>

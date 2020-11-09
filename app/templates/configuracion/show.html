@@ -12,28 +12,31 @@
   <table class="table table-hover">
     <tr>
       <td><strong class="texto-show">Titulo: </strong> </td>
-      <td><strong id="text-text"> {{ sitio.titulo }} </strong></td>
+      <td><strong class="text-text"> {{ sitio.titulo }} </strong></td>
     </tr>
     <tr>
       <td><strong class="texto-show">Descripcion:</strong></td>
-      <td><strong id="text-text">{{ sitio.descripcion }}</strong></td>
+      <td><strong class="text-text">{{ sitio.descripcion }}</strong></td>
     </tr>
     <tr>
       <td><strong class="texto-show">Email de contacto: </strong></td>
-      <td><strong id="text-text">{{ sitio.email }}</strong></td>
+      <td><strong class="text-text">{{ sitio.email }}</strong></td>
     </tr>
+    <tr>
       <td><strong class="texto-show">Estado: </strong></td>
-      <td><strong id="text-text"> 
+      <td>
+        <strong class="text-text"> 
             {% if sitio.activo is true %}
               Habilitado
             {% else %}
                 Deshabilitado
             {% endif %}
-          </strong></td>
+          </strong>
+      </td>
     </tr>
     <tr>
       <td><strong class="texto-show">Cantidad para paginado:</strong></td>
-      <td><strong id="text-text">{{ sitio.paginas }}</strong></td>
+      <td><strong class="text-text">{{ sitio.paginas }}</strong></td>
     </tr>
     <tr>
       <td></td>

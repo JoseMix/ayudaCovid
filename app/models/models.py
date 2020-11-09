@@ -187,13 +187,14 @@ class User(db.Model):
             paginate(page=page, per_page=per_page, error_out=False)
         return users
 #------------------------------- Roles de usuario -----------------------------
-    def is_admin(self, id):
+    #recibe el id del usuario y el rol-string-
+    def tiene_rol(self, id, rol):
         return db.session.query(User).join(Rol, User.roles).\
-        filter(and_(User.id== id, Rol.nombre == "administrador")).first()
+        filter(and_(User.id== id, Rol.nombre == rol)).first()
 
-    def is_operador(self, id):
-        return db.session.query(User).join(Rol, User.roles).\
-        filter(and_(User.id== id, Rol.nombre == "operador")).first()
+    #def is_operador(self, id):
+    #    return db.session.query(User).join(Rol, User.roles).\
+    #    filter(and_(User.id== id, Rol.nombre == "operador")).first()
 #-------------------------------------------------------------------
 
     def mis_roles(self, id):
@@ -201,27 +202,25 @@ class User(db.Model):
         return roles
 
     def delete_rol(self, rol, user):
-        ob = Rol().find_by_id(rol)
-        user.roles.remove(ob)
+        #ob = Rol().find_by_id(rol)
+        user.roles.remove(rol)
         db.session.commit()
 
     def add_rol(self, rol, user):
-        ob = Rol().find_by_id(rol)
-        user.roles.append(ob)
+        #ob = Rol().find_by_id(rol)
+        user.roles.append(rol)
         db.session.commit()
 
 
-    def mis_roles_id(self, id):
-        roles = db.session.query(Rol.id).join(Rol, User.roles).filter(User.id == id).all()
+    #def mis_roles_id(self, id):
+    #    roles = db.session.query(Rol).join(User.roles).filter(User.id == id).all()
         #print("despues de la busqueda: ", roles)
-        #translation_table = dict.fromkeys(roles, None)
-        #print("translateeeeee: ",translation_table)
-        return roles
-    
+    #    return roles
+
     #fijarse si funcionó la consulta
-    def otros_roles(self, id):
-        roles = Rol().query.filter(~Rol.id.in_(User().mis_roles_id(id))).all()
-        return roles
+    #def otros_roles(self, id):
+    #    roles = Rol().query.filter(~Rol.id.in_(User().mis_roles_id(id))).all()
+    #    return roles
 
     #lo que quiere probar jose
     def roles_usuarios(self):

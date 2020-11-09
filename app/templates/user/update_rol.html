@@ -4,38 +4,55 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-<div id="derecha">
-  <a href="{{ url_for('user_index') }}" class="btn btn-primary">Volver</a>
-</div>
+  <div id="derecha">
+    <a href="{{ url_for('user_index') }}" class="btn btn-primary">Volver</a>
+  </div>
   <br>
-  <div id="formulario">
+  <div id="formulario" style="margin-left: 250px; margin-right: 250px;">
     <strong class="texto">MODIFICACIÓN DE ROLES</strong>
-  <form action="{{ url_for('user_update_rol', user_id=user_id) }}" method="POST">
-  {% if roles %}
-    <strong class="texto-show" style="font-size: medium;">Desea DESASIGNAR algun rol?</strong><br>
-    {% for rol in roles %} 
+    <br>
+    <br>
+    <strong class="texto-show" style="font-size: large;">Lista de roles del usuario {{ user.username }}:</strong>
+    <br>
+    <ul class="list-group list-group-flush" style="margin-left: 50px; margin-right: 80px;">    
+      {% if user.roles %}
+        {% for rol in user.roles %}
+        <li class="list-group-item">
+          <strong>{{ rol.nombre }}</strong>
+        </li>
+        {% endfor %}
+      {% else %}
+      <li class="list-group-item">
+        <strong style="color: red;">El usuario no tiene roles asignados</strong>
+      </li>
+      {% endif %}
+
+    </ul>
+    <br>
+    <strong class="texto-show" style="font-size: large;">¿Desea asignar o desasignar algún rol?</strong>
+    <br>
+  <strong class="texto-show" style="font-size:small; color: red;">
+    IMPORTANTE:
+    <br>
+    ¡Se asignaran solo los roles seleccionados y se desasignaran los no seleccionados!
+  </strong>
+
+  <form action="{{ url_for('user_update_rol', user_id=user.id) }}" method="POST">
+    <div style="margin-left: 50px; margin-right: 80px;">
+    {% if roles %}
+      {% for rol in roles %} 
       <label>
-        <input type="checkbox" name="{{ rol.id }}" value="{{ rol.id }}"/>{{ rol.nombre }}
-      </label><br>
-    {% endfor %}
-  {% else %}
-  <br>
-    <strong class="texto-show" style="font-size: medium;">El usuario no tiene roles para DESASIGNAR</strong>
-  {% endif %}<br><br>
-
-  {% if otros_roles is not none %}
-    <strong class="texto-show" style="font-size: medium;">Desea ASIGNAR algun rol?</strong><br>
-    {% for otro_rol in otros_roles %} 
-
-      <label>
-        <input type="checkbox" name="{{ otro_rol.nombre}}" value="{{ otro_rol.id}}"/>
-          {{ otro_rol.nombre}}
-        </label><br>
-    {% endfor %}
-  {% else %}
-    <strong class="texto-show" style="font-size: medium;">El usuario no tiene roles para ASIGNAR</strong>
-  {% endif %}
-
+        <input type="checkbox" name="{{ rol.nombre }}" value="{{ rol.id }}" 
+        {% if (rol in user.roles) %} checked {% endif %}/> <strong>{{ rol.nombre }}</strong>
+      </label>
+      <br>
+      {% endfor %}
+    {% else %}
+      <br> 
+      <strong>No hay roles cargados</strong>
+    {% endif %}
+    </div>
+    
     <div id="centrar">
       <input type="submit" class="btn btn-primary" value="Modificar roles">
       <button type="reset" class="btn btn-secundary">Limpiar</button>

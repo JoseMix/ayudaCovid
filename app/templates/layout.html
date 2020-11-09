@@ -16,10 +16,10 @@
           <a href="{{ url_for('home') }}"> <img  src="{{ url_for('static', filename='donaciones.png') }}" alt="imagen" > </a>
         </div>
 
-        <h1> <strong style="color: rgb(56, 62, 90);"> Donaciones - covid 19 </strong></h1>
+        <strong style="color: rgb(56, 62, 90); font-size: xx-large;"> Donaciones - covid 19 </strong>
 
         <div class="collapse navbar-collapse">        
-          <ul class="nav justify-content-end">
+          <ul class="navbar-nav ml-auto" style="font-size: large; margin-right: 25px;">
 
             {% if is_authenticated(session) %}
             {% if ( 'user_index' in session['permisos'] ) %}
