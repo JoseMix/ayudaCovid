@@ -32,7 +32,7 @@ class Rol(db.Model):
     __tablename__ = "rol"
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
-    permiso = db.relationship(
+    permisos = db.relationship(
         "Permiso",
         secondary=permiso_rol,
         lazy="subquery",
@@ -58,9 +58,23 @@ class Permiso(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
 
+    def __getitem__(self, nombre):
+        return self.__dict__[nombre]
+
     def all(self):
         permisos = Permiso.query.all()
         return permisos
+
+    def permiso_by_name(self, permiso):
+        return Permiso.query.filter(Permiso.nombre == permiso).first()
+
+#---------------------------------------------------------------------------
+    def permisos_de_usuario(self, id):
+        res = db.session.query(Permiso).join(User.roles).join(Rol.permisos).filter(User.id == id)
+        print ("consulta: ", res)
+        return res
+
+#---------------------------------------------------------------------------
 
     #page= página actual, per_page = elementos x página
     def all_paginado(self, page, per_page):
@@ -208,11 +222,6 @@ class User(db.Model):
     def otros_roles(self, id):
         roles = Rol().query.filter(~Rol.id.in_(User().mis_roles_id(id))).all()
         return roles
-
-    def mis_permisos(self, id):
-        permisos = db.session.query(Permiso).join(Permiso, Rol.permisos)\
-            .join(Rol, User.roles).filter(User.id == id)
-        return permisos
 
     #lo que quiere probar jose
     def roles_usuarios(self):

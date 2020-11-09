@@ -22,13 +22,16 @@
           <ul class="nav justify-content-end">
 
             {% if is_authenticated(session) %}
+            {% if ( 'user_index' in session['permisos'] ) %}
             <li class="nav-item">
               <a href="{{ url_for('user_index') }}" class="nav-link">Usuarios</a>
             </li>  
+            {% endif %}
+            {% if ( 'configuracion_show' in session['permisos'] ) %}
             <li class="nav-item">
               <a href="{{ url_for('configuracion_show') }}" class="nav-link">Configuracion</a>
             </li>
-
+            {% endif %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{session.get("user") }}</a>

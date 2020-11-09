@@ -2,12 +2,13 @@ from flask import redirect, flash, render_template, request, url_for, session, a
 from app.models.models import User
 from app.models.configuracion import Configuracion
 from app.resources.forms import FilterForm, RegistrationForm
-from app.helpers.auth import authenticated
+from app.helpers.auth import authenticated, tiene_permiso
 from flask_bcrypt import Bcrypt
+
 
 # Protected resources
 def index():
-    if not authenticated(session):
+    if not authenticated(session) or not tiene_permiso(session, 'user_index'):
         abort(401)
     form = FilterForm()
     sitio = Configuracion().sitio()
@@ -34,7 +35,7 @@ def index():
 
 
 def register():
-    if not authenticated(session):
+    if not authenticated(session) or not tiene_permiso(session, 'user_new'):
         abort(401)
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -52,7 +53,7 @@ def register():
 
 
 def update(user_id):
-    if not authenticated(session):
+    if not authenticated(session) or not tiene_permiso(session, 'user_update'):
         abort(401)
     user = User.query.get_or_404(user_id)   #ver metodo
     form = RegistrationForm(obj=user)
@@ -73,20 +74,20 @@ def update(user_id):
 
 
 def show():
-    if not authenticated(session):
+    if not authenticated(session) or not tiene_permiso(session, 'user_show'):
         abort(401)
     user = User().find_by_id(session.get("user_id"))
     return render_template("user/show.html", user=user)
 
 
 def new():
-    if not authenticated(session):
+    if not authenticated(session) or not tiene_permiso(session, 'user_new'):
         abort(401)
     return render_template("user/new.html")
 
 
 def create(form):
-    if not authenticated(session):
+    if not authenticated(session) or not tiene_permiso(session, 'user_new'):
         abort(401)
     user = User()
     user.create(form)
@@ -97,6 +98,8 @@ def validate(form):
 
 
 def eliminar(user_id, page):
+    if not authenticated(session) or not tiene_permiso(session, 'user_destroy'):
+        abort(401)
     #busco si el usuario tiene rol admin
     user = User().is_admin(user_id)
     if user:
@@ -114,6 +117,8 @@ def eliminar(user_id, page):
 
 
 def activar(user_id, page):
+    if not authenticated(session) or not tiene_permiso(session, 'user_update'):
+        abort(401)
     User().activar(id=user_id)
     sitio = Configuracion().sitio()
     index_pag = User().all_paginado(page, sitio.paginas)
@@ -126,7 +131,7 @@ def activar(user_id, page):
 
 
 def update_rol(user_id):
-    if not authenticated(session):
+    if not authenticated(session) or not tiene_permiso(session, 'user_update'):
         abort(401)
     roles = User().mis_roles(user_id)
     #otros_roles = User().otros_roles(user_id)
