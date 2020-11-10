@@ -6,9 +6,9 @@ from app.models.configuracion import Configuracion
 from app.models.centro import Centro
 from app.helpers.auth import authenticated
 from app.resources.forms import CrearCentroForm
-import app, requests
-UPLOAD_FOLDER = "app/static/archivosPdf/" #Cambiar la carpeta a statics
-app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
+import requests
+UPLOAD_FOLDER = "app/static/archivosPdf/" 
+
 
 def index(page):
     if not authenticated(session):
@@ -24,22 +24,41 @@ def register():
     form = CrearCentroForm()
     if request.method == 'POST':
         if not validate(form):
-            file_protocolo = request.files['protocolo'] #Me quedo con el nombre del archivo
-            if file_protocolo:
-                if allowed_file(file_protocolo.filename): #Si esta todo ok 
-                    filename = secure_filename(file_protocolo.filename)
-                    file_protocolo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename)) #Se almacena el arch en la carpeta
-                    flash("Centro creado con éxito")
-                    create(form, file_protocolo.filename)  
+            if validate_horarios(form): #Si los horarios ok
+                file_protocolo = request.files['protocolo'] #Me quedo con el nombre del archivo
+                if validate_pdf(form,file_protocolo): #valido pdf
                     return redirect(url_for("centro_index", page=1))
-                else: flash("El archivo debe ser pdf")    
-            else:  #El protocolo no es obligatorio, llamar a crear con null en el protocolo
-                create(form,"NULL")   
-                return redirect(url_for("centro_index", page=1))   
+                else:
+                    return render_template("centro/new.html", form=form)
+            else:
+                flash('El horario de apertura debe ser menor que el horario de cierre')
+                return render_template("centro/new.html", form=form)
         else:
-            flash("El email del centro ya existe")
-    lista_municipio=show_municipio()
-    return render_template("centro/new.html", form=form, lista_municipio=lista_municipio)
+            flash("El centro que intenta crear ya existe.")
+            return render_template("centro/new.html", form=form)
+    else:
+        lista_municipio=show_municipio()
+        return render_template("centro/new.html", form=form, lista_municipio=lista_municipio)
+
+def validate_horarios(form):
+    return (form['apertura'].data < form['cierre'].data)
+    
+def validate_pdf(form,file_protocolo):
+    '''Si el pdf esta ok almaceno con el file, sino en null'''
+    if file_protocolo:
+        if allowed_file(file_protocolo.filename):
+            filename = secure_filename(file_protocolo.filename)
+            file_protocolo.save(os.path.join(UPLOAD_FOLDER, filename))
+            create(form, file_protocolo.filename)
+            
+        else: 
+            flash("El archivo debe ser pdf")    
+            return False 
+    else:
+        create(form,"NULL") 
+    flash("Centro creado con éxito")
+    return True
+
 
 def allowed_file(filename):
     #Chequeo de la extension y que solo exista un solo . antes de la extencion
@@ -47,7 +66,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def validate(form):
-    centro = Centro().validate_centro_creation(form["email"].data)
+    centro = Centro().validate_centro_creation(form["nombre"].data,form["direccion"].data,form["municipio"].data)
     return centro
 
 def create(form,nameProtocolo):

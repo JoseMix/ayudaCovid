@@ -1,6 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import and_, or_
 from datetime import date
+
+
 db = SQLAlchemy()
 
 
@@ -15,15 +17,13 @@ def initialize_db(app):
 usuario_rol = db.Table(
     "usuario_rol",
     db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
-    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True)
+    db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
 )
 
 permiso_rol = db.Table(
     "permiso_rol",
     db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
-    db.Column(
-        "permiso_id", db.Integer, db.ForeignKey("permiso.id"), primary_key=True
-    )
+    db.Column("permiso_id", db.Integer, db.ForeignKey("permiso.id"), primary_key=True),
 )
 
 
@@ -32,7 +32,7 @@ class Rol(db.Model):
     __tablename__ = "rol"
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
-    permiso = db.relationship(
+    permisos = db.relationship(
         "Permiso",
         secondary=permiso_rol,
         lazy="subquery",
@@ -48,7 +48,8 @@ class Rol(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-
+    def find_by_id(self, id):
+        return Rol.query.filter(Rol.id == id).first()
 
 # Modelo Permiso
 class Permiso(db.Model):
@@ -56,14 +57,28 @@ class Permiso(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
 
+    def __getitem__(self, nombre):
+        return self.__dict__[nombre]
+
     def all(self):
         permisos = Permiso.query.all()
         return permisos
 
+    def permiso_by_name(self, permiso):
+        return Permiso.query.filter(Permiso.nombre == permiso).first()
+
+#---------------------------------------------------------------------------
+    def permisos_de_usuario(self, id):
+        res = db.session.query(Permiso).join(User.roles).join(Rol.permisos).filter(User.id == id)
+        return res
+
+#---------------------------------------------------------------------------
+
     #page= página actual, per_page = elementos x página
     def all_paginado(self, page, per_page):
-        return Permiso.query.order_by(Permiso.id.desc()).\
-            paginate(page=page, per_page=per_page, error_out=False)
+        return Permiso.query.order_by(Permiso.id.desc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
     def create(self, formulario):
         nuevo = Permiso(nombre=formulario["permiso"])
@@ -112,10 +127,11 @@ class User(db.Model):
         users = User.query.all()
         return users
 
-    #page= página actual, per_page = elementos x página
+    # page= página actual, per_page = elementos x página
     def all_paginado(self, page, per_page):
-        return User.query.order_by(User.id.desc()).\
-            paginate(page=page, per_page=per_page, error_out=False)
+        return User.query.order_by(User.id.desc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
     def __getitem__(self, id):
         return self.__dict__[id]
@@ -125,7 +141,8 @@ class User(db.Model):
 
     def find_by_email(self, emailForm):
         user = User.query.filter(
-            and_(User.email == emailForm, User.activo == True)).first()
+            and_(User.email == emailForm, User.activo == True)
+        ).first()
         return user
 
     def find_by_username(self, name):
@@ -149,54 +166,44 @@ class User(db.Model):
         ).first()
         return user
 
-    def mis_roles(self, id):
-        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id).all()
-        return roles
-    
-    #fijarse si funcionó la consulta jajaja
-    def otros_roles(self, id):
-        roles = Rol().query.filter(~Rol.id.in_(User().mis_roles(id))).all()
-        return roles
-    
-    def mis_permisos(self, id):
-        permisos = db.session.query(Permiso).join(Permiso, Rol.permisos)\
-            .join(Rol, User.roles).filter(User.id == id)
-        return permisos
-
-    def roles_usuarios(self):
-        roles_y_usuarios = db.session.query(Rol, User).join(Rol, User.roles).all()
-        return roles_y_usuarios
-
     def eliminar(self, id):
         user = User().find_by_id(id)
         user.activo = False
         db.session.commit()
         return user
 
-    def activar(self,id):
+    def activar(self, id):
         user = User().find_by_id(id)
         user.activo = True
         db.session.commit()
-        return user 
-
-    def search_by(self,username, estado, page, per_page):
-        users = User().query.filter(and_(User.username.ilike(f'%{username}%'), User.activo == estado)).\
-            paginate(page=page, per_page=per_page, error_out=False)
-        return users  
-
-    def update_roles(self, form, user):
-        user.roles.append(form.roles)
-        db.session.commit()
         return user
 
-# Inicializo contexto
-def centro_bloque_initialize_db(app):
-    app.app_context().push()
-    db.init_app(app)
-    db.create_all()
+    def search_by(self, username, estado, page, per_page):
+        if estado == '2':
+            users = User().query.filter(User.username.ilike(f'%{username}%')).\
+            paginate(page=page, per_page=per_page, error_out=False)
+        else:
+            users = User().query.\
+            filter(and_(User.username.ilike(f'%{username}%'), User.activo == estado)).\
+            paginate(page=page, per_page=per_page, error_out=False)
+        
+        return users
+
+    #--------------------- Roles de usuario -----------------
+    #recibe el id del usuario y el rol-string-
+    def tiene_rol(self, id, rol):
+        return db.session.query(User).join(Rol, User.roles).\
+        filter(and_(User.id== id, Rol.nombre == rol)).first()
+    #---------------------------------------------------------
+
+    #recibe un usuario y un rol para desasignar
+    def delete_rol(self, rol, user):
+        user.roles.remove(rol)
+        db.session.commit()
+
+    #recibe un usuario y un rol para asignar
+    def add_rol(self, rol, user):
+        user.roles.append(rol)
+        db.session.commit()
 
 
-
-
-    
-            
