@@ -51,18 +51,20 @@
         {% endfor %}
 
         {{form.email.label}}
-        {{form.email(class_="form-control", placeholder='ingrese una telefono')}}
+        {{form.email(class_="form-control", placeholder='ingrese una email')}}
         <br>
         {% for error in form.email.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
        
         {{form.municipio.label}}
-        {{form.municipio(class_="form-control", placeholder='ingrese una telefono')}}
-        <br>
-        {% for error in form.municipio.errors %}
-          <div style=color:red>{{ error }}</div>
-        {% endfor %}
+        <br>      
+        <select name="municipio" class="form-control">
+          {% for muni in lista_municipio %}
+            <option value="{{muni}}">{{muni}}</option>
+          {% endfor %}
+        </select><br><br>
+        
 
         {{form.web.label}}
         {{form.web(class_="form-control", placeholder='ingrese una telefono')}}

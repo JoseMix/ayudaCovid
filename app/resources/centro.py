@@ -6,7 +6,7 @@ from app.models.configuracion import Configuracion
 from app.models.centro import Centro
 from app.helpers.auth import authenticated
 from app.resources.forms import CrearCentroForm
-import app
+import app, requests
 UPLOAD_FOLDER = "app/static/archivosPdf/" #Cambiar la carpeta a statics
 app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
 
@@ -14,7 +14,8 @@ def index(page):
     if not authenticated(session):
         abort(401)
     sitio = Configuracion().sitio()
-    index_pag = Centro().all_paginado(page, sitio.paginas)    
+    index_pag = Centro().all_paginado(page, sitio.paginas) 
+    show_municipio()   
     return render_template("centro/index.html", index_pag=index_pag)
 
 def register():
@@ -37,7 +38,8 @@ def register():
                 return redirect(url_for("centro_index", page=1))   
         else:
             flash("El email del centro ya existe")
-    return render_template("centro/new.html", form=form)
+    lista_municipio=show_municipio()
+    return render_template("centro/new.html", form=form, lista_municipio=lista_municipio)
 
 def allowed_file(filename):
     #Chequeo de la extension y que solo exista un solo . antes de la extencion
@@ -53,3 +55,14 @@ def create(form,nameProtocolo):
         abort(401)
     centro = Centro()
     centro.create(form,nameProtocolo)
+
+
+def show_municipio():
+    data = requests.get("https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios").json()
+    lista=[]
+    for x in data["data"]["Town"]: 
+        muni=data["data"]["Town"][x]["name"]
+        lista.append(muni)
+    return lista
+        
+

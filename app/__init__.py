@@ -11,6 +11,7 @@ from flask import (
     flash,
     abort,
 )
+import requests
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
@@ -124,15 +125,15 @@ def create_app(environment="development"):
     # Rutas de Centros
     app.add_url_rule("/centro/<int:page>", "centro_index", centro.index,  methods=["GET"])
     app.add_url_rule("/centro/nuevo", "centro_register", centro.register,  methods=["GET", "POST"])
+    app.add_url_rule("/centro/show_municipio", "centro_show_municipio", centro.show_municipio)
     
-
-
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
         sitio = Configuracion().sitio()
         return render_template("home.html", sitio=sitio)
 
+    
     # Rutas de API-rest
     #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
 
@@ -140,6 +141,8 @@ def create_app(environment="development"):
     # app.register_error_handler(404, handler.not_found_error)
     # app.register_error_handler(401, handler.unauthorized_error)
     # Implementar lo mismo para el error 500 y 401
+
+    
 
     # Retornar la instancia de app configurada
     return app
