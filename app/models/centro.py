@@ -1,8 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from operator import and_
+from flask_marshmallow import Marshmallow
+from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
 db = SQLAlchemy()
-
+ma = Marshmallow()
 
 # Inicializo contexto
 def centro_bloque_initialize_db(app):
@@ -58,9 +60,24 @@ class Centro(db.Model):
     def validate_centro_creation(self, nombre,direccion,municipio):
         centro = Centro.query.filter(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre)).first()
         return centro
+    def showOne(self, id):
+        centro = Centro.query.filter_by(id=id).first()
+        return centro
+
 
 class Bloque(db.Model):
     __tablename__ = "bloque"
     id = db.Column(db.Integer, primary_key=True)
     franja = db.Column(db.String(255), nullable=False)  # franja de 30 en 30 min
     centro_id = db.Column(db.Integer, db.ForeignKey("centro.id"), nullable=False)
+
+
+class CentroSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Centro
+        include_relationships = False
+        load_instance = True
+
+
+centro_schema = CentroSchema()
+centros_schema = CentroSchema(many=True)

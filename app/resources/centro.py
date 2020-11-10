@@ -6,9 +6,8 @@ from app.models.configuracion import Configuracion
 from app.models.centro import Centro
 from app.helpers.auth import authenticated
 from app.resources.forms import CrearCentroForm
-import app
 UPLOAD_FOLDER = "app/static/archivosPdf/" 
-app.config['UPLOAD_FOLDER'] =  UPLOAD_FOLDER
+
 
 def index(page):
     if not authenticated(session):
@@ -46,7 +45,7 @@ def validate_pdf(form,file_protocolo):
     if file_protocolo:
         if allowed_file(file_protocolo.filename):
             filename = secure_filename(file_protocolo.filename)
-            file_protocolo.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file_protocolo.save(os.path.join(UPLOAD_FOLDER, filename))
             create(form, file_protocolo.filename)
             
         else: 
