@@ -1,6 +1,18 @@
 function confirmation() 
 {
-    if(confirm("Eliminar Usuario?"))
+    if(confirm("Esta seguro que desea eliminar Usuario?"))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+}
+
+function activar() 
+{
+    if(confirm("Esta seguro que desea activar Usuario?"))
     {
       return true;
     }

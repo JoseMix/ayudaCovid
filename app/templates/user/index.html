@@ -64,8 +64,8 @@
         {% if user.activo == True %}
           <strong style="color: rgba(4, 128, 0, 0.856);">Usuario activo</strong> 
         {%else %}
-          <a href="{{ url_for('user_activar', user_id=user.id, page=index_pag.page, username=mySearch['username'], estado=mySearch['estado'])}}" class="btn btn-success" 
-          >Activar</a>
+          <a href="{{ url_for('user_activar', user_id=user.id, page=index_pag.page, username=mySearch['username'], estado=mySearch['estado'])}}" 
+          onclick="return activar()" class="btn btn-success">Activar</a>
         {% endif %}
         </td>
         <td>
@@ -107,6 +107,6 @@
       </ul>
     </nav>
     {#----------------------------------------------------------------------#}
-  </div>
+</div>
 
 {% endblock %}

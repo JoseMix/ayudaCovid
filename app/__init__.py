@@ -14,19 +14,24 @@ from flask import (
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
+from flask_marshmallow import Marshmallow
+from app.resources import user, configuracion, auth, centro
+#from app.resources.api import centro
 from config import config
 from app import db
 from app.resources import user
 
 from app.resources import configuracion
 from app.resources import auth
-from app.resources.api import issue as api_issue
-from app.helpers import handler
+from app.resources import centro
+
+# from app.helpers import handler
 from app.helpers import auth as helper_auth
-from app.resources.forms import RegistrationForm, LoginForm, FilterForm
+from app.resources.forms import RegistrationForm, LoginForm, FilterForm, CrearCentroForm
 
 # from app.db import connection
 from app.models.configuracion import Configuracion, configuracion_initialize_db
+from app.models.centro import Bloque, Centro, centro_bloque_initialize_db
 from app.models.models import Rol, Permiso, User, initialize_db
 from app.helpers.auth import authenticated
 
@@ -46,18 +51,22 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    ] = "mysql+pymysql://maruca:maruca@localhost/proyecto"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
+    ma = Marshmallow(app)
     initialize_db(app)
     configuracion_initialize_db(app)
-    #bcrypt = Bcrypt(app)
+    centro_bloque_initialize_db(app)
+    # bcrypt = Bcrypt(app)
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
 
     # Autenticación
-    app.add_url_rule("/iniciar_sesion", "auth_login", auth.login, methods=["GET", "POST"])
+    app.add_url_rule(
+        "/iniciar_sesion", "auth_login", auth.login, methods=["GET", "POST"]
+    )
     app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
 
     
@@ -83,6 +92,13 @@ def create_app(environment="development"):
     app.add_url_rule("/usuarios/nuevo", "user_register", user.register, methods=["GET", "POST"])
     app.add_url_rule("/usuarios/modificar/<int:user_id>", "user_update", user.update, methods=["GET", "POST"])
 
+
+    # Rutas de Centros
+    app.add_url_rule("/centro/listado/<int:page>", "centro_index", centro.index,  methods=["GET"])
+    app.add_url_rule("/centro/nuevo", "centro_register", centro.register,  methods=["GET", "POST"])
+    
+
+
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
@@ -90,11 +106,13 @@ def create_app(environment="development"):
         return render_template("home.html", sitio=sitio)
 
     # Rutas de API-rest
-    #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
+    # app.add_url_rule("/centros", "api_centro_index", centro.index)
+    # app.add_url_rule("/centros", "api_centro_createx", centro.create, methods=["POST"])
+    # app.add_url_rule("/centro/<int:centro_id>", "api_centro_showOne", centro.showOne)
 
     # Handlers
-    app.register_error_handler(404, handler.not_found_error)
-    app.register_error_handler(401, handler.unauthorized_error)
+    # app.register_error_handler(404, handler.not_found_error)
+    # app.register_error_handler(401, handler.unauthorized_error)
     # Implementar lo mismo para el error 500 y 401
 
     # Retornar la instancia de app configurada

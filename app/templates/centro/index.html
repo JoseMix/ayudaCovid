@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block title %}Centros{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+<strong class="texto" style="font-size: xx-large;">CENTROS</strong>
+<div id="derecha">
+  <a href="{{ url_for('home') }}" class="btn btn-primary">Volver</a>
+  <a href="{{ url_for('centro_register') }}" class="btn btn-primary">Nuevo</a>
+</div>
+
+<div id="index-table">
+<table class="table table-hover" >
+  <tr style="text-align: center;">
+    <th>Nombre</th>
+    <th>Direccion</th>
+    <th>Municipio</th>
+    <th>Mail</th>
+    <th>Estado</th>
+    <th>Modificar</th>
+    <th>Eliminar</th>
+  </tr>
+  {% for centro in index_pag.items %}
+  <tr>
+    <td> {{ centro.nombre }} </td>
+    <td> {{ centro.direccion }} </td>
+    <td> {{ centro.municipio }}</td>
+    <td> {{ centro.mail }} </td>
+    <td> {{ centro.estado }} </td>
+    <td>
+      <a href="" class="btn btn-warning">Modificar</a>
+    </td>
+    <td>
+      <a href="" class="btn btn-danger">Eliminar</a>
+    </td>
+  </tr> 
+  {% endfor %}
+  </table>
+
+{#-----------------------------PAGINADO------------------------------------#}
+  <nav aria-label="..." style="margin-left:15%;" >
+    <ul class="pagination" style="margin-left: 35%;">   
+    {% for page in index_pag.iter_pages() %}
+      {% if page %}
+        {% if page != index_pag.page %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('centro_index', page=page) }}">{{ page }}</a>
+          </li>
+        {% else %}
+          <li class="page-item active">
+            <span class="page-link">
+            {{ page }}
+            <span class="sr-only">(current)</span>
+            </span>
+          </li>
+        {% endif %}
+      {% else %}
+        <span class=ellipsis> . . . </span>
+      {% endif %}
+    {% endfor %}
+    </ul>
+  </nav>
+  {#----------------------------------------------------------------------#}
+</div>
+{% endblock %}

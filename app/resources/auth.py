@@ -15,7 +15,6 @@ def login():
             session["user_id"] = user["id"]
             flash("Usuario logueado correctamente")
             guardar_permisos(user.id)
-            print(session['permisos'])
             return redirect(url_for("home"))
         else:
             flash("Usuario o Password incorrecto")

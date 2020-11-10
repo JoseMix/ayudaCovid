@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+  <div id="derecha">
+    <a href="{{ url_for('user_index', page=1) }}" class="btn btn-primary">Volver</a>
+  </div>
+  <div id="formulario">
+    <strong class="texto">CARGAR UN NUEVO CENTRO</strong>
+    <form action="{{ url_for('centro_register') }}" method="POST" enctype="multipart/form-data">
+      
+      {{ form.csrf_token }}
+      {{form.nombre.label}}
+        {{form.nombre(class_="form-control", placeholder='Ingrese un nombre de centro')}}
+        <br>
+        {% for error in form.nombre.errors %}
+          <div style=color:red>{{ error }}</div>  
+        {% endfor %}
+
+        {{form.direccion.label}}
+        {{form.direccion(class_="form-control", placeholder='Ingrese una direccion')}}
+        <br>
+        {% for error in form.direccion.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        {{form.telefono.label}}
+        {{form.telefono(class_="form-control", placeholder='Ingrese una telefono')}}
+        <br>
+        {% for error in form.telefono.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        {{form.apertura.label}}
+        {{form.apertura(class_="form-control", type="time", placeholder='Ingrese un horario')}}
+        <br>
+
+        {{form.cierre.label}}
+        {{form.cierre(class_="form-control", type="time", placeholder='ingrese un horario cierre')}}
+        <br>
+
+        {{form.tipo_centro.label}}
+        {{form.tipo_centro(class_="form-control", placeholder='ingrese una telefono')}}
+        <br>
+        {% for error in form.tipo_centro.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        {{form.email.label}}
+        {{form.email(class_="form-control", placeholder='ingrese una telefono')}}
+        <br>
+        {% for error in form.email.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+       
+        {{form.municipio.label}}
+        {{form.municipio(class_="form-control", placeholder='ingrese una telefono')}}
+        <br>
+        {% for error in form.municipio.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        {{form.web.label}}
+        {{form.web(class_="form-control", placeholder='ingrese una telefono')}}
+        <br>
+        {% for error in form.web.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        {{form.protocolo.label}}        
+        {{form.protocolo(class_="form-control" ,type="file", placeholder='Ingrese Protocolo' )}}
+        <br>
+        {% for error in form.protocolo.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        <div id="centrar">
+          <input type="submit" value="Cargar Centro" class="btn btn-primary">
+          <button type="reset" class="btn btn-secundary" >Limpiar formulario</button>
+        </div>
+    </form>
+    </div>
+  
+{% endblock %}

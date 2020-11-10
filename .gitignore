@@ -111,3 +111,6 @@ flask_session
 .vim
 coc-settings.json
 .vscode
+
+#Carpeta de pdf
+.static/archivosPdf

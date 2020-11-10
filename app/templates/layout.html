@@ -32,6 +32,11 @@
               <a href="{{ url_for('configuracion_show') }}" class="nav-link">Configuracion</a>
             </li>
             {% endif %}
+            {% if ( 'centro_index' in session['permisos'] ) %}
+            <li class="nav-item">
+              <a href="{{ url_for('centro_index', page=1) }}" class="nav-link">Centros</a>
+            </li>
+            {% endif %}
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               {{session.get("user") }}</a>
