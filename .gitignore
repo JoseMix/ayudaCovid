@@ -114,4 +114,4 @@ coc-settings.json
 
 #Carpeta de pdf
 .static/archivosPdf
-app/static/archivosPdf
+app/static/archivosPdf/

@@ -3,7 +3,7 @@ from werkzeug.utils import secure_filename
 from flask import Flask,redirect, flash, render_template, request, url_for, session, abort
 # from app.db import connection
 from app.models.configuracion import Configuracion
-from app.models.centro import Centro
+from app.models.centro import Turnos, Centro
 from app.helpers.auth import authenticated
 from app.resources.forms import CrearCentroForm
 import requests

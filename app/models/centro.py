@@ -7,12 +7,31 @@ db = SQLAlchemy()
 ma = Marshmallow()
 
 # Inicializo contexto
-def centro_bloque_initialize_db(app):
+def centro_turnos_initialize_db(app):
     app.app_context().push()
     db.init_app(app)
     db.create_all()
 
+# Modelo Turnos de centros
+class Turnos(db.Model):
+    __tablename__ = "turnos"
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(255), nullable=False)
+    dia = db.Column(db.Date, nullable=False)
+    turno_id = db.Column(db.Integer, db.ForeignKey("bloque.id"), nullable=False)
+    centro_id = db.Column(db.Integer, db.ForeignKey("centro.id"), nullable=False)
 
+
+# Modelo Bloque de turnos
+class Bloque(db.Model):
+    __tablename__ = "bloque"
+    id = db.Column(db.Integer, primary_key=True)
+    hora_inicio = db.Column(db.Time, nullable=False)
+    hora_fin = db.Column(db.Time, nullable=False)
+    turnos = db.relationship("Turnos", backref="bloque", lazy=True)
+
+
+#Modelo Centro
 class Centro(db.Model):
     __tablename__ = "centro"
     id = db.Column(db.Integer, unique=True, primary_key=True)
@@ -28,7 +47,7 @@ class Centro(db.Model):
     estado = db.Column(db.Enum("RECHAZADO","ACEPTADO","PENDIENTE","PUBLICADO","DESPUBLICADO"), nullable=False)
     protocolo = db.Column(db.String(255), nullable=False)
     coordenadas = db.Column(db.String(20), nullable=False)
-    turnos = db.relationship("Bloque", backref="centro", lazy=True)
+    turnos = db.relationship("Turnos", backref="centro", lazy=True)
 
     def all(self):
         centros = Centro.query.all()
@@ -65,11 +84,11 @@ class Centro(db.Model):
         return centro
 
 
-class Bloque(db.Model):
-    __tablename__ = "bloque"
-    id = db.Column(db.Integer, primary_key=True)
-    franja = db.Column(db.String(255), nullable=False)  # franja de 30 en 30 min
-    centro_id = db.Column(db.Integer, db.ForeignKey("centro.id"), nullable=False)
+#class Bloque(db.Model):
+#    __tablename__ = "bloque"
+#    id = db.Column(db.Integer, primary_key=True)
+#    franja = db.Column(db.String(255), nullable=False)  # franja de 30 en 30 min
+#    centro_id = db.Column(db.Integer, db.ForeignKey("centro.id"), nullable=False)
 
 
 class CentroSchema(SQLAlchemyAutoSchema):
