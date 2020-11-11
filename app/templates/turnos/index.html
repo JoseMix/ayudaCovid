@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+  <strong class="texto" style="font-size: xx-large;">TURNOS</strong>
+  <div id="derecha">
+    {# arreglar redirecciones #}
+    <a href="{{ url_for('home') }}" class="btn btn-primary">Volver</a>
+    <a href="{{ url_for('user_register') }}" class="btn btn-primary">Nuevo</a>
+  </div>
+
+  {#-------------busqueda de turnos--------------#}
+
+  <div id="formBusqueda">
+    <strong class="texto" style="font-size: medium;">Busqueda de turnos:</strong>
+    <br><br>
+    <form action="{{url_for('turnos_index')}}" method="GET" class="form-inline my-1">
+      <div class="busqueda">
+        <strong>Centro:</strong><br>
+        <input type="text" name="centro" placeholder="ingrese un nombre" class="form-control mr-sm-1">
+      </div>
+      <div class="busqueda">
+        <strong>Email de solicitante:</strong><br>
+        <select name="email" id="" class="form-control mr-sm-1">
+            <option value="algo">algoooooo</option>
+        </select>
+      </div>
+      <div>
+        <input type="submit"  class="btn btn-primary" value="Buscar">
+        <a href="{{url_for('turnos_index')}}" class="btn btn-secundary" >Limpiar búsqueda</a>
+      </div>
+    </form>
+  </div>
+
+  {% endblock %}
