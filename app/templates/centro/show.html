@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block title %}Centros de Ayuda{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+<div id="derecha">
+  <a href="{{ url_for('centro_index', page=1) }}" class="btn btn-primary">Volver</a>
+</div>
+  <div id="show">
+  <strong class="texto" style="font-size: xx-large;">INFORMACIÓN DEL CENTRO:</strong>
+  <table class="table table-hover">
+    <tr>
+      <td><strong class="texto-show">Nombre: </strong> </td>
+      <td><strong class="text-text"> {{ centro.nombre }} </strong></td>
+    </tr>
+    <tr>
+      <td><strong class="texto-show">Tipo de Centro: </strong> </td>
+      <td><strong class="text-text"> {{ centro.tipo_centro }} </strong></td>
+    </tr>
+    <tr>
+      <td><strong class="texto-show">Direccion: </strong> </td>
+      <td><strong class="text-text"> {{ centro.direccion }} </strong></td>
+    </tr>
+    <tr>
+      <td><strong class="texto-show">Municipio: </strong> </td>
+      <td><strong class="text-text"> {{ centro.municipio }} </strong></td>
+    </tr>
+    <tr>
+      <td><strong class="texto-show">Email: </strong> </td>
+      <td><strong class="text-text"> {{ centro.email }} </strong></td>
+    </tr>
+    <tr>
+      <td><strong class="texto-show">Estado: </strong> </td>
+      <td><strong class="text-text"> {{ centro.estado }} </strong></td>
+    </tr>    
+    <tr>
+      <td><strong class="texto-show">Protocolo: </strong> </td>
+      <td><strong class="text-text"> {{ centro.protocolo }} </strong></td>
+    </tr>
+    <tr>
+      <td><strong class="texto-show">Coordenadas: </strong> </td>
+      <td><strong class="text-text"> {{ centro.coordenadas }} </strong></td>
+    </tr>
+
+      <td><strong class="texto-show">Turnos: </strong> </td>
+      <td><strong class="text-text"> {{ centro.turnos }} </strong></td> <!-- Podriamos mostrar dos turnos dijo Laura -->
+    </tr>    
+      <td><strong class="texto-show">Listado de turnos</strong></td></td>
+      <td>
+        <a href="" class="btn btn-primary">Turnos</a>
+      </td> 
+    </tr>
+  </table>
+</div>
+
+{% endblock %}
