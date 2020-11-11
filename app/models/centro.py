@@ -21,7 +21,7 @@ class Centro(db.Model):
     telefono = db.Column(db.String(20), nullable=False)
     apertura = db.Column(db.Time, nullable=False)
     cierre = db.Column(db.Time, nullable=False)
-    tipo_centro = db.Column(db.String(20), nullable=False)
+    tipo_centro = db.Column(db.Enum("COMIDA","ROPA","PLASMA"), nullable=False)
     municipio = db.Column(db.String(20), nullable=False)
     web = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
@@ -33,6 +33,10 @@ class Centro(db.Model):
     def all(self):
         centros = Centro.query.all()
         return centros
+
+    def centro(self):
+        centro = Centro.query.first()
+        return centro
 
     #page= página actual, per_page = elementos x página
     def all_paginado(self , page, per_page):
