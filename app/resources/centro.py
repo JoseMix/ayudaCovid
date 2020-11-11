@@ -87,7 +87,7 @@ def show():
     if not authenticated(session):
         abort(401)
     sitio = Configuracion().sitio()
-    centro= Centro().centro()
+    centro= Centro().find_by_id(request.args.get("centro_id"))
     return render_template("centro/show.html", centro=centro, sitio=sitio)
         
 

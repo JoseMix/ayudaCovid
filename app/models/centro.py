@@ -34,8 +34,8 @@ class Centro(db.Model):
         centros = Centro.query.all()
         return centros
 
-    def centro(self):
-        centro = Centro.query.first()
+    def find_by_id(self, id):
+        centro = Centro.query.filter(Centro.id == id).first()
         return centro
 
     #page= página actual, per_page = elementos x página
