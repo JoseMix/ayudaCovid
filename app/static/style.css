@@ -195,5 +195,10 @@ a.link {
   background-color: rgba(33, 94, 105, 0.13);
 }
 
-
+#lat{
+  display: none;
+}
+#lng{
+  display: none;
+}
 
