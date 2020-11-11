@@ -1,10 +1,9 @@
 from flask_sqlalchemy import SQLAlchemy
 from operator import and_
-from flask_marshmallow import Marshmallow
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
+from marshmallow import Schema, fields
 
 db = SQLAlchemy()
-ma = Marshmallow()
+
 
 # Inicializo contexto
 def centro_bloque_initialize_db(app):
@@ -22,10 +21,13 @@ class Centro(db.Model):
     apertura = db.Column(db.Time, nullable=False)
     cierre = db.Column(db.Time, nullable=False)
     tipo_centro = db.Column(db.String(20), nullable=False)
-    municipio = db.Column(db.String(20), nullable=False)
+    municipio = db.Column(db.String(20), nullable=True)
     web = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
-    estado = db.Column(db.Enum("RECHAZADO","ACEPTADO","PENDIENTE","PUBLICADO","DESPUBLICADO"), nullable=False)
+    estado = db.Column(
+        db.Enum("RECHAZADO", "ACEPTADO", "PENDIENTE", "PUBLICADO", "DESPUBLICADO"),
+        nullable=False,
+    )
     protocolo = db.Column(db.String(255), nullable=False)
     coordenadas = db.Column(db.String(20), nullable=False)
     turnos = db.relationship("Bloque", backref="centro", lazy=True)
@@ -34,14 +36,15 @@ class Centro(db.Model):
         centros = Centro.query.all()
         return centros
 
-    #page= página actual, per_page = elementos x página
-    def all_paginado(self , page, per_page):
-        return Centro.query.order_by(Centro.id.asc()).\
-            paginate(page=page, per_page=per_page, error_out=False)
+    # page= página actual, per_page = elementos x página
+    def all_paginado(self, page, per_page):
+        return Centro.query.order_by(Centro.id.asc()).paginate(
+            page=page, per_page=per_page, error_out=False
+        )
 
     def create(self, formulario, nameProtocolo):
         nuevo = Centro(
-            nombre =formulario["nombre"].data,
+            nombre=formulario["nombre"].data,
             direccion=formulario["direccion"].data,
             telefono=formulario["telefono"].data,
             apertura=formulario["apertura"].data,
@@ -57,10 +60,16 @@ class Centro(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-    def validate_centro_creation(self, nombre,direccion,municipio):
-        centro = Centro.query.filter(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre)).first()
+    def validate_centro_creation(self, nombre, direccion, municipio):
+        centro = Centro.query.filter(
+            and_(
+                and_(Centro.municipio == municipio, Centro.direccion == direccion),
+                Centro.nombre == nombre,
+            )
+        ).first()
         return centro
-    def showOne(self, id):
+
+    def show_one(self, id):
         centro = Centro.query.filter_by(id=id).first()
         return centro
 
@@ -72,11 +81,18 @@ class Bloque(db.Model):
     centro_id = db.Column(db.Integer, db.ForeignKey("centro.id"), nullable=False)
 
 
-class CentroSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = Centro
-        include_relationships = False
-        load_instance = True
+class CentroSchema(Schema):
+    nombre = fields.Str()
+    direccion = fields.Str()
+    telefono = fields.Str()
+    apertura = fields.DateTime(format="%H:%M:%S")
+    cierre = fields.DateTime(format="%H:%M:%S")
+    tipo_centro = fields.Str()
+    web = fields.Str()
+    email = fields.Str()
+    municipio = fields.Str()
+    pages = fields.Str()
+    per_page = fields.Str()
 
 
 centro_schema = CentroSchema()
