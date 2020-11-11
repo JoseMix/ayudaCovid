@@ -11,15 +11,15 @@
   </div>
 
   {#-------------busqueda de usuarios--------------#}
-  
+
   <div id="formBusqueda">
     <strong class="texto" style="font-size: medium;">Busqueda de usuarios:</strong>
     <br><br>
-    <form action="{{ url_for('user_index',page=1)}}" method="POST" class="form-inline my-1">
-      {{ form.csrf_token }}
+    <form action="{{ url_for('user_index')}}" method="GET" class="form-inline my-1">
+      {# {{ form.csrf_token }} #}
       <div class="busqueda">
         <strong>Username</strong><br>
-        {{form.username( class="form-control mr-sm-1", placeholder='ingrese un username')}}  
+        {{form.username( class="form-control mr-sm-1", placeholder='ingrese un username', value= mySearch['username'] if mySearch else '' )}}  
       </div>
       <div class="busqueda">
         <strong>Estado</strong><br>
@@ -27,11 +27,15 @@
       </div>
       <div>
         <input type="submit"  class="btn btn-primary" value="Buscar">
-        <button type="reset" class="btn btn-secundary" >Limpiar búsqueda</button>
+        <a href="{{ url_for('user_index') }}" class="btn btn-secundary" >Limpiar búsqueda</a>
       </div>
     </form>
   </div>
+
 <div id="index-table">
+  {% if not index_pag.items %}
+  <strong style="color: red; margin-left:70px "> No se encontraron usuarios para las datos ingresados</strong>
+  {% else %}
   <table class="table table-hover" >
     <tr style="text-align: center;">
       <th>Username</th>
@@ -43,6 +47,7 @@
       <th>Activar</th>
       <th>Borrar</th>
     </tr>
+
     {% for user in index_pag.items %}
     <tr>
       <td> {{user.username}} </td>
@@ -51,7 +56,7 @@
       <td> {{ user.email }}</td>
       <td>
         <a href="{{ url_for('user_update_rol', user_id=user.id) }}" class="btn btn-dark">Asignar</a>
-      </td>    
+      </td>
       <td>
         <a href="{{ url_for('user_update', user_id=user.id)}}" class="btn btn-warning">Modificar</a>
       </td>
@@ -59,14 +64,14 @@
         {% if user.activo == True %}
           <strong style="color: rgba(4, 128, 0, 0.856);">Usuario activo</strong> 
         {%else %}
-          <a href="{{ url_for('user_activar', user_id=user.id, page=index_pag.page)}}" onclick="return activar()" class="btn btn-success" 
-          type="submit">Activar Usuario</a>
+          <a href="{{ url_for('user_activar', user_id=user.id, page=index_pag.page, username=mySearch['username'], estado=mySearch['estado'])}}" 
+          onclick="return activar()" class="btn btn-success">Activar</a>
         {% endif %}
         </td>
         <td>
         {% if user.activo == True %}
-          <a href="{{ url_for('user_eliminar', user_id=user.id, page=index_pag.page)}}" 
-          onclick="return confirmation()" class="btn btn-danger" type="submit">Eliminar</a>
+          <a href="{{ url_for('user_eliminar', user_id=user.id, page=index_pag.page, username=mySearch['username'], estado=mySearch['estado'])}}" 
+          onclick="return confirmation()" class="btn btn-danger">Eliminar</a>
           <script src="{{ url_for('static', filename='validac.js') }}"> </script>    
           {%else %}
           <strong style="color: rgba(197, 11, 5, 0.89);">Usuario eliminado</strong>
@@ -74,8 +79,10 @@
         </td>
       </tr>
       {% endfor %}
-    </table>
 
+
+    </table>
+    {% endif %}
   {#-----------------------------PAGINADO------------------------------------#}
     <nav aria-label="..." style="margin-left:15%;" >
       <ul class="pagination" style="margin-left: 35%;">   
@@ -83,7 +90,7 @@
         {% if page %}
           {% if page != index_pag.page %}
             <li class="page-item">
-              <a class="page-link" href="{{ url_for('user_index', page=page) }}">{{ page }}</a>
+              <a class="page-link" href="{{ url_for('user_index', page=page, username=mySearch['username'], estado=mySearch['estado']) }}">{{ page }}</a>
             </li>
           {% else %}
             <li class="page-item active">

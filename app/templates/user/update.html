@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
   <div id="derecha">
-    <a href="{{ url_for('user_index', page=1) }}" class="btn btn-primary">Volver</a>
+    <a href="{{ url_for('user_index') }}" class="btn btn-primary">Volver</a>
   </div>
     <div id="formulario">
   <strong class="texto">MODIFICAR DATOS DE USUARIO</strong>
@@ -48,7 +48,8 @@
       {% endfor %}
     <div id="centrar">
       <input type="submit" value="Modificar usuario" class="btn btn-primary">
-      <button class="btn btn-secundary" type="reset" >Deshacer</button>
+      <a href="{{ url_for('user_update', user_id=user_id) }}" class="btn btn-secundary">Limpiar formulario</a>
+      
     </div>
   </form>
   </div>

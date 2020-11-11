@@ -32,7 +32,7 @@ class Rol(db.Model):
     __tablename__ = "rol"
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
-    permiso = db.relationship(
+    permisos = db.relationship(
         "Permiso",
         secondary=permiso_rol,
         lazy="subquery",
@@ -48,6 +48,8 @@ class Rol(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
+    def find_by_id(self, id):
+        return Rol.query.filter(Rol.id == id).first()
 
 # Modelo Permiso
 class Permiso(db.Model):
@@ -55,11 +57,24 @@ class Permiso(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
 
+    def __getitem__(self, nombre):
+        return self.__dict__[nombre]
+
     def all(self):
         permisos = Permiso.query.all()
         return permisos
 
-    # page= página actual, per_page = elementos x página
+    def permiso_by_name(self, permiso):
+        return Permiso.query.filter(Permiso.nombre == permiso).first()
+
+#---------------------------------------------------------------------------
+    def permisos_de_usuario(self, id):
+        res = db.session.query(Permiso).join(User.roles).join(Rol.permisos).filter(User.id == id)
+        return res
+
+#---------------------------------------------------------------------------
+
+    #page= página actual, per_page = elementos x página
     def all_paginado(self, page, per_page):
         return Permiso.query.order_by(Permiso.id.desc()).paginate(
             page=page, per_page=per_page, error_out=False
@@ -151,28 +166,6 @@ class User(db.Model):
         ).first()
         return user
 
-    def mis_roles(self, id):
-        roles = db.session.query(Rol).join(Rol, User.roles).filter(User.id == id).all()
-        return roles
-
-    # fijarse si funcionó la consulta jajaja
-    def otros_roles(self, id):
-        roles = Rol().query.filter(~Rol.id.in_(User().mis_roles(id))).all()
-        return roles
-
-    def mis_permisos(self, id):
-        permisos = (
-            db.session.query(Permiso)
-            .join(Permiso, Rol.permisos)
-            .join(Rol, User.roles)
-            .filter(User.id == id)
-        )
-        return permisos
-
-    def roles_usuarios(self):
-        roles_y_usuarios = db.session.query(Rol, User).join(Rol, User.roles).all()
-        return roles_y_usuarios
-
     def eliminar(self, id):
         user = User().find_by_id(id)
         user.activo = False
@@ -186,28 +179,31 @@ class User(db.Model):
         return user
 
     def search_by(self, username, estado, page, per_page):
-        users = (
-            User()
-            .query.filter(
-                and_(User.username.ilike(f"%{username}%"), User.activo == estado)
-            )
-            .paginate(page=page, per_page=per_page, error_out=False)
-        )
+        if estado == '2':
+            users = User().query.filter(User.username.ilike(f'%{username}%')).\
+            paginate(page=page, per_page=per_page, error_out=False)
+        else:
+            users = User().query.\
+            filter(and_(User.username.ilike(f'%{username}%'), User.activo == estado)).\
+            paginate(page=page, per_page=per_page, error_out=False)
+        
         return users
 
-    def update_roles(self, form, user):
-        user.roles.append(form.roles)
+    #--------------------- Roles de usuario -----------------
+    #recibe el id del usuario y el rol-string-
+    def tiene_rol(self, id, rol):
+        return db.session.query(User).join(Rol, User.roles).\
+        filter(and_(User.id== id, Rol.nombre == rol)).first()
+    #---------------------------------------------------------
+
+    #recibe un usuario y un rol para desasignar
+    def delete_rol(self, rol, user):
+        user.roles.remove(rol)
         db.session.commit()
-        return user
 
-# Inicializo contexto
-def centro_bloque_initialize_db(app):
-    app.app_context().push()
-    db.init_app(app)
-    db.create_all()
+    #recibe un usuario y un rol para asignar
+    def add_rol(self, rol, user):
+        user.roles.append(rol)
+        db.session.commit()
 
 
-
-
-    
-            

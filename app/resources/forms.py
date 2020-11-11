@@ -69,7 +69,7 @@ class LoginForm(FlaskForm):
 
 class FilterForm(FlaskForm):
     username = StringField()
-    estado = SelectField(choices=[('1', 'Activo'), ('0', 'Bloqueado')])
+    estado = SelectField(choices=[('2','Todos'),('1', 'Activo'), ('0', 'Bloqueado')])
     submit = SubmitField("Enviar")
 
 class CrearCentroForm(FlaskForm):
@@ -152,7 +152,7 @@ class CrearCentroForm(FlaskForm):
         ],
     )
 
-    protocolo=FileField("Protocolo")
+    protocolo=FileField("protocolo")
 
     coordenadas = StringField("lat,lng")
 
