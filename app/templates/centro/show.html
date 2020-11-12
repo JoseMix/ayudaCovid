@@ -39,8 +39,14 @@
       <td><strong class="text-text"> {{ centro.protocolo }} </strong></td>
     </tr>
     <tr>
-      <td><strong class="texto-show">Coordenadas: </strong> </td>
-      <td><strong class="text-text"> {{ centro.coordenadas }} </strong></td>
+      <td><strong class="texto-show">Ubicacion: </strong> </td>
+        <input value="{{centro.latitud}}" id="latitud" >
+        <input value="{{centro.longitud}}" id="longitud" >
+      <td>
+        <div id="myMap" style="height: 180px;">
+          <script src="{{ url_for('static', filename='mapaShow.js') }}"></script> 
+        </div> 
+      </td>
     </tr>
 
   </table>
