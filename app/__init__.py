@@ -95,7 +95,9 @@ def create_app(environment="development"):
     
     # Rutas de Turnos
     app.add_url_rule("/turnos", "turnos_index", turnos.index, methods=["GET", "POST"])
-
+    app.add_url_rule("/turnos/nuevo", "turnos_new", turnos.new, methods=["GET"])
+    app.add_url_rule("/turnos/nuevo", "turnos_create", turnos.create, methods=["POST"])
+    app.add_url_rule("/turnos/eliminar/","turnos_eliminar",turnos.eliminar, methods=["GET"])
     
     # Ruta para el Home (usando decorator)
     @app.route("/")

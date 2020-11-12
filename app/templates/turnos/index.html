@@ -1,5 +1,5 @@
 {% extends "layout.html" %}
-{% block title %}Usuarios{% endblock %}
+{% block title %}Busqueda de turnos{% endblock %}
 {% block head %}
   {{ super() }}
 {% endblock %}
@@ -8,7 +8,6 @@
   <div id="derecha">
     {# arreglar redirecciones #}
     <a href="{{ url_for('home') }}" class="btn btn-primary">Volver</a>
-    <a href="{{ url_for('user_register') }}" class="btn btn-primary">Nuevo</a>
   </div>
 
   {#-------------busqueda de turnos--------------#}
@@ -24,7 +23,12 @@
       <div class="busqueda">
         <strong>Email de solicitante:</strong><br>
         <select name="email" id="" class="form-control mr-sm-1">
-            <option value="algo">algoooooo</option>
+          {% for turno in turnos %}
+          {% if turno[0] %}
+          <option value="{{turno.email}}">{{turno[0].email}}</option>
+          {% endif %}
+          {% endfor %}  
+          
         </select>
       </div>
       <div>
@@ -34,4 +38,25 @@
     </form>
   </div>
 
+  {#--------------------------  Tabla de turnos  ------------------------------#}
+
+  <div id="index-table">
+    {% if not turnos %}
+    <strong style="color: red; margin-left:70px "> No se encontraron turnos para las datos ingresados</strong>
+    {% else %}
+    <table class="table table-hover" >
+      <tr style="text-align: center;">
+        <th>Día 1</th>
+        <th>Día 2</th>
+        <th>Día 3</th>
+      </tr>
+      <tr>
+        {% for turno in turnos %}
+        <th>{{turno.email}}</th>
+        {% endfor %}
+      </tr>
+
+    </table>
+    {% endif %}
+  </div>
   {% endblock %}

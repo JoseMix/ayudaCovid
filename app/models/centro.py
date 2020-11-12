@@ -21,6 +21,28 @@ class Turnos(db.Model):
     turno_id = db.Column(db.Integer, db.ForeignKey("bloque.id"), nullable=False)
     centro_id = db.Column(db.Integer, db.ForeignKey("centro.id"), nullable=False)
 
+    # Persiste un turno
+    def create(self, form):
+        turno = Turnos(
+            email= form["email"],
+            dia = form["dia"],
+            turno_id = form["horario"],
+            centro_id = form["centro_id"]
+        )
+        db.session.add(turno)
+        db.session.commit()
+    
+    #con join left
+    def all(self):
+        return db.session.query(Turnos, Bloque).join(Turnos, isouter=True).order_by(Bloque.hora_inicio.asc()).all()
+    #Turnos.query.all()
+
+    #turnos de hoy y próx 2 días de un centro
+    def turnos_proximos(self, centro_id, fecha_ini, fecha_fin):
+        return Turnos.query.filter(and_(Turnos.dia.between(fecha_ini, fecha_fin), Turnos.centro_id==centro_id)).all()
+
+    #def email(self):
+    #    return db.session.query(Turnos.email).all()
 
 # Modelo Bloque de turnos
 class Bloque(db.Model):
@@ -30,6 +52,8 @@ class Bloque(db.Model):
     hora_fin = db.Column(db.Time, nullable=False)
     turnos = db.relationship("Turnos", backref="bloque", lazy=True)
 
+    def all(self):
+        return Bloque.query.all()
 
 #Modelo Centro
 class Centro(db.Model):
