@@ -89,8 +89,9 @@ def create_app(environment="development"):
 
     # Rutas de Centros
     app.add_url_rule("/centro/listado/<int:page>", "centro_index", centro.index,  methods=["GET"])
+    app.add_url_rule("/centro/show", "centro_show", centro.show,  methods=["GET"]) 
     app.add_url_rule("/centro/nuevo", "centro_register", centro.register,  methods=["GET", "POST"])
-    app.add_url_rule("/centro/show_municipio", "centro_show_municipio", centro.show_municipio)
+    #app.add_url_rule("/centro/show_municipio", "centro_show_municipio", centro.show_municipio)
     
     # Rutas de Turnos
     app.add_url_rule("/turnos", "turnos_index", turnos.index, methods=["GET", "POST"])
@@ -102,7 +103,7 @@ def create_app(environment="development"):
         sitio = Configuracion().sitio()
         return render_template("home.html", sitio=sitio)
 
-    
+
     # Rutas de API-rest
     # app.add_url_rule("/centros", "api_centro_index", centro.index)
     # app.add_url_rule("/centros", "api_centro_createx", centro.create, methods=["POST"])
