@@ -14,9 +14,12 @@ import requests
 
 # from app.db import connection
 from app.models.configuracion import Configuracion
-from app.models.centro import Centro
-from app.helpers.auth import authenticated
+from app.models.centro import Turnos, Centro
+from app.helpers.auth import authenticated, tiene_permiso
 from app.resources.forms import CrearCentroForm
+import requests
+from _datetime import date
+import datetime
 
 UPLOAD_FOLDER = "app/static/archivosPdf/"
 
@@ -26,7 +29,6 @@ def index(page):
         abort(401)
     sitio = Configuracion().sitio()
     index_pag = Centro().all_paginado(page, sitio.paginas)
-    show_municipio()
     return render_template("centro/index.html", index_pag=index_pag)
 
 
@@ -107,3 +109,18 @@ def show_municipio():
         muni = data["data"]["Town"][x]["name"]
         lista.append(muni)
     return lista
+
+
+def show():
+    if not authenticated(session):
+        abort(401)
+    sitio = Configuracion().sitio()
+    centro = Centro().find_by_id(request.args.get("centro_id"))
+    rango_inicio = date.today()
+    rango_fin = date.today() + datetime.timedelta(days=2)
+    turnos = Turnos().turnos_proximos(
+        request.args.get("centro_id"), rango_inicio, rango_fin
+    )
+    return render_template(
+        "centro/show.html", centro=centro, sitio=sitio, turnos=turnos
+    )

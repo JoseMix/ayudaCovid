@@ -29,29 +29,29 @@
         {% endfor %}
 
         {{form.telefono.label}}
-        {{form.telefono(class_="form-control", placeholder='Ingrese una telefono')}}
+        {{form.telefono(class_="form-control", placeholder='Ingrese un telefono')}}
         <br>
         {% for error in form.telefono.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
 
         {{form.apertura.label}}
-        {{form.apertura(class_="form-control", type="time", placeholder='Ingrese un horario')}}
+        {{form.apertura(class_="form-control", type="time")}}
         <br>
 
         {{form.cierre.label}}
-        {{form.cierre(class_="form-control", type="time", placeholder='ingrese un horario cierre')}}
+        {{form.cierre(class_="form-control", type="time")}}
         <br>
 
         {{form.tipo_centro.label}}
-        {{form.tipo_centro(class_="form-control", placeholder='ingrese una telefono')}}
-        <br>
+        {{form.tipo_centro(class_="form-control", type="select")}}
+        
         {% for error in form.tipo_centro.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
 
         {{form.email.label}}
-        {{form.email(class_="form-control", placeholder='ingrese una email')}}
+        {{form.email(class_="form-control", placeholder='Ingrese un email')}}
         <br>
         {% for error in form.email.errors %}
           <div style=color:red>{{ error }}</div>
@@ -67,21 +67,21 @@
         
 
         {{form.web.label}}
-        {{form.web(class_="form-control", placeholder='ingrese una telefono')}}
+        {{form.web(class_="form-control", placeholder='Ingrese un sitio')}}
         <br>
         {% for error in form.web.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
 
         {{form.protocolo.label}}        
-        {{form.protocolo(class_="form-control" ,type="file", placeholder='Ingrese Protocolo' )}}
+        {{form.protocolo(class_="form-control" ,type="file")}}
         <br>
         {% for error in form.protocolo.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
 
         {{form.coordenadas.label}}
-         {{form.coordenadas(class_="form-control", type="text", placeholder='Ingrese Coordenadas' )}}
+         {{form.coordenadas(class_="form-control", type="text", placeholder='Ingrese coordenadas' )}}
         <br>
         <div class="map-container">
           <input type="text" name="lat" id=lat>

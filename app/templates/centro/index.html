@@ -13,9 +13,10 @@
 <div id="index-table">
   <table class="table table-hover" >
   <tr style="text-align: center;">
-  <th>Direccion</th>
+  <th>Nombre</th>
   <th>Direccion </th>
   <th>Municipio</th>
+  <th>Email</th>
   <th>Estado</th>
   <th> </th>
   <th> </th>
@@ -25,7 +26,8 @@
   <tr style="text-align: center;">
     <td> {{ centro.nombre }} </td>
     <td> {{ centro.direccion }} </td>
-    <td> {{ centro.municipio }}</td>
+    <td> {{ centro.municipio }} </td>
+    <td> {{ centro.email }}</td>
     <td> {{ centro.estado }} </td>
     
     <td>
@@ -35,7 +37,7 @@
       <a href="" class="btn btn-danger">Eliminar</a>
     </td>
     <td>
-      <a href="" class="btn btn-link">Ver Mas</a>
+      <a href="{{ url_for('centro_show', centro_id=centro.id) }}" class="btn btn-link">Ver Mas</a>
     </td>
   </tr> 
   {% endfor %}
