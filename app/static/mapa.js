@@ -26,7 +26,6 @@ const addMarker = ({ lat, lng }) => {
 }; 
 
 const submitHandler = (event) => {
-    alert("HOOOLA")
     if(!marker) {
         event.preventDefault();
         alert('Debe seleccionar la ubicacion en el mapa');

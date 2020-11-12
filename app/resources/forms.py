@@ -115,7 +115,7 @@ class CrearCentroForm(FlaskForm):
         ],
     )
 
-    tipo_centro = SelectField(choices=[('0','*elija una opcion'),('1','COMIDA'),('2', 'ROPA'), ('3', 'PLASMA')])
+    tipo_centro = SelectField(choices=[('0','*elija una opcion'),('COMIDA','COMIDA'),('ROPA', 'ROPA'), ('PLASMA', 'PLASMA')])
 
     municipio = StringField(
         "Municipio",

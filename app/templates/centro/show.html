@@ -43,15 +43,41 @@
       <td><strong class="text-text"> {{ centro.coordenadas }} </strong></td>
     </tr>
 
-      <td><strong class="texto-show">Turnos: </strong> </td>
-      <td><strong class="text-text"> {{ centro.turnos }} </strong></td> <!-- Podriamos mostrar dos turnos dijo Laura -->
-    </tr>    
-      <td><strong class="texto-show">Listado de turnos</strong></td></td>
-      <td>
-        <a href="" class="btn btn-primary">Turnos</a>
-      </td> 
-    </tr>
   </table>
+  <a href="{{url_for('turnos_new', centro_id=centro.id)}}" class="btn btn-primary">Solicitar turno</a>
+  <br><br>
+  {% if turnos %}
+  <strong class="texto-show">Turnos solicitados: </strong>
+  <table class="table table-hover">
+    <tr>
+      <td>
+        <strong class="texto-text">Día:</strong>
+      </td>
+      <td>
+        <strong class="texto-text">Horario:</strong>
+      </td>
+      <td>
+        <strong class="texto-text">Email solicitante:</strong>
+      </td>
+      <td></td>
+    </tr>
+    {% for turno in turnos %}
+    <tr>
+      <td>
+        <strong class="text-text"> {{ turno.dia }} </strong>
+      </td>
+      <td>
+        <strong class="text-text"> {{ turno.bloque.hora_inicio }}hs - {{ turno.bloque.hora_fin }}hs </strong>
+      </td>
+      <td>
+        <strong class="text-text"> {{ turno.email }} </strong>
+      </td>
+      <td><a href="{{ url_for('turnos_eliminar',)}}" 
+        onclick="return confirmationTurno()" class="btn btn-danger">Cancelar</a></td>
+    </tr>  
+    {% endfor %}
+  </table>
+  {% endif %}
 </div>
-
+<script src="{{ url_for('static', filename='validac.js') }}"> </script>  
 {% endblock %}
