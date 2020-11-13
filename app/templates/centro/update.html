@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+{% block title %}Modificar Centro{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+
+
+{% block content %} 
+  <div id="derecha">
+    <a href="{{ url_for('centro_index', page=1) }}" class="btn btn-primary">Volver</a>
+  </div>
+  <div id="formulario">
+    <strong class="texto">MODIFICAR CENTRO</strong>
+    <form method="POST" enctype="multipart/form-data">
+      
+      {{ form.csrf_token }}
+      {{form.nombre.label}}
+        {{form.nombre(class_="form-control")}}
+        <br>
+        {% for error in form.nombre.errors %}
+          <div style=color:rgb(100, 90, 90)>{{ error }}</div>  
+        {% endfor %}
+
+        {{form.direccion.label}}
+        {{form.direccion(class_="form-control")}}
+        <br>
+        {% for error in form.direccion.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        {{form.telefono.label}}
+        {{form.telefono(class_="form-control")}}
+        <br>
+        {% for error in form.telefono.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        {{form.apertura.label}}
+        {{form.apertura(class_="form-control", type="time")}}
+        <br>
+
+        {{form.cierre.label}}
+        {{form.cierre(class_="form-control", type="time")}}
+        <br>
+
+        {{form.tipo_centro.label}}
+        {{form.tipo_centro(class_="form-control", type="select")}}
+        
+        {% for error in form.tipo_centro.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        {{form.email.label}}
+        {{form.email(class_="form-control")}}
+        <br>
+        {% for error in form.email.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        {{form.municipio.label}}          
+        <select name="municipio" class="form-control">
+            <option>{{ form.municipio.data }}</option>            
+          {% for muni in lista_municipio %}
+            <option value="{{muni}}">{{muni}}</option>
+          {% endfor %}
+        </select> 
+        <br><br>
+
+        {{form.web.label}}
+        {{form.web(class_="form-control")}}
+        <br>
+        {% for error in form.web.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        {{form.protocolo.label}}        
+        {{form.protocolo(class_="form-control" ,type="file" )}}
+        
+        <br>
+        {% for error in form.protocolo.errors %}
+          <div style=color:red>{{ error }}</div>
+        {% endfor %}
+
+        <br>
+        <div class="map-container">
+          <input type="text" name="lat" id=lat>
+          <input type="text" name="lng" id=lng>
+        
+          <div id="myMap" style="height: 180px;"></div> 
+        </div>
+        <script src="{{ url_for('static', filename='mapa.js') }}"> </script> 
+        
+        <!--<script src="{{ url_for('static', filename='nuevo.js') }}"> </script> -->          
+        <div id="centrar">
+          <input type="submit" value="Cargar Centro" class="btn btn-primary">
+          
+        </div>
+
+    </form>
+    </div>
+  
+{% endblock %}
