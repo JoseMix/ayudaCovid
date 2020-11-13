@@ -26,11 +26,17 @@ class Turnos(db.Model):
         turno = Turnos(
             email=form["email"],
             dia=form["dia"],
-            turno_id=form["horario"],
+            turno_id=form["bloque"],
             centro_id=form["centro_id"],
         )
         db.session.add(turno)
         db.session.commit()
+
+
+    #Para validar turno repetido de centro
+    def find_by(self, dia, bloque, centro_id):
+        return Turnos.query.filter(and_(Turnos.centro_id==centro_id, Turnos.turno_id==bloque), Turnos.dia== dia).first()
+
 
     # con join left
     def all(self):
@@ -41,7 +47,6 @@ class Turnos(db.Model):
             .all()
         )
 
-    # Turnos.query.all()
 
     # turnos de hoy y próx 2 días de un centro
     def turnos_proximos(self, centro_id, fecha_ini, fecha_fin):
@@ -50,9 +55,6 @@ class Turnos(db.Model):
                 Turnos.dia.between(fecha_ini, fecha_fin), Turnos.centro_id == centro_id
             )
         ).all()
-
-    # def email(self):
-    #    return db.session.query(Turnos.email).all()
 
 
 # Modelo Bloque de turnos

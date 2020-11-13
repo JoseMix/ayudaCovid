@@ -4,37 +4,46 @@ from app.models.centro import Bloque, Centro, Turnos
 from datetime import date
 import datetime
 
-#listado de turnos de centro X
-def index():
-    if not authenticated(session):
-        abort(401)
-    turnos = Turnos().all()
-    #print(turnos)
-    #print(date.today() + datetime.timedelta(days = 2))
-    if request.method == 'POST':
-        True #realiza busqueda de turnos con datos del request.form
-    return render_template("turnos/index.html", turnos=turnos)
 
-
-#provisorio para cargar bloque de turnos
-def horario():
-    Turnos().create(request.form)
-    flash("hora ok")
-    return render_template("turnos/index.html")
-
-
+# redirecciona al formulario de alta de turno y lógica del POST 
 def new():
     if not authenticated(session):
         abort(401)
-    
     centro = Centro().find_by_id(request.args.get("centro_id"))
     bloques = Bloque().all()
-    return render_template("turnos/new.html", centro=centro, bloques=bloques)
+    rango= {}
+    rango["inicio"] = date.today()
+    rango["fin"] = date.today() + datetime.timedelta(days=2)
+    form=request.form
+    if request.method=="POST":
+        if create():
+            return redirect(url_for("centro_show", centro_id=centro.id))
+    #    else:
+    #        return render_template("turnos/new.html", centro=centro, bloques=bloques, rango=rango, form=form)
+    #else:
+    return render_template("turnos/new.html", centro=centro, bloques=bloques, rango=rango, form=form)
 
-#falta validar datos
+
+#valida datos y crea el turno
 def create():
-    Turnos().create(request.form)
-    return render_template("turnos/index.html")
+    centro_id=request.form["centro_id"]
+    if fecha_turno_valido(request.form):
+        Turnos().create(request.form)
+        flash("¡Turno asignado exitosamente!")
+        return True
+    else:
+        flash("El horario seleccionado para el día seleccionado se encuentra reservado.")
+        return False
+
+
+#valida que no exista turno 
+def fecha_turno_valido(form):
+    bloque = Turnos().find_by(form["dia"], form["bloque"], form["centro_id"])
+    if bloque:
+        return False
+    else:
+        return True
+
 
 def eliminar():
     return True

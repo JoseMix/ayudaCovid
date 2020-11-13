@@ -42,10 +42,40 @@
       <td><strong class="texto-show">Coordenadas: </strong> </td>
       <td><strong class="text-text"> {{ centro.coordenadas }} </strong></td>
     </tr>
-
   </table>
+
   <a href="{{url_for('turnos_new', centro_id=centro.id)}}" class="btn btn-primary">Solicitar turno</a>
   <br><br>
+
+  {#-------------busqueda de turnos--------------#}
+
+  <div id="formBusqueda">
+    <strong class="texto" style="font-size: medium;">Busqueda de turnos:</strong>
+    <br><br>
+    <form action="{{url_for('turnos_new')}}" method="GET" class="form-inline my-1">
+      <div class="busqueda">
+      </div>
+      <div class="busqueda">
+        <strong>Email de solicitante:</strong><br>
+        <select name="email" id="" class="form-control mr-sm-1">
+          <option value="todos">TODOS</option>
+          {% for turno in turnos %}
+            {% if turno[0] %}
+            <option value="{{turno.email}}">{{turno[0].email}}</option>
+            {% endif %}
+          {% endfor %}  
+          
+        </select>
+      </div>
+      <div>
+        <input type="submit"  class="btn btn-primary" value="Buscar">
+        <a href="#" class="btn btn-secundary" >Limpiar búsqueda</a>
+      </div>
+    </form>
+  </div>
+
+  {#---------------------------  Index de Turnos  ----------------------------#}
+
   {% if turnos %}
   <strong class="texto-show">Turnos solicitados: </strong>
   <table class="table table-hover">
