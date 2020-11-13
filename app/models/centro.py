@@ -80,14 +80,18 @@ class Centro(db.Model):
     municipio = db.Column(db.String(20), nullable=False)
     web = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
-    estado = db.Column(db.Enum("RECHAZADO","ACEPTADO","PENDIENTE"), nullable=False, default="PENDIENTE",default="PENDIENTE")
-    publicado  = db.Column(db.Boolean, nullable=False)
+    estado = db.Column(
+        db.Enum("RECHAZADO", "ACEPTADO", "PENDIENTE"),
+        nullable=False,
+        default="PENDIENTE",
+    )
+    publicado = db.Column(db.Boolean, nullable=False)
     activo = db.Column(db.Boolean, nullable=False)
     protocolo = db.Column(db.String(255), nullable=False)
     latitud = db.Column(db.String(20), nullable=False)
-    longitud = db.Column(db.String(20), nullable=False)    
+    longitud = db.Column(db.String(20), nullable=False)
     turnos = db.relationship("Turnos", backref="centro", lazy=True)
-    
+
     def all(self):
         centros = Centro.query.all()
         return centros
@@ -117,8 +121,8 @@ class Centro(db.Model):
             publicado=False,
             activo=True,
             protocolo=nameProtocolo,
-            latitud=formulario['lat'].data,
-            longitud=formulario['lng'].data,
+            latitud=formulario["lat"].data,
+            longitud=formulario["lng"].data,
         )
         db.session.add(nuevo)
         db.session.commit()
