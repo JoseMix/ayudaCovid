@@ -79,19 +79,16 @@
         {% for error in form.protocolo.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
-
-        {{form.coordenadas.label}}
-         {{form.coordenadas(class_="form-control", type="text", placeholder='Ingrese coordenadas' )}}
-        <br>
+        <label>Ingrese ubicacion del centro</label>
         <div class="map-container">
-          <input type="text" name="lat" id=lat>
-          <input type="text" name="lng" id=lng>
+          {{form.lat(id="lat")}}
+          {{form.lng(id="lng")}} 
+        </div>  
+        <div id="myMap" style="height: 180px;">
+          <script src="{{ url_for('static', filename='mapa.js') }}"> </script> 
+        </div> 
+
         
-          <div id="myMap" style="height: 180px;"></div> 
-        </div>
-        <script src="{{ url_for('static', filename='mapa.js') }}"> </script> 
-        
-        <!--<script src="{{ url_for('static', filename='nuevo.js') }}"> </script> -->          
         <div id="centrar">
           <input type="submit" value="Cargar Centro" class="btn btn-primary">
           <button type="reset" class="btn btn-secundary" >Limpiar formulario</button>
