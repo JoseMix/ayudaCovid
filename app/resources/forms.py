@@ -151,3 +151,6 @@ class CrearCentroForm(FlaskForm):
     lat = StringField()
     
     submit = SubmitField("Enviar")
+
+
+
