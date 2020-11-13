@@ -114,14 +114,21 @@ def show_municipio():
 def show():
     if not authenticated(session):
         abort(401)
-    sitio = Configuracion().sitio()
+    print("ACAAAAAAAA", request.args.get("centro_id"))
     centro = Centro().find_by_id(request.args.get("centro_id"))
-    rango_inicio = date.today()
-    rango_fin = date.today() + datetime.timedelta(days=2)
-    #acá podría traerme todos los turnos del centro- despues filtrar en buscador
-    turnos = Turnos().turnos_proximos(
-        request.args.get("centro_id"), rango_inicio, rango_fin
-    )
+    page = request.args.get("page", 1, type=int)
+    # para no tener emails repetidos en el select
+    select_email=[]
+    for turno in centro.turnos:
+        if (turno.email not in select_email):
+            select_email.append(turno.email)
+    sitio = Configuracion().sitio()
+    search={}
+        
+    if request.args.get("email") is not None:
+        search["email"]=request.args.get("email")
+        turnos = Turnos().turnos_by_email(search["email"], request.args.get("centro_id"), page, sitio.paginas)
+    else:
+        turnos = Turnos().turnos_by_email("todos", request.args.get("centro_id"), page, sitio.paginas)
     return render_template(
-        "centro/show.html", centro=centro, sitio=sitio, turnos=turnos
-    )
+        "centro/show.html", centro=centro, emails=select_email, index_pag=turnos, search=search)

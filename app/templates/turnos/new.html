@@ -12,7 +12,7 @@
 <br>
     {#------------- Carga de turnos --------------#}
     <div id="formBusqueda">
-        <strong class="texto" style="font-size: medium;">Seleccione una fecha:</strong>
+        <strong class="texto">Formulario de turnos:</strong>
         <br><br>
         <form action="{{url_for('turnos_new', centro_id=centro.id)}}" method="POST" class="form-inline my-1">
             <div class="busqueda">
@@ -25,7 +25,7 @@
             </div>
             <div class="busqueda">
                 <strong>Franja horaria:</strong><br>
-                <select name="bloque" id="" class="form-control mr-sm-1">
+                <select name="bloque" class="form-control mr-sm-1">
                     {% for bloque in bloques %}
                     <option value="{{ bloque.id }}"> {{bloque.hora_inicio}}hs - {{bloque.hora_fin}}hs</option>
                     {% endfor %}

@@ -39,7 +39,6 @@ class Turnos(db.Model):
         turno = Turnos().find_by_id(id)
         turno.estado = "CANCELADO"
         db.session.commit()
-        return True
 
 
     #busca turno por id
@@ -52,6 +51,17 @@ class Turnos(db.Model):
         return Turnos.query.filter(and_(Turnos.centro_id==centro_id, Turnos.turno_id==bloque), Turnos.dia== dia, Turnos.estado=="VIGENTE").first()
 
 
+    #busca turnos por email
+    def turnos_by_email(self,email, centro_id, page, per_page):
+        if email == "todos":
+            return Turnos.query.filter(Turnos.centro_id==centro_id).\
+                order_by(Turnos.dia.asc(), Turnos.turno_id.asc()).\
+                paginate(page=page, per_page=per_page, error_out=False)
+        else:
+            return Turnos.query.filter(and_(Turnos.email==email, Turnos.centro_id==centro_id)).\
+                order_by(Turnos.dia.asc(), Turnos.turno_id.asc()).\
+                paginate(page=page, per_page=per_page, error_out=False)
+
     # con join left
     def all(self):
         return (
@@ -61,7 +71,7 @@ class Turnos(db.Model):
             .all()
         )
 
-
+    
     # turnos de hoy y próx 2 días de un centro
     def turnos_proximos(self, centro_id, fecha_ini, fecha_fin):
         return Turnos.query.filter(
@@ -141,6 +151,7 @@ class Centro(db.Model):
         )
         db.session.add(nuevo)
         db.session.commit()
+
 
     def validate_centro_creation(self, nombre, direccion, municipio):
         centro = Centro.query.filter(
