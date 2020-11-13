@@ -1,5 +1,5 @@
 from flask import redirect, render_template, request, url_for, session, abort, flash
-from app.helpers.auth import authenticated
+from app.helpers.auth import authenticated, tiene_permiso
 from app.models.centro import Bloque, Centro, Turnos
 from datetime import date
 import datetime
@@ -7,7 +7,7 @@ import datetime
 
 # redirecciona al formulario de alta de turno y lógica del POST 
 def new():
-    if not authenticated(session):
+    if not authenticated(session)or not tiene_permiso(session, 'turnos_new'):
         abort(401)
     centro = Centro().find_by_id(request.args.get("centro_id"))
     bloques = Bloque().all()
@@ -46,8 +46,8 @@ def fecha_turno_valido(form):
 
 # or not tiene_permiso(session, 'turnos_destroy')
 def eliminar():
-    if not authenticated(session) :
+    if not authenticated(session) or not tiene_permiso(session, 'turnos_destroy'):
         abort(401)
     Turnos().eliminar(request.args.get("turno_id"))
     flash("El turno se canceló exitosamente")
-    return redirect(url_for("centro_show", centro_id=request.args.get("centro_id")))
+    return redirect(url_for("centro_show", centro_id=request.args.get("centro_id"), page=request.args.get("page"), email=request.args.get("email")))

@@ -25,7 +25,7 @@ UPLOAD_FOLDER = "app/static/archivosPdf/"
 
 
 def index(page):
-    if not authenticated(session):
+    if not authenticated(session)or not tiene_permiso(session, 'centro_index'):
         abort(401)
     sitio = Configuracion().sitio()
     index_pag = Centro().all_paginado(page, sitio.paginas)
@@ -33,7 +33,7 @@ def index(page):
 
 
 def register():
-    if not authenticated(session):
+    if not authenticated(session)or not tiene_permiso(session, 'centro_new'):
         abort(401)
     form = CrearCentroForm()
     if request.method == "POST":
@@ -94,7 +94,7 @@ def validate(form):
 
 
 def create(form, nameProtocolo):
-    if not authenticated(session):
+    if not authenticated(session) or not tiene_permiso(session, 'centro_new'):
         abort(401)
     centro = Centro()
     centro.create(form, nameProtocolo)
@@ -112,9 +112,8 @@ def show_municipio():
 
 
 def show():
-    if not authenticated(session):
+    if not authenticated(session)or not tiene_permiso(session, 'centro_show'):
         abort(401)
-    print("ACAAAAAAAA", request.args.get("centro_id"))
     centro = Centro().find_by_id(request.args.get("centro_id"))
     page = request.args.get("page", 1, type=int)
     # para no tener emails repetidos en el select
@@ -129,6 +128,7 @@ def show():
         search["email"]=request.args.get("email")
         turnos = Turnos().turnos_by_email(search["email"], request.args.get("centro_id"), page, sitio.paginas)
     else:
+        search["email"]= "todos"
         turnos = Turnos().turnos_by_email("todos", request.args.get("centro_id"), page, sitio.paginas)
     return render_template(
         "centro/show.html", centro=centro, emails=select_email, index_pag=turnos, search=search)

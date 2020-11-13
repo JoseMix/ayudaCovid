@@ -32,10 +32,14 @@
       <strong class="text-text"> {{ centro.estado }} </strong><br>
 
       <strong class="texto-show">Protocolo: </strong>
+      {% if centro.protocolo != 'NULL' %}
       <strong class="text-text"> {{ centro.protocolo }} </strong><br>
+      {% else %}
+      <strong class="text-text"> sin protocolo </strong><br>
+      {% endif %}
   </div>
     <div>
-    <strong class="texto-show">Ubicacion: </strong>
+    <strong class="texto-show" style="padding-left: 20px; padding-right: 20px;">Ubicacion: </strong>
     <input type="hidden" value="{{centro.latitud}}" id="latitud" >
     <input type="hidden" value="{{centro.longitud}}" id="longitud" >
         
@@ -58,7 +62,7 @@
       <div class="busqueda">
         <strong>Email de solicitante:</strong><br>
         <select name="email" class="form-control mr-sm-1">
-          {% if search["email"] %}
+          {% if search["email"] and search["email"] != "todos" %}
           <option value="{{ search['email'] }}">{{ search["email"] }}</option>
           {% endif%}
           <option value="todos">TODOS</option>
@@ -85,7 +89,7 @@
   <table class="table table-hover">
     <tr>
       <td>
-        <strong class="texto-text">Día:</strong>
+        <strong class="=texto-text">Día:</strong>
       </td>
       <td>
         <strong class="texto-text">Horario:</strong>
@@ -108,7 +112,7 @@
       </td>
       <td>
         {% if turno.estado=="VIGENTE" %}
-        <a href="{{ url_for('turnos_eliminar', turno_id=turno.id, centro_id=centro.id)}}" 
+        <a href="{{ url_for('turnos_eliminar', turno_id=turno.id, centro_id=centro.id, page=index_pag.page, email=search['email'])}}" 
           onclick="return confirmationTurno()" class="btn btn-danger">Cancelar</a>
         <script src="{{ url_for('static', filename='validaciones/turnos.js') }}"></script>
         {% else %}
