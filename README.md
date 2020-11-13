@@ -28,18 +28,7 @@ Florencia Paredes 14598/0
 │   │   │   ├── __init__.py
 │   │   ├── auth.py
 │   │   ├── centro.py
-│   │   ├── configuracion.py
-│   │   ├── forms.py
-│   │   ├── __init__.py
-│   │   └── user.py
-│   ├── static
-│   │   ├── donaciones.png
-│   │   ├── error.css
-│   │   ├── mantenimiento.png
-│   │   ├── mapa.js
-│   │   ├── nuevo.js
-│   │   ├── style.css
-│   │   └── validac.js
+
 ```
 
 ## Tools:
@@ -90,7 +79,7 @@ Al pulsar send deberiamos obtener la respuesta:
             "municipio": "La Plata",
             "nombre": "Centro los alamos",
             "telefono": "112233123",
-            "tipo_centro": "ropa",
+            "tipo_centro": "COMIDA",
             "web": "centrolosalamos.com"
         }
     },
@@ -99,7 +88,7 @@ Al pulsar send deberiamos obtener la respuesta:
 
 ```
 
-Esto retorna el centro añadido y el codigo 200.
+Esto retorna el centro añadido y el codigo 201.
 En caso de querer introducir un centro ya existente:
 ```bash
 {
@@ -107,7 +96,7 @@ En caso de querer introducir un centro ya existente:
 }
 ```
 
-Si queremos ver los centros, habria que cambiar el metodo a GET con el mismo endpoint:
+Si queremos ver los centros, habría que cambiar el metodo a GET con el mismo endpoint:
 ```bash
 
 {
@@ -118,7 +107,7 @@ Si queremos ver los centros, habria que cambiar el metodo a GET con el mismo end
             "municipio": "La Plata",
             "nombre": "Centro los alamos",
             "telefono": "112233123",
-            "tipo_centro": "ropa",
+            "tipo_centro": "COMIDA",
             "web": "centrolosalamos.com"
         }
     ],
@@ -127,3 +116,28 @@ Si queremos ver los centros, habria que cambiar el metodo a GET con el mismo end
 }
 ```
 Y vemos el centro creado previamente, además de las paginas y los elementos por página tomados de la configuración.
+
+Si queremos buscar un centro en concreto seleccionamos GET como método y cambiamos el endpoind a:
+http://127.0.0.1:5000/api/centros/:id 
+
+```bash
+
+[
+    {
+        "centro": {
+            "apertura": "09:00:00",
+            "cierre": "20:00:00",
+            "direccion": "Calle 24 y 12",
+            "email": "pruebajson@gmail.com",
+            "municipio": "La Plata",
+            "nombre": "Centro los alamos",
+            "telefono": "112233123",
+            "tipo_centro": "COMIDA",
+            "web": "centrolosalamos.com"
+        }
+    },
+    200
+]
+
+
+```
