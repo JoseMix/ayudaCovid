@@ -150,3 +150,6 @@ class CrearCentroForm(FlaskForm):
     coordenadas = StringField("lat,lng")
 
     submit = SubmitField("Enviar")
+
+
+

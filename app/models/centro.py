@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from operator import and_
+from operator import and_, or_ 
 from flask_marshmallow import Marshmallow
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
@@ -61,6 +61,12 @@ class Centro(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
+    def update(self, id):
+        centro = Centro().find_by_id(id)
+        db.session.merge(centro)
+        db.session.commit()
+        return centro    
+
     def validate_centro_creation(self, nombre,direccion,municipio):
         centro = Centro.query.filter(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre)).first()
         return centro
@@ -68,6 +74,13 @@ class Centro(db.Model):
         centro = Centro.query.filter_by(id=id).first()
         return centro
 
+    def update(self, centro):
+        db.session.merge(centro)
+        db.session.commit()
+
+    def validate_centro_update(self, nombre, direccion, municipio, id):
+        centro = Centro.query.filter(and_(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre),Centro.id != id)).first()
+        return centro
 
 class Bloque(db.Model):
     __tablename__ = "bloque"

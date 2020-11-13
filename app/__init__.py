@@ -98,7 +98,8 @@ def create_app(environment="development"):
     app.add_url_rule("/centro/listado/<int:page>", "centro_index", centro.index,  methods=["GET"])
     app.add_url_rule("/centro/show", "centro_show", centro.show,  methods=["GET"]) 
     app.add_url_rule("/centro/nuevo", "centro_register", centro.register,  methods=["GET", "POST"])
-    #app.add_url_rule("/centro/show_municipio", "centro_show_municipio", centro.show_municipio)
+    app.add_url_rule("/centro/update/<int:centro_id>", "centro_update", centro.update,  methods=["GET", "POST"])
+    
     
     # Ruta para el Home (usando decorator)
     @app.route("/")
