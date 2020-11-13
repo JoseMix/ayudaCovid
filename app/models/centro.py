@@ -137,7 +137,9 @@ class Centro(db.Model):
         return centro
 
     def show_one(self, id):
-        centro = Centro.query.filter_by(id=id).first()
+        centro = Centro.query.filter(
+            and_(Centro.id == id, Centro.estado == "ACEPTADO")
+        ).first()
         return centro
 
 
