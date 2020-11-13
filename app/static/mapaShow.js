@@ -7,8 +7,11 @@ window.onload = () => {
     initializeMap('myMap');
 };
 
-const initializeMap = ({lat,lng}) => {
-    map = L.map('myMap').setView([-34.9187,-57.956], 13);
+const initializeMap = () => {
+    let lat=document.getElementById('latitud').value
+    let lng=document.getElementById('longitud').value
+
+    map = L.map('myMap').setView([lat,lng], 12);
     L.tileLayer(tileUrl).addTo(map);
     marker = L.marker([lat, lng]).addTo(map);
 };

@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from operator import and_
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, ValidationError
 
 db = SQLAlchemy()
 
@@ -18,6 +18,7 @@ class Turnos(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), nullable=False)
     dia = db.Column(db.Date, nullable=False)
+    estado = db.Column(db.Enum("VIGENTE", "CANCELADO"), nullable=False, default="VIGENTE")
     turno_id = db.Column(db.Integer, db.ForeignKey("bloque.id"), nullable=False)
     centro_id = db.Column(db.Integer, db.ForeignKey("centro.id"), nullable=False)
 
@@ -33,9 +34,22 @@ class Turnos(db.Model):
         db.session.commit()
 
 
+    #Baja lógica de turno
+    def eliminar(self, id):
+        turno = Turnos().find_by_id(id)
+        turno.estado = "CANCELADO"
+        db.session.commit()
+        return True
+
+
+    #busca turno por id
+    def find_by_id(self, id):
+        return Turnos.query.filter(Turnos.id==id).first()
+
+
     #Para validar turno repetido de centro
     def find_by(self, dia, bloque, centro_id):
-        return Turnos.query.filter(and_(Turnos.centro_id==centro_id, Turnos.turno_id==bloque), Turnos.dia== dia).first()
+        return Turnos.query.filter(and_(Turnos.centro_id==centro_id, Turnos.turno_id==bloque), Turnos.dia== dia, Turnos.estado=="VIGENTE").first()
 
 
     # con join left
@@ -82,12 +96,16 @@ class Centro(db.Model):
     municipio = db.Column(db.String(20), nullable=False)
     web = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
-    estado = db.Column(db.Enum("RECHAZADO","ACEPTADO","PENDIENTE"), nullable=False)
-    publicado  = db.Column(db.Boolean, nullable=False)
+    estado = db.Column(
+        db.Enum("RECHAZADO", "ACEPTADO", "PENDIENTE"),
+        nullable=False,
+        default="PENDIENTE",
+    )
+    publicado = db.Column(db.Boolean, nullable=False)
     activo = db.Column(db.Boolean, nullable=False)
     protocolo = db.Column(db.String(255), nullable=False)
     latitud = db.Column(db.String(20), nullable=False)
-    longitud = db.Column(db.String(20), nullable=False)    
+    longitud = db.Column(db.String(20), nullable=False)
     turnos = db.relationship("Turnos", backref="centro", lazy=True)
 
     def all(self):
@@ -115,12 +133,11 @@ class Centro(db.Model):
             municipio=formulario["municipio"].data,
             web=formulario["web"].data,
             email=formulario["email"].data,
-            estado="PENDIENTE",
             publicado=False,
             activo=True,
             protocolo=nameProtocolo,
-            latitud=formulario['lat'].data,
-            longitud=formulario['lng'].data,
+            latitud=formulario["lat"].data,
+            longitud=formulario["lng"].data,
         )
         db.session.add(nuevo)
         db.session.commit()
@@ -135,27 +152,28 @@ class Centro(db.Model):
         return centro
 
     def show_one(self, id):
-        centro = Centro.query.filter_by(id=id).first()
+        centro = Centro.query.filter(
+            and_(Centro.id == id, Centro.estado == "ACEPTADO")
+        ).first()
         return centro
 
 
-# class Bloque(db.Model):
-#    __tablename__ = "bloque"
-#    id = db.Column(db.Integer, primary_key=True)
-#    franja = db.Column(db.String(255), nullable=False)  # franja de 30 en 30 min
-#    centro_id = db.Column(db.Integer, db.ForeignKey("centro.id"), nullable=False)
+
+def empty_value(data):
+    if not data:
+        raise ValidationError("El campo no puede ser vacio.")
 
 
 class CentroSchema(Schema):
-    nombre = fields.Str()
-    direccion = fields.Str()
+    nombre = fields.Str(required=True, validate=empty_value)
+    direccion = fields.Str(required=True, validate=empty_value)
     telefono = fields.Str()
-    apertura = fields.DateTime(format="%H:%M:%S")
-    cierre = fields.DateTime(format="%H:%M:%S")
-    tipo_centro = fields.Str()
+    apertura = fields.DateTime(format="%H:%M:%S", required=True, validate=empty_value)
+    cierre = fields.DateTime(format="%H:%M:%S", required=True, validate=empty_value)
+    tipo_centro = fields.Str(required=True, validate=empty_value)
     web = fields.Str()
     email = fields.Str()
-    municipio = fields.Str()
+    municipio = fields.Str(required=True, validate=empty_value)
     pages = fields.Str()
     per_page = fields.Str()
 

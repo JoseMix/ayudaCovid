@@ -129,8 +129,11 @@ def create_app(environment="development"):
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
-        sitio = Configuracion().sitio()
-        return render_template("home.html", sitio=sitio)
+        if authenticated(session):
+            return redirect(url_for('centro_index', page=1))
+        else:
+            sitio = Configuracion().sitio()
+            return render_template("home.html", sitio=sitio)
 
     # Rutas de API-rest
     app.add_url_rule("/api/centros", "api_centros_index", centros.index)

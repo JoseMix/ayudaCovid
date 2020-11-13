@@ -118,6 +118,7 @@ def show():
     centro = Centro().find_by_id(request.args.get("centro_id"))
     rango_inicio = date.today()
     rango_fin = date.today() + datetime.timedelta(days=2)
+    #acá podría traerme todos los turnos del centro- despues filtrar en buscador
     turnos = Turnos().turnos_proximos(
         request.args.get("centro_id"), rango_inicio, rango_fin
     )

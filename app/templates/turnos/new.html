@@ -9,7 +9,7 @@
         {# arreglar redirecciones #}
         <a href="{{ url_for('centro_show', centro_id=centro.id) }}" class="btn btn-primary">Volver</a>
     </div>
-
+<br>
     {#------------- Carga de turnos --------------#}
     <div id="formBusqueda">
         <strong class="texto" style="font-size: medium;">Seleccione una fecha:</strong>
@@ -17,14 +17,13 @@
         <form action="{{url_for('turnos_new', centro_id=centro.id)}}" method="POST" class="form-inline my-1">
             <div class="busqueda">
                 <strong>Fecha de turno:</strong><br>
-                <strong style="color: red; font-size: small;">Seleccione una fecha para ver los horarios aún disponibles</strong><br>
                 <input type="date" name="dia" min="{{rango['inicio']}}" max="{{rango['fin']}}" {% if form.dia %} value="{{form.dia}}" {% endif%} required class="form-control mr-sm-1"><br>
             </div>
-            <div>
+            <div class="busqueda">
                 <strong>Email del solicitante:</strong><br>
                 <input type="email" name="email" required placeholder="ingrese un email" {% if form.email %} value="{{form.email}}" {% endif%} class="form-control mr-sm-1"><br>
             </div>
-            <div>
+            <div class="busqueda">
                 <strong>Franja horaria:</strong><br>
                 <select name="bloque" id="" class="form-control mr-sm-1">
                     {% for bloque in bloques %}
@@ -38,6 +37,6 @@
                 <a href="{{url_for('turnos_new', centro_id=centro.id)}}" class="btn btn-secundary" >Limpiar búsqueda</a>
             </div>
         </form>
-    </div>
+    </div><br><br>
 
     {% endblock %}

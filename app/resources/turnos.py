@@ -44,7 +44,10 @@ def fecha_turno_valido(form):
     else:
         return True
 
-
+# or not tiene_permiso(session, 'turnos_destroy')
 def eliminar():
-    return True
-    #render_template("")
+    if not authenticated(session) :
+        abort(401)
+    Turnos().eliminar(request.args.get("turno_id"))
+    flash("El turno se canceló exitosamente")
+    return redirect(url_for("centro_show", centro_id=request.args.get("centro_id")))
