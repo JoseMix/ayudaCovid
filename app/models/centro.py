@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from operator import and_
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, ValidationError
 
 db = SQLAlchemy()
 
@@ -78,14 +78,15 @@ class Centro(db.Model):
     cierre = db.Column(db.Time, nullable=False)
     tipo_centro = db.Column(db.Enum("COMIDA", "ROPA", "PLASMA"), nullable=False)
     municipio = db.Column(db.String(20), nullable=False)
-    web = db.Column(db.String(255), nullable=False)
-    email = db.Column(db.String(255), nullable=False)
+    web = db.Column(db.String(255), nullable=True)
+    email = db.Column(db.String(255), nullable=True)
     estado = db.Column(
         db.Enum("RECHAZADO", "ACEPTADO", "PENDIENTE", "PUBLICADO", "DESPUBLICADO"),
         nullable=False,
+        default="PENDIENTE",
     )
-    protocolo = db.Column(db.String(255), nullable=False)
-    coordenadas = db.Column(db.String(20), nullable=False)
+    protocolo = db.Column(db.String(255), nullable=True)
+    coordenadas = db.Column(db.String(20), nullable=True)
     turnos = db.relationship("Turnos", backref="centro", lazy=True)
 
     def all(self):
@@ -141,16 +142,21 @@ class Centro(db.Model):
 #    centro_id = db.Column(db.Integer, db.ForeignKey("centro.id"), nullable=False)
 
 
+def empty_value(data):
+    if not data:
+        raise ValidationError("El campo no puede ser vacio.")
+
+
 class CentroSchema(Schema):
-    nombre = fields.Str()
-    direccion = fields.Str()
+    nombre = fields.Str(required=True, validate=empty_value)
+    direccion = fields.Str(required=True, validate=empty_value)
     telefono = fields.Str()
-    apertura = fields.DateTime(format="%H:%M:%S")
-    cierre = fields.DateTime(format="%H:%M:%S")
-    tipo_centro = fields.Str()
+    apertura = fields.DateTime(format="%H:%M:%S", required=True, validate=empty_value)
+    cierre = fields.DateTime(format="%H:%M:%S", required=True, validate=empty_value)
+    tipo_centro = fields.Str(required=True, validate=empty_value)
     web = fields.Str()
     email = fields.Str()
-    municipio = fields.Str()
+    municipio = fields.Str(required=True, validate=empty_value)
     pages = fields.Str()
     per_page = fields.Str()
 
