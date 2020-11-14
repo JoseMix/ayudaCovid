@@ -150,7 +150,7 @@ class CrearCentroForm(FlaskForm):
         ],
     )
 
-    protocolo=FileField("protocolo")
+    protocolo=FileField("Protocolo")
 
     lng = StringField()
     lat = StringField()

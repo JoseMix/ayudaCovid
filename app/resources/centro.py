@@ -50,74 +50,78 @@ def index():
     return render_template("centro/index.html",form=form, mySearch=mySearch, index_pag=index_pag)
 
 
-
+#vista del formulario y lógica de create de centro
 def register():
     if not authenticated(session)or not tiene_permiso(session, 'centro_new'):
         abort(401)
+
     form = CrearCentroForm()
     lista_municipio=show_municipio()
+    
     if request.method == 'POST':
-        if not validate(form):
+        if not validate(form): #valida que no exista centro con mismos datos
             if validate_horarios(form): #Si los horarios ok
-                file_protocolo = request.files['protocolo'] #Me quedo el archivo
-                if validate_pdf(form,file_protocolo): #valido pdf
+                if validate_pdf(form,request.files['protocolo']): #valido pdf y crea centro
                     return redirect(url_for("centro_index", page=1))
-                else:
-                    return render_template("centro/new.html", form=form, lista_municipio=lista_municipio)
             else:                
                 flash('El horario de apertura debe ser menor que el horario de cierre')
-                return render_template("centro/new.html", form=form, lista_municipio=lista_municipio)
         else:
             flash("El centro que intenta crear ya existe.")
-            return render_template("centro/new.html", form=form, lista_municipio=lista_municipio)
-    else:        
-        return render_template("centro/new.html", form=form, lista_municipio=lista_municipio)
+    return render_template("centro/new.html", form=form, lista_municipio=lista_municipio)
+
 
 def update(centro_id):    
-    if not authenticated(session):
+    if not authenticated(session) or not tiene_permiso(session, 'centro_update'):
         abort(401)
+    lista_municipio=show_municipio()
+    #busca el centro y carga el formulario de update
     centro = Centro().query.get_or_404(centro_id)
     form = CrearCentroForm(obj=centro)
-    viejo=str(form['protocolo'].data)
-    #print("1:")
-    print(viejo)
-    #anterior=os.path.join(UPLOAD_FOLDER, viejo)
-    #print("anterior:")
-    #print(anterior)
-    lista_municipio=show_municipio()
     if request.method == 'POST':
-        if not centro.validate_centro_update(form.nombre.data, form.direccion.data, form.municipio.data , centro_id):           
-            if validate_horarios(form):                
-                file_protocolo = request.files['protocolo'] #Me quedo el archivo
-                '''if file_protocolo:
-                    if allowed_file(file_protocolo.filename):
-                        #os.remove(anterior)
-                        filename = secure_filename(file_protocolo.filename) #Me quedo con el nombre del pdf
-                        file_protocolo.save(os.path.join(UPLOAD_FOLDER, filename))
-                        #create(form, file_protocolo.filename)'''   
-                form.populate_obj(centro)
-                Centro().update(centro)               
-                return redirect(url_for("centro_index", page=1))
-            else:                
-                flash('El horario de apertura debe ser menor que el horario de cierre')
-                return render_template("centro/update.html", form=form, lista_municipio=lista_municipio)            
-        else:
-            flash("El centro ya existe")
-    else:
-        return render_template("centro/update.html", form=form,  centro_id=centro_id, lista_municipio=lista_municipio)
+        #valida y modifica
+        update_centro(form, centro)
+    
+    # si falla alguna validación que redireccione al update
+    return render_template("centro/update.html", form=form,  centro_id=centro_id, lista_municipio=lista_municipio)
 
+
+#valida los datos y modifica si todo OK
+def update_centro(form, centro):
+    if not centro.validate_centro_update(form.nombre.data, form.direccion.data, form.municipio.data , centro.id):           
+        if validate_horarios(form):            
+            if request.files['protocolo']: #si se cargó protocolo
+                file_protocolo = request.files['protocolo'] #Me quedo el archivo
+                if allowed_file(file_protocolo.filename):
+                    if centro.protocolo:
+                        #si tiene protocolo viejo lo borra
+                        path_viejo=os.path.join(UPLOAD_FOLDER, centro.protocolo)
+                        os.remove(path_viejo)
+
+                    filename = secure_filename(file_protocolo.filename) #Me quedo con el nombre del pdf
+                    file_protocolo.save(os.path.join(UPLOAD_FOLDER, filename))#guarda en carpeta
+                    centro.protocolo = filename
+            #else:
+            #    centro.protocolo = "NULL" #si no se cargo protocolo queda el viejo o viejo=null.
+            Centro().update(form, centro) #actualiza centro
+            return redirect(url_for("centro_index", page=1))
+        else:
+            flash('El horario de apertura debe ser menor que el horario de cierre')
+    else:
+        flash("Ya existe un centro con nombre, dirección y municipio ingresado")
+
+
+#horario de apertura y cierre coherente
 def validate_horarios(form):
     return form["apertura"].data < form["cierre"].data
 
 
 def validate_pdf(form, file_protocolo):
-    """Si el pdf esta ok almaceno con el file, sino en null"""
+    #Si el pdf esta ok almaceno con el file, sino en null
     if file_protocolo:
         if allowed_file(file_protocolo.filename):
             filename = secure_filename(file_protocolo.filename)
             file_protocolo.save(os.path.join(UPLOAD_FOLDER, filename))
             create(form, file_protocolo.filename)
-
         else:
             flash("El archivo debe ser pdf")
             return False
@@ -125,26 +129,10 @@ def validate_pdf(form, file_protocolo):
         create(form, "NULL")
     flash("Centro creado con éxito")
     return True
-'''
-def update_pdf(form,file_protocolo):
-    Si el pdf esta ok almaceno con el file, sino en null
-    if file_protocolo:
-        if allowed_file(file_protocolo.filename):
-            filename = secure_filename(file_protocolo.filename)
-            file_protocolo.save(os.path.join(UPLOAD_FOLDER, filename))
-            os.remove((app.config['UPLOAD_FOLDER']+Centro.id
-            create(form, file_protocolo.filename)            
-        else: 
-            flash("El archivo debe ser pdf")    
-            return False 
-    else:
-        create(form,"NULL") 
-    flash("Centro creado con éxito")
-    return True'''
 
 
 def allowed_file(filename):
-    # Chequeo de la extension y que solo exista un solo . antes de la extencion
+    # Chequeo de la extension y que solo exista un solo . antes de la extension
     ALLOWED_EXTENSIONS = {"pdf"}
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -196,6 +184,7 @@ def show():
     return render_template(
         "centro/show.html", centro=centro, emails=select_email, index_pag=turnos, search=search)
 
+#elimina el centro
 def eliminar(centro_id,):
     if not authenticated(session)or not tiene_permiso(session, 'centro_destroy'):
         abort(401)
@@ -209,6 +198,7 @@ def eliminar(centro_id,):
     mySearch["name"] = request.args.get("name")
     mySearch["estado"] = request.args.get("estado")
     return render_template("centro/index.html",form=form, index_pag=index_pag, sitio=sitio, mySearch=mySearch )
+
 
 #lógica para aceptar o rechazar un centro
 def update_estado():

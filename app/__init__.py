@@ -121,7 +121,7 @@ def create_app(environment="development"):
     )
     app.add_url_rule("/centro/update/<int:centro_id>", "centro_update", centro.update,  methods=["GET", "POST"])
     app.add_url_rule("/centro/eliminar/<int:centro_id>", "centro_eliminar", centro.eliminar, methods=["GET"])
-   
+
     # Rutas de Turnos
     app.add_url_rule("/turnos/nuevo", "turnos_new", turnos.new, methods=["GET", "POST"])
     #app.add_url_rule("/turnos/nuevo", "turnos_create", turnos.create, methods=["POST"])

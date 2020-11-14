@@ -15,43 +15,43 @@
       
       {{ form.csrf_token }}
       {{form.nombre.label}}
-        {{form.nombre(class_="form-control")}}
+        {{form.nombre(class="form-control")}}
         <br>
         {% for error in form.nombre.errors %}
           <div style=color:rgb(100, 90, 90)>{{ error }}</div>  
         {% endfor %}
 
         {{form.direccion.label}}
-        {{form.direccion(class_="form-control")}}
+        {{form.direccion(class="form-control")}}
         <br>
         {% for error in form.direccion.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
 
         {{form.telefono.label}}
-        {{form.telefono(class_="form-control")}}
+        {{form.telefono(class="form-control")}}
         <br>
         {% for error in form.telefono.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
 
         {{form.apertura.label}}
-        {{form.apertura(class_="form-control", type="time")}}
+        {{form.apertura(class="form-control", type="time")}}
         <br>
 
         {{form.cierre.label}}
-        {{form.cierre(class_="form-control", type="time")}}
+        {{form.cierre(class="form-control", type="time")}}
         <br>
 
         {{form.tipo_centro.label}}
-        {{form.tipo_centro(class_="form-control", type="select")}}
+        {{form.tipo_centro(class="form-control", type="select")}}
         
         {% for error in form.tipo_centro.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
 
         {{form.email.label}}
-        {{form.email(class_="form-control")}}
+        {{form.email(class="form-control")}}
         <br>
         {% for error in form.email.errors %}
           <div style=color:red>{{ error }}</div>
@@ -67,16 +67,17 @@
         <br><br>
 
         {{form.web.label}}
-        {{form.web(class_="form-control")}}
+        {{form.web(class="form-control")}}
         <br>
         {% for error in form.web.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
 
-        {{form.protocolo.label}}        
-        {{form.protocolo(class_="form-control" ,type="file" )}}
+        {{form.protocolo.label}}   <br> 
+        {{form.protocolo(class="form-control", type="file" )}}
         
         <br>
+
         {% for error in form.protocolo.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
@@ -91,8 +92,9 @@
         <script src="{{ url_for('static', filename='mapa.js') }}"> </script> 
         
         <!--<script src="{{ url_for('static', filename='nuevo.js') }}"> </script> -->          
-        <div id="centrar">
-          <input type="submit" value="Cargar Centro" class="btn btn-primary">
+        <div id="centrar"><br>
+          <input type="submit" value="Modificar centro" class="btn btn-primary">
+          <input type="reset" value="Limpiar formulario" class="btn btn-secundary">
           
         </div>
 

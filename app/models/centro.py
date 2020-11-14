@@ -169,11 +169,23 @@ class Centro(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-    def update(self, id):
-        centro = Centro().find_by_id(id)
+    #actualiza centro con datos del form
+    def update(self, formulario, centro):
+        centro.nombre = formulario["nombre"].data
+        centro.direccion = formulario["direccion"].data
+        centro.telefono = formulario["telefono"].data
+        centro.apertura = formulario["apertura"].data
+        centro.cierre = formulario["cierre"].data
+        centro.tipo_centro = formulario["tipo_centro"].data
+        centro.municipio = formulario["municipio"].data
+        centro.web = formulario["web"].data
+        centro.email = formulario["email"].data
+        centro.latitud = formulario["lat"].data
+        centro.longitud = formulario["lng"].data
+        
         db.session.merge(centro)
         db.session.commit()
-        return centro    
+
 
     def validate_centro_creation(self, nombre,direccion,municipio):
         centro = Centro.query.filter(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre)).first()
@@ -205,10 +217,12 @@ class Centro(db.Model):
             centro.publicado= False
         db.session.commit()
 
-    def update(self, centro):
-        db.session.merge(centro)
-        db.session.commit()
+    #def update(self, centro):
+    #    db.session.merge(centro)
+    #    db.session.commit()
 
+
+    #valida que no exista centro con mismo municipio, dirección y nombre
     def validate_centro_update(self, nombre, direccion, municipio, id):
         centro = Centro.query.filter(and_(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre),Centro.id != id)).first()
         return centro
