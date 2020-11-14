@@ -114,6 +114,8 @@ def create_app(environment="development"):
         "/centro/listado/<int:page>", "centro_index", centro.index, methods=["GET"]
     )
     app.add_url_rule("/centro/show", "centro_show", centro.show, methods=["GET"])
+    app.add_url_rule("/centro/update-publicado", "centro_update_publicado", centro.update_publicado, methods=["GET"])
+    app.add_url_rule("/centro/update-estado", "centro_update_estado", centro.update_estado, methods=["GET"])
     app.add_url_rule(
         "/centro/nuevo", "centro_register", centro.register, methods=["GET", "POST"]
     )

@@ -23,13 +23,14 @@ import datetime
 
 UPLOAD_FOLDER = "app/static/archivosPdf/"
 
-
+#listado de centros
 def index(page):
     if not authenticated(session)or not tiene_permiso(session, 'centro_index'):
         abort(401)
     sitio = Configuracion().sitio()
     index_pag = Centro().all_paginado(page, sitio.paginas)
     return render_template("centro/index.html", index_pag=index_pag)
+
 
 
 def register():
@@ -86,7 +87,7 @@ def update(centro_id):
             flash("El centro ya existe")
     else:
         return render_template("centro/update.html", form=form,  centro_id=centro_id, lista_municipio=lista_municipio)
-       
+
 def validate_horarios(form):
     return form["apertura"].data < form["cierre"].data
 
@@ -167,7 +168,7 @@ def show():
             select_email.append(turno.email)
     sitio = Configuracion().sitio()
     search={}
-        
+
     if request.args.get("email") is not None:
         search["email"]=request.args.get("email")
         turnos = Turnos().turnos_by_email(search["email"], request.args.get("centro_id"), page, sitio.paginas)
@@ -186,3 +187,28 @@ def eliminar(centro_id):
     sitio = Configuracion().sitio()
     index_pag = Centro().all_paginado(page, sitio.paginas)
     return render_template("centro/index.html", index_pag=index_pag, sitio=sitio)
+
+#lógica para aceptar o rechazar un centro
+def update_estado():
+    if not authenticated(session) or not tiene_permiso(session, 'centro_update'):
+        abort(401)
+    Centro().update_estado(request.args.get("centro_id"),request.args.get("estado"))
+    if request.args.get("estado") == 'ACEPTADO':
+        flash("¡El centro de ayuda social ha sido aceptado exitosamente!")
+    else:
+        flash("¡El centro de ayuda social ha sido rechazado exitosamente!")
+    return redirect(url_for("centro_show",centro_id=request.args.get("centro_id")))
+
+
+#lógica para publicar o despublicar un centro
+def update_publicado():
+    if not authenticated(session) or not tiene_permiso(session, 'centro_update'):
+        abort(401)
+    
+    Centro().update_publicado(request.args.get("centro_id"),request.args.get("publicado"))
+    if request.args.get("publicado") == 'True':
+        flash("¡El centro de ayuda social ha sido publicado exitosamente!")
+    else:
+        flash("¡El centro de ayuda social ha sido despublicado exitosamente!")
+    return redirect(url_for("centro_index",page=1))
+
