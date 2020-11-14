@@ -21,6 +21,7 @@
   <th> </th>
   <th> </th>
   <th> </th>
+  <th> </th>
   </tr>
   {% for centro in index_pag.items %}
   <tr style="text-align: center;">
@@ -29,7 +30,22 @@
     <td> {{ centro.municipio }} </td>
     <td> {{ centro.email }}</td>
     <td> {{ centro.estado }} </td>
-    
+      
+    {% if centro.estado == 'ACEPTADO' and centro.publicado == True %}    
+    <td>
+      <a href="{{url_for('centro_update_publicado', centro_id=centro.id, publicado=False) }}" 
+      onclick="return despublicarCentro()" class="btn btn-secondary">Despublicar</a>
+    </td> 
+    {% endif %}
+    {% if centro.estado == 'ACEPTADO' and centro.publicado == False %}    
+    <td>
+      <a href="{{ url_for('centro_update_publicado', centro_id=centro.id, publicado=True) }}" 
+      onclick="return publicarCentro()" class="btn btn-success">Publicar</a>
+    </td> 
+    {% endif %}
+    {% if centro.estado != 'ACEPTADO' %}
+    <td> <strong>DESPUBLICADO</strong></td>
+    {% endif %}
     <td>
       <a href="{{ url_for('centro_update', centro_id=centro.id) }}" class="btn btn-warning">Modificar</a>
     </td>
@@ -68,4 +84,5 @@
   </nav>
   {#----------------------------------------------------------------------#}
 </div>
+<script src="{{ url_for('static', filename='validaciones/centro.js') }}"></script>
 {% endblock %}
