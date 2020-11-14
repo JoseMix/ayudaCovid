@@ -17,7 +17,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_marshmallow import Marshmallow
 from app.resources import user, configuracion, auth, centro, turnos
-from app.resources.api import centros
+from app.resources.api import centros, turnos
 
 # from app.resources.api import centro
 from config import config
@@ -149,6 +149,8 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/api/centros/<int:centro_id>", "api_centros_show_one", centros.show_one
     )
+    #Rutas api turnos
+    #app.add_url_rule("/centros/:id/turnos_disponibles/?fecha=<fecha>", )
 
     # Handlers
     # app.register_error_handler(404, handler.not_found_error)
