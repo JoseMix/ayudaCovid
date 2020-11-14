@@ -26,7 +26,7 @@ from app.resources import user, configuracion, auth, centro
 
 # from app.helpers import handler
 from app.helpers import auth as helper_auth
-from app.resources.forms import RegistrationForm, LoginForm, FilterForm, CrearCentroForm
+from app.resources.forms import RegistrationForm, LoginForm, FilterForm, CrearCentroForm, FilterFormCentro
 
 # from app.db import connection
 from app.models.configuracion import Configuracion, configuracion_initialize_db
@@ -50,7 +50,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    ] = "mysql+pymysql://root:@localhost/proyecto"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     ma = Marshmallow(app)
@@ -111,7 +111,7 @@ def create_app(environment="development"):
 
     # Rutas de Centros
     app.add_url_rule(
-        "/centro/listado/<int:page>", "centro_index", centro.index, methods=["GET"]
+        "/centro/listado", "centro_index", centro.index, methods=["GET", "POST"]
     )
     app.add_url_rule("/centro/show", "centro_show", centro.show, methods=["GET"])
     app.add_url_rule(

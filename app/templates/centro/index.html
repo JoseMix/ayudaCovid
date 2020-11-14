@@ -10,6 +10,29 @@
   <a href="{{ url_for('centro_register') }}" class="btn btn-primary">Nuevo</a>
 </div>
 
+{#-------------busqueda de Centros--------------#}
+
+<div id="formBusqueda">
+  <strong class="texto" style="font-size: medium;">Busqueda de Centros:</strong>
+  <br><br>
+  <form action="{{ url_for('centro_index')}}" method="GET" class="form-inline my-1">
+    {# {{ form.csrf_token }} #}
+    <div class="busqueda">
+      <strong>Username</strong><br>
+      {{form.name(class_="form-control", placeholder='ingrese un nombre',value= mySearch['name'])}}
+    </div>
+    <div class="busqueda">
+      <strong>Estado</strong><br>
+      {{ form.estado(class="form-control mr-sm-1")}}
+    </div>
+    <div>
+      <input type="submit"  class="btn btn-primary" value="Buscar">
+      <a href="{{ url_for('centro_index') }}" class="btn btn-secundary" >Limpiar búsqueda</a>
+    </div>
+  </form>
+</div>
+{#------------------fin------------------------------#}
+
 <div id="index-table">
   <table class="table table-hover" >
   <tr style="text-align: center;">
@@ -50,7 +73,7 @@
       {% if page %}
         {% if page != index_pag.page %}
           <li class="page-item">
-            <a class="page-link" href="{{ url_for('centro_index', page=page) }}">{{ page }}</a>
+            <a class="page-link" href="{{ url_for('centro_index', page=page,name=mySearch['name'], estado=mySearch['estado']) }}">{{ page }}</a>
           </li>
         {% else %}
           <li class="page-item active">

@@ -72,6 +72,11 @@ class FilterForm(FlaskForm):
     estado = SelectField(choices=[('2','Todos'),('1', 'Activo'), ('0', 'Bloqueado')])
     submit = SubmitField("Enviar")
 
+class FilterFormCentro (FlaskForm):
+    name = StringField()
+    estado = SelectField(choices=[('3','Todos'),('RECHAZADO', 'RECHAZADO'),('PENDIENTE', 'PENDIENTE'),('ACEPTADO', 'ACEPTADO')])
+    submit = SubmitField("Enviar")
+
 class CrearCentroForm(FlaskForm):
     nombre = StringField(
         "Nombre",
@@ -151,6 +156,3 @@ class CrearCentroForm(FlaskForm):
     lat = StringField()
     
     submit = SubmitField("Enviar")
-
-
-

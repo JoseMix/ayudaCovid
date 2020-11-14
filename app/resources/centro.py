@@ -16,7 +16,8 @@ import requests
 from app.models.configuracion import Configuracion
 from app.models.centro import Turnos, Centro
 from app.helpers.auth import authenticated, tiene_permiso
-from app.resources.forms import CrearCentroForm
+from app.resources.forms import CrearCentroForm, FilterFormCentro
+
 import requests
 from _datetime import date
 import datetime
@@ -24,12 +25,29 @@ import datetime
 UPLOAD_FOLDER = "app/static/archivosPdf/"
 
 
-def index(page):
+def index():
     if not authenticated(session)or not tiene_permiso(session, 'centro_index'):
         abort(401)
+    form = FilterFormCentro()
     sitio = Configuracion().sitio()
-    index_pag = Centro().all_paginado(page, sitio.paginas)
-    return render_template("centro/index.html", index_pag=index_pag)
+    page = request.args.get('page',1, type=int)
+    mySearch = {}
+    name = request.args.get("name")
+
+    estado = request.args.get("estado")
+    if name is None or name == '':
+        name = ""
+    if estado is None or estado == '':
+        estado = ""
+    
+    mySearch["name"] = name
+    mySearch["estado"] = estado
+    if name != "" or estado != "" or request.method == "POST":
+        #si estan seteados o se usó el buscador
+        index_pag = Centro().search_by(name,estado,page,sitio.paginas)
+    else:
+        index_pag = Centro().all_paginado(page, sitio.paginas)
+    return render_template("centro/index.html",form=form, mySearch=mySearch, index_pag=index_pag)
 
 
 def register():
@@ -86,7 +104,7 @@ def update(centro_id):
             flash("El centro ya existe")
     else:
         return render_template("centro/update.html", form=form,  centro_id=centro_id, lista_municipio=lista_municipio)
-       
+
 def validate_horarios(form):
     return form["apertura"].data < form["cierre"].data
 

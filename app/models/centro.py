@@ -118,6 +118,22 @@ class Centro(db.Model):
     longitud = db.Column(db.String(20), nullable=False)
     turnos = db.relationship("Turnos", backref="centro", lazy=True)
 
+    def search_by(self, name, estado, page, per_page):
+        if estado == '3': #busco por nombre en todos los estados
+            centro = Centro().query.filter(Centro.nombre.ilike(f'%{name}%')).\
+            paginate(page=page, per_page=per_page, error_out=False)
+        else:
+            if(name == ''): #Si no vino nombre, busca solo por estado
+                centro = Centro().query.\
+                filter(Centro.estado == estado).\
+                paginate(page=page, per_page=per_page, error_out=False)
+            else:        #vino nombre y estado     
+                centro = Centro().query.\
+                filter(and_(Centro.nombre.ilike(f'%{name}%'), Centro.estado == estado)).\
+                paginate(page=page, per_page=per_page, error_out=False)
+        return centro
+
+
     def all(self):
         centros = Centro.query.all()
         return centros
@@ -180,7 +196,6 @@ class Centro(db.Model):
 def empty_value(data):
     if not data:
         raise ValidationError("El campo no puede ser vacio.")
-
 
 class CentroSchema(Schema):
     nombre = fields.Str(required=True, validate=empty_value)
