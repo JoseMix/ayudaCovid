@@ -17,7 +17,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_marshmallow import Marshmallow
 from app.resources import user, configuracion, auth, centro, turnos
-from app.resources.api import centros, turnos
+from app.resources.api import centros, turno
 
 # from app.resources.api import centro
 from config import config
@@ -149,10 +149,11 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/api/centros/<int:centro_id>", "api_centros_show_one", centros.show_one
     )
-    #Rutas api turnos
-    #app.add_url_rule("/centros/:id/turnos_disponibles/?fecha=<fecha>", )
-
-    # Handlers
+    # Rutas api turnos
+    app.add_url_rule("/api/centros/turnos_disponibles/<int:centro_id>/", "api_turno_show", turno.show, methods=["GET"] )
+    app.add_url_rule("/api/centros/turnos_disponibles/<int:centro_id>/<fecha>", "api_turno_show", turno.show, methods=["GET"] )
+    
+    # Handlers  
     # app.register_error_handler(404, handler.not_found_error)
     # app.register_error_handler(401, handler.unauthorized_error)
     # Implementar lo mismo para el error 500 y 401
