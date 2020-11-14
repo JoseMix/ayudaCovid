@@ -50,7 +50,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    ] = "mysql+pymysql://root:@localhost/proyecto"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     ma = Marshmallow(app)
@@ -118,7 +118,8 @@ def create_app(environment="development"):
         "/centro/nuevo", "centro_register", centro.register, methods=["GET", "POST"]
     )
     app.add_url_rule("/centro/update/<int:centro_id>", "centro_update", centro.update,  methods=["GET", "POST"])
-
+    app.add_url_rule("/centro/eliminar/<int:centro_id>", "centro_eliminar", centro.eliminar, methods=["GET"])
+   
     # Rutas de Turnos
     app.add_url_rule("/turnos/nuevo", "turnos_new", turnos.new, methods=["GET", "POST"])
     #app.add_url_rule("/turnos/nuevo", "turnos_create", turnos.create, methods=["POST"])

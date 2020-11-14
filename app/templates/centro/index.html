@@ -34,8 +34,13 @@
       <a href="{{ url_for('centro_update', centro_id=centro.id) }}" class="btn btn-warning">Modificar</a>
     </td>
     <td>
-      <a href="" class="btn btn-danger">Eliminar</a>
+    {% if centro.activo == True %}
+      <a href="{{ url_for('centro_eliminar', centro_id=centro.id )}}" onclick="return eliminarCentro()" class="btn btn-danger">Eliminar</a>
+      <script src="{{ url_for('static', filename='validac.js') }}"> </script>
+    {%else %}
+      <strong style="color: rgba(197, 11, 5, 0.89);">Centro eliminado</strong>
     </td>
+    {% endif %}
     <td>
       <a href="{{ url_for('centro_show', centro_id=centro.id) }}" class="btn btn-link">Ver Mas</a>
     </td>

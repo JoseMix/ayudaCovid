@@ -176,6 +176,11 @@ class Centro(db.Model):
         centro = Centro.query.filter(and_(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre),Centro.id != id)).first()
         return centro
 
+    def eliminar(self, id):
+        centro = Centro().find_by_id(id)
+        centro.activo = False
+        db.session.commit()
+        return centro
 
 def empty_value(data):
     if not data:

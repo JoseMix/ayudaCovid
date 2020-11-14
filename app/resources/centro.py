@@ -176,3 +176,13 @@ def show():
         turnos = Turnos().turnos_by_email("todos", request.args.get("centro_id"), page, sitio.paginas)
     return render_template(
         "centro/show.html", centro=centro, emails=select_email, index_pag=turnos, search=search)
+
+def eliminar(centro_id):
+    if not authenticated(session)or not tiene_permiso(session, 'centro_destroy'):
+        abort(401)
+    Centro().eliminar(id=centro_id)
+    flash("Centro eliminado correctamente")
+    page = request.args.get("page", 1, type=int)
+    sitio = Configuracion().sitio()
+    index_pag = Centro().all_paginado(page, sitio.paginas)
+    return render_template("centro/index.html", index_pag=index_pag, sitio=sitio)
