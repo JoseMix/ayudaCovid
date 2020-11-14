@@ -50,17 +50,19 @@
       <input type="hidden" value="{{centro.latitud}}" id="latitud" >
       <input type="hidden" value="{{centro.longitud}}" id="longitud" >
           
-      <div id="myMap" style="height: 180px; width: 600px;">
+      <div id="myMap" style="height: 230px;">
         <script src="{{ url_for('static', filename='mapaShow.js') }}"></script> 
       </div> 
     </div>
 {#-----------------------------------------------#}
 {% if centro.estado == 'ACEPTADO' and centro.publicado == True %}
+  {% if ( 'turnos_new' in session['permisos'] ) %}
   <div style="margin: 15px;"> 
     <br>
     <a href="{{url_for('turnos_new', centro_id=centro.id)}}" class="btn btn-primary">Solicitar turno</a>
     <br>
   </div>
+  {% endif %}
 
   {#-------------busqueda de turnos--------------#}
 
@@ -122,9 +124,12 @@
       </td>
       <td>
         {% if turno.estado=="VIGENTE" %}
-        <a href="{{ url_for('turnos_eliminar', turno_id=turno.id, centro_id=centro.id, page=index_pag.page, email=search['email'])}}" 
-          onclick="return confirmationTurno()" class="btn btn-danger">Cancelar</a>
-        
+          {% if ( 'turnos_destroy' in session['permisos'] ) %}
+          <a href="{{ url_for('turnos_eliminar', turno_id=turno.id, centro_id=centro.id, page=index_pag.page, email=search['email'])}}" 
+            onclick="return confirmationTurno()" class="btn btn-danger">Cancelar</a>
+          {% else %}
+          <strong class="text-text" style="color: green;"> {{ turno.estado }} </strong>
+          {% endif %}
         {% else %}
         <strong class="text-text" style="color: red;"> {{ turno.estado }} </strong>
         {% endif %}
