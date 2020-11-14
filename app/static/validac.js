@@ -22,6 +22,17 @@ function activar()
     }
 }
 
+function eliminarCentro() 
+{
+    if(confirm("Esta seguro que desea eliminar el Centro?"))
+    {
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+}
 let map;
 let marker;
 

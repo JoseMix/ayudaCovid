@@ -50,6 +50,7 @@ def index():
     return render_template("centro/index.html",form=form, mySearch=mySearch, index_pag=index_pag)
 
 
+
 def register():
     if not authenticated(session)or not tiene_permiso(session, 'centro_new'):
         abort(401)
@@ -185,7 +186,7 @@ def show():
             select_email.append(turno.email)
     sitio = Configuracion().sitio()
     search={}
-        
+
     if request.args.get("email") is not None:
         search["email"]=request.args.get("email")
         turnos = Turnos().turnos_by_email(search["email"], request.args.get("centro_id"), page, sitio.paginas)
@@ -194,3 +195,42 @@ def show():
         turnos = Turnos().turnos_by_email("todos", request.args.get("centro_id"), page, sitio.paginas)
     return render_template(
         "centro/show.html", centro=centro, emails=select_email, index_pag=turnos, search=search)
+
+def eliminar(centro_id,):
+    if not authenticated(session)or not tiene_permiso(session, 'centro_destroy'):
+        abort(401)
+    Centro().eliminar(id=centro_id)
+    flash("Centro eliminado correctamente")
+    page = request.args.get("page", 1, type=int)
+    sitio = Configuracion().sitio()
+    index_pag = Centro().all_paginado(page, sitio.paginas)
+    form = FilterFormCentro()
+    mySearch = {}
+    mySearch["name"] = request.args.get("name")
+    mySearch["estado"] = request.args.get("estado")
+    return render_template("centro/index.html",form=form, index_pag=index_pag, sitio=sitio, mySearch=mySearch )
+
+#lógica para aceptar o rechazar un centro
+def update_estado():
+    if not authenticated(session) or not tiene_permiso(session, 'centro_update'):
+        abort(401)
+    Centro().update_estado(request.args.get("centro_id"),request.args.get("estado"))
+    if request.args.get("estado") == 'ACEPTADO':
+        flash("¡El centro de ayuda social ha sido aceptado exitosamente!")
+    else:
+        flash("¡El centro de ayuda social ha sido rechazado exitosamente!")
+    return redirect(url_for("centro_show",centro_id=request.args.get("centro_id")))
+
+
+#lógica para publicar o despublicar un centro
+def update_publicado():
+    if not authenticated(session) or not tiene_permiso(session, 'centro_update'):
+        abort(401)
+    
+    Centro().update_publicado(request.args.get("centro_id"),request.args.get("publicado"))
+    if request.args.get("publicado") == 'True':
+        flash("¡El centro de ayuda social ha sido publicado exitosamente!")
+    else:
+        flash("¡El centro de ayuda social ha sido despublicado exitosamente!")
+    return redirect(url_for("centro_index",page=1))
+

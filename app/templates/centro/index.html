@@ -18,7 +18,7 @@
   <form action="{{ url_for('centro_index')}}" method="GET" class="form-inline my-1">
     {# {{ form.csrf_token }} #}
     <div class="busqueda">
-      <strong>Username</strong><br>
+      <strong>Nombre</strong><br>
       {{form.name(class_="form-control", placeholder='ingrese un nombre',value= mySearch['name'])}}
     </div>
     <div class="busqueda">
@@ -44,6 +44,7 @@
   <th> </th>
   <th> </th>
   <th> </th>
+  <th> </th>
   </tr>
   {% for centro in index_pag.items %}
   <tr style="text-align: center;">
@@ -52,13 +53,33 @@
     <td> {{ centro.municipio }} </td>
     <td> {{ centro.email }}</td>
     <td> {{ centro.estado }} </td>
-    
+      
+    {% if centro.estado == 'ACEPTADO' and centro.publicado == True %}    
+    <td>
+      <a href="{{url_for('centro_update_publicado', centro_id=centro.id, publicado=False) }}" 
+      onclick="return despublicarCentro()" class="btn btn-secondary">Despublicar</a>
+    </td> 
+    {% endif %}
+    {% if centro.estado == 'ACEPTADO' and centro.publicado == False %}    
+    <td>
+      <a href="{{ url_for('centro_update_publicado', centro_id=centro.id, publicado=True) }}" 
+      onclick="return publicarCentro()" class="btn btn-success">Publicar</a>
+    </td> 
+    {% endif %}
+    {% if centro.estado != 'ACEPTADO' %}
+    <td> <strong>DESPUBLICADO</strong></td>
+    {% endif %}
     <td>
       <a href="{{ url_for('centro_update', centro_id=centro.id) }}" class="btn btn-warning">Modificar</a>
     </td>
     <td>
-      <a href="" class="btn btn-danger">Eliminar</a>
+    {% if centro.activo == True %}
+      <a href="{{ url_for('centro_eliminar', centro_id=centro.id, page=index_pag.page,name=mySearch['name'], estado=mySearch['estado'] )}}" onclick="return eliminarCentro()" class="btn btn-danger">Eliminar</a>
+      <script src="{{ url_for('static', filename='validac.js') }}"> </script>
+    {%else %}
+      <strong style="color: rgba(197, 11, 5, 0.89);">Centro eliminado</strong>
     </td>
+    {% endif %}
     <td>
       <a href="{{ url_for('centro_show', centro_id=centro.id) }}" class="btn btn-link">Ver Mas</a>
     </td>
@@ -91,4 +112,5 @@
   </nav>
   {#----------------------------------------------------------------------#}
 </div>
+<script src="{{ url_for('static', filename='validaciones/centro.js') }}"></script>
 {% endblock %}

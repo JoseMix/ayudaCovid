@@ -62,6 +62,7 @@ class Turnos(db.Model):
                 order_by(Turnos.dia.asc(), Turnos.turno_id.asc()).\
                 paginate(page=page, per_page=per_page, error_out=False)
 
+    #no se usa
     # con join left
     def all(self):
         return (
@@ -71,7 +72,7 @@ class Turnos(db.Model):
             .all()
         )
 
-    
+    #no se usa
     # turnos de hoy y próx 2 días de un centro
     def turnos_proximos(self, centro_id, fecha_ini, fecha_fin):
         return Turnos.query.filter(
@@ -184,6 +185,26 @@ class Centro(db.Model):
         ).first()
         return centro
 
+
+    #modifica el estado a ACEPTADO o RECHAZADO
+    def update_estado(self, centro_id, estado):
+        centro = Centro().find_by_id(centro_id)
+        centro.estado = estado
+        if estado == 'ACEPTADO':
+            centro.publicado = True
+        else:
+            centro.publicado= False
+        db.session.commit()
+
+    #modifica el centro a publicado o despublicado - boolean -
+    def update_publicado(self, centro_id, publicado):
+        centro = Centro().find_by_id(centro_id)
+        if publicado == 'True':
+            centro.publicado = True
+        else:
+            centro.publicado= False
+        db.session.commit()
+
     def update(self, centro):
         db.session.merge(centro)
         db.session.commit()
@@ -192,6 +213,11 @@ class Centro(db.Model):
         centro = Centro.query.filter(and_(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre),Centro.id != id)).first()
         return centro
 
+    def eliminar(self, id):
+        centro = Centro().find_by_id(id)
+        centro.activo = False
+        db.session.commit()
+        return centro
 
 def empty_value(data):
     if not data:
