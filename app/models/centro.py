@@ -17,8 +17,10 @@ class Turnos(db.Model):
     __tablename__ = "turnos"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), nullable=False)
-    dia = db.Column(db.Date, nullable=False)
-    estado = db.Column(db.Enum("VIGENTE", "CANCELADO"), nullable=False, default="VIGENTE")
+    dia = db.Column(db.DateTime, nullable=False)
+    estado = db.Column(
+        db.Enum("VIGENTE", "CANCELADO"), nullable=False, default="VIGENTE"
+    )
     turno_id = db.Column(db.Integer, db.ForeignKey("bloque.id"), nullable=False)
     centro_id = db.Column(db.Integer, db.ForeignKey("centro.id"), nullable=False)
 
@@ -33,63 +35,56 @@ class Turnos(db.Model):
         db.session.add(turno)
         db.session.commit()
 
-
-    #Baja lógica de turno
+    # Baja lógica de turno
     def eliminar(self, id):
         turno = Turnos().find_by_id(id)
         turno.estado = "CANCELADO"
         db.session.commit()
 
-
-    #busca turno por id
+    # busca turno por id
     def find_by_id(self, id):
-        return Turnos.query.filter(Turnos.id==id).first()
+        return Turnos.query.filter(Turnos.id == id).first()
 
-
-    #Para validar turno repetido de centro
+    # Para validar turno repetido de centro
     def find_by(self, dia, bloque, centro_id):
-        return Turnos.query.filter(and_(Turnos.centro_id==centro_id, Turnos.turno_id==bloque), Turnos.dia== dia, Turnos.estado=="VIGENTE").first()
+        return Turnos.query.filter(
+            and_(Turnos.centro_id == centro_id, Turnos.turno_id == bloque),
+            Turnos.dia == dia,
+            Turnos.estado == "VIGENTE",
+        ).first()
 
-
-    #busca turnos por email
-    def turnos_by_email(self,email, centro_id, page, per_page):
+    # busca turnos por email
+    def turnos_by_email(self, email, centro_id, page, per_page):
         if email == "todos":
-            return Turnos.query.filter(Turnos.centro_id==centro_id).\
-                order_by(Turnos.dia.asc(), Turnos.turno_id.asc()).\
-                paginate(page=page, per_page=per_page, error_out=False)
-        else:
-            return Turnos.query.filter(and_(Turnos.email==email, Turnos.centro_id==centro_id)).\
-                order_by(Turnos.dia.asc(), Turnos.turno_id.asc()).\
-                paginate(page=page, per_page=per_page, error_out=False)
-
-    #no se usa
-    # con join left
-    def all(self):
-        return (
-            db.session.query(Turnos, Bloque)
-            .join(Turnos, isouter=True)
-            .order_by(Bloque.hora_inicio.asc())
-            .all()
-        )
-
-    #no se usa
-    # turnos de hoy y próx 2 días de un centro
-    def turnos_proximos(self, centro_id, fecha_ini, fecha_fin):
-        return db.session.query(Turnos, Bloques).join(Bloque).filter(and_(Turnos.dia.between(fecha_ini, fecha_fin), Turnos.centro_id == centro_id
+            return (
+                Turnos.query.filter(Turnos.centro_id == centro_id)
+                .order_by(Turnos.dia.asc(), Turnos.turno_id.asc())
+                .paginate(page=page, per_page=per_page, error_out=False)
             )
-        ).all()
+        else:
+            return (
+                Turnos.query.filter(
+                    and_(Turnos.email == email, Turnos.centro_id == centro_id)
+                )
+                .order_by(Turnos.dia.asc(), Turnos.turno_id.asc())
+                .paginate(page=page, per_page=per_page, error_out=False)
+            )
 
     # turnos en una fecha para un centro
     def turno_centro_fecha(self, centro_id, fecha):
         return Turnos.query.filter(and_(Turnos.dia == fecha, Turnos.centro_id == centro_id)).all()
+#
 
+    def validar_turno_existente(self, id_bloque,id_centro,fecha):
+        return Turnos.query.filter(and_(and_(Turnos.turno_id==id_bloque,Turnos.centro_id==id_centro),Turnos.dia==fecha)).first()
+
+#esquema de turnos                                        
 class TurnoSchema(Schema):
     centro_id = fields.Str()
-    hora_inicio = fields.DateTime(format="%H:%M:%S")
-    hora_fin = fields.DateTime(format="%H:%M:%S")
+    email_donante = fields.Str()
+    hora_inicio = fields.DateTime(format="%H:%M")
+    hora_fin = fields.DateTime(format="%H:%M")
     fecha = fields.Date(format="%Y-%m-%d") 
-    centro = fields.Str()
-
 
 turno_schema = TurnoSchema()
 turnos_schema = TurnoSchema(many=True)
@@ -104,6 +99,21 @@ class Bloque(db.Model):
 
     def all(self):
         return Bloque.query.all()
+
+    def find_by_hora_inicio(self, hora_inicio):
+        return Bloque.query.filter(Bloque.hora_inicio == hora_inicio).first()
+    def bloques_ocupados(self, centro_id, fecha):
+        return (
+            db.session.query(Bloque)
+            .join(Bloque.turnos)
+            .filter(
+                and_(
+                    and_(Turnos.dia == fecha, Turnos.centro_id == centro_id),
+                    and_(Turnos.turno_id == Bloque.id, Turnos.estado != "CANCELADO"),
+                )
+            )
+            .all()
+        )
 
 
 # Modelo Centro
@@ -132,20 +142,28 @@ class Centro(db.Model):
     turnos = db.relationship("Turnos", backref="centro", lazy=True)
 
     def search_by(self, name, estado, page, per_page):
-        if estado == '3': #busco por nombre en todos los estados
-            centro = Centro().query.filter(Centro.nombre.ilike(f'%{name}%')).\
-            paginate(page=page, per_page=per_page, error_out=False)
+        if estado == "3":  # busco por nombre en todos los estados
+            centro = (
+                Centro()
+                .query.filter(Centro.nombre.ilike(f"%{name}%"))
+                .paginate(page=page, per_page=per_page, error_out=False)
+            )
         else:
-            if(name == ''): #Si no vino nombre, busca solo por estado
-                centro = Centro().query.\
-                filter(Centro.estado == estado).\
-                paginate(page=page, per_page=per_page, error_out=False)
-            else:        #vino nombre y estado     
-                centro = Centro().query.\
-                filter(and_(Centro.nombre.ilike(f'%{name}%'), Centro.estado == estado)).\
-                paginate(page=page, per_page=per_page, error_out=False)
+            if name == "":  # Si no vino nombre, busca solo por estado
+                centro = (
+                    Centro()
+                    .query.filter(Centro.estado == estado)
+                    .paginate(page=page, per_page=per_page, error_out=False)
+                )
+            else:  # vino nombre y estado
+                centro = (
+                    Centro()
+                    .query.filter(
+                        and_(Centro.nombre.ilike(f"%{name}%"), Centro.estado == estado)
+                    )
+                    .paginate(page=page, per_page=per_page, error_out=False)
+                )
         return centro
-
 
     def all(self):
         centros = Centro.query.all()
@@ -181,7 +199,7 @@ class Centro(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
-    #actualiza centro con datos del form
+    # actualiza centro con datos del form
     def update(self, formulario, centro):
         centro.nombre = formulario["nombre"].data
         centro.direccion = formulario["direccion"].data
@@ -194,13 +212,17 @@ class Centro(db.Model):
         centro.email = formulario["email"].data
         centro.latitud = formulario["lat"].data
         centro.longitud = formulario["lng"].data
-        
+
         db.session.merge(centro)
         db.session.commit()
 
-
-    def validate_centro_creation(self, nombre,direccion,municipio):
-        centro = Centro.query.filter(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre)).first()
+    def validate_centro_creation(self, nombre, direccion, municipio):
+        centro = Centro.query.filter(
+            and_(
+                and_(Centro.municipio == municipio, Centro.direccion == direccion),
+                Centro.nombre == nombre,
+            )
+        ).first()
         return centro
 
     def show_one(self, id):
@@ -209,34 +231,40 @@ class Centro(db.Model):
         ).first()
         return centro
 
-
-    #modifica el estado a ACEPTADO o RECHAZADO
+    # modifica el estado a ACEPTADO o RECHAZADO
     def update_estado(self, centro_id, estado):
         centro = Centro().find_by_id(centro_id)
         centro.estado = estado
-        if estado == 'ACEPTADO':
+        if estado == "ACEPTADO":
             centro.publicado = True
         else:
-            centro.publicado= False
+            centro.publicado = False
         db.session.commit()
 
-    #modifica el centro a publicado o despublicado - boolean -
+    # modifica el centro a publicado o despublicado - boolean -
     def update_publicado(self, centro_id, publicado):
         centro = Centro().find_by_id(centro_id)
-        if publicado == 'True':
+        if publicado == "True":
             centro.publicado = True
         else:
-            centro.publicado= False
+            centro.publicado = False
         db.session.commit()
 
-    #def update(self, centro):
+    # def update(self, centro):
     #    db.session.merge(centro)
     #    db.session.commit()
 
-
-    #valida que no exista centro con mismo municipio, dirección y nombre
+    # valida que no exista centro con mismo municipio, dirección y nombre
     def validate_centro_update(self, nombre, direccion, municipio, id):
-        centro = Centro.query.filter(and_(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre),Centro.id != id)).first()
+        centro = Centro.query.filter(
+            and_(
+                and_(
+                    and_(Centro.municipio == municipio, Centro.direccion == direccion),
+                    Centro.nombre == nombre,
+                ),
+                Centro.id != id,
+            )
+        ).first()
         return centro
 
     def eliminar(self, id):
@@ -245,9 +273,11 @@ class Centro(db.Model):
         db.session.commit()
         return centro
 
+
 def empty_value(data):
     if not data:
         raise ValidationError("El campo no puede ser vacio.")
+
 
 class CentroSchema(Schema):
     nombre = fields.Str(required=True, validate=empty_value)
@@ -265,4 +295,3 @@ class CentroSchema(Schema):
 
 centro_schema = CentroSchema()
 centros_schema = CentroSchema(many=True)
-
