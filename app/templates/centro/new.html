@@ -83,7 +83,7 @@
         
         <div class="form-col-right">
         {{form.web.label}}
-        {{form.web(class_="form-control", placeholder='Ingrese un sitio')}}
+        {{form.web(class="form-control", placeholder='Ingrese un sitio')}}
         </div><br>
         {% for error in form.web.errors %}
           <div style=color:red>{{ error }}</div>
@@ -91,9 +91,9 @@
 
         <div id="pdf">
           <label>Protocolo</label>       
-          {{form.protocolo(class_="form-control" ,type="file")}}
-          
+          {{form.protocolo(class="form-control" ,type="file")}}
         </div>
+
         {% for error in form.protocolo.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
