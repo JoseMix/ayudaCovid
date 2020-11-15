@@ -22,8 +22,11 @@ import requests
 from _datetime import date
 import datetime
 
-UPLOAD_FOLDER = "app/static/archivosPdf/"
+#para local
+UPLOAD_FOLDER = "app/static/uploads/"
 
+#para producción
+#UPLOAD_FOLDER = "https://grupo13.proyecto2020.linti.unlp.edu.ar/static/uploads/"
 
 def index():
     if not authenticated(session)or not tiene_permiso(session, 'centro_index'):
@@ -78,8 +81,9 @@ def update(centro_id):
     centro = Centro().query.get_or_404(centro_id)
     form = CrearCentroForm(obj=centro)
     if request.method == 'POST':
-        #valida y modifica
-        update_centro(form, centro)
+        #valida y modifica, retorna boolean
+        if update_centro(form, centro):
+            return redirect(url_for("centro_index", page=1))
     
     # si falla alguna validación que redireccione al update
     return render_template("centro/update.html", form=form,  centro_id=centro_id, lista_municipio=lista_municipio)
@@ -100,14 +104,14 @@ def update_centro(form, centro):
                     filename = secure_filename(file_protocolo.filename) #Me quedo con el nombre del pdf
                     file_protocolo.save(os.path.join(UPLOAD_FOLDER, filename))#guarda en carpeta
                     centro.protocolo = filename
-            #else:
-            #    centro.protocolo = "NULL" #si no se cargo protocolo queda el viejo o viejo=null.
             Centro().update(form, centro) #actualiza centro
-            return redirect(url_for("centro_index", page=1))
+            return True
         else:
             flash('El horario de apertura debe ser menor que el horario de cierre')
+            return False
     else:
         flash("Ya existe un centro con nombre, dirección y municipio ingresado")
+        return False
 
 
 #horario de apertura y cierre coherente
@@ -191,13 +195,9 @@ def eliminar(centro_id,):
     Centro().eliminar(id=centro_id)
     flash("Centro eliminado correctamente")
     page = request.args.get("page", 1, type=int)
-    sitio = Configuracion().sitio()
-    index_pag = Centro().all_paginado(page, sitio.paginas)
-    form = FilterFormCentro()
-    mySearch = {}
-    mySearch["name"] = request.args.get("name")
-    mySearch["estado"] = request.args.get("estado")
-    return render_template("centro/index.html",form=form, index_pag=index_pag, sitio=sitio, mySearch=mySearch )
+    name = request.args.get("name")
+    estado = request.args.get("estado")
+    return redirect(url_for("centro_index", centro_id=centro_id, page=page,name=name, estado=estado))
 
 
 #lógica para aceptar o rechazar un centro
@@ -222,5 +222,8 @@ def update_publicado():
         flash("¡El centro de ayuda social ha sido publicado exitosamente!")
     else:
         flash("¡El centro de ayuda social ha sido despublicado exitosamente!")
-    return redirect(url_for("centro_index",page=1))
+    page = request.args.get("page", 1, type=int)
+    name = request.args.get("name")
+    estado = request.args.get("estado")
+    return redirect(url_for("centro_index", centro_id=request.args.get("centro_id"), page=page,name=name, estado=estado))
 
