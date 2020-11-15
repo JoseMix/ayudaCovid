@@ -72,6 +72,11 @@ class FilterForm(FlaskForm):
     estado = SelectField(choices=[('2','Todos'),('1', 'Activo'), ('0', 'Bloqueado')])
     submit = SubmitField("Enviar")
 
+class FilterFormCentro (FlaskForm):
+    name = StringField()
+    estado = SelectField(choices=[('3','Todos'),('RECHAZADO', 'RECHAZADO'),('PENDIENTE', 'PENDIENTE'),('ACEPTADO', 'ACEPTADO')])
+    submit = SubmitField("Enviar")
+
 class CrearCentroForm(FlaskForm):
     nombre = StringField(
         "Nombre",
@@ -115,12 +120,12 @@ class CrearCentroForm(FlaskForm):
         ],
     )
 
-    tipo_centro = SelectField(choices=[('0','*elija una opcion'),('COMIDA','COMIDA'),('ROPA', 'ROPA'), ('PLASMA', 'PLASMA')])
+    tipo_centro = SelectField(choices=[('0','elija una opcion'),('COMIDA','COMIDA'),('ROPA', 'ROPA'), ('PLASMA', 'PLASMA')])
 
     municipio = StringField(
         "Municipio",
         validators=[
-            DataRequired(message="El campo municipio no puede estar vacio"),
+            #DataRequired(message="El campo municipio no puede estar vacio"),
             Length(
                 min=2, max=20, message="El municipio debe tener entre 8-10 caracteres"
             ),
@@ -145,7 +150,7 @@ class CrearCentroForm(FlaskForm):
         ],
     )
 
-    protocolo=FileField("protocolo")
+    protocolo=FileField("Protocolo")
 
     lng = StringField()
     lat = StringField()

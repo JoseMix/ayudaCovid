@@ -112,6 +112,3 @@ flask_session
 coc-settings.json
 .vscode
 
-#Carpeta de pdf
-.static/archivosPdf
-app/static/archivosPdf/

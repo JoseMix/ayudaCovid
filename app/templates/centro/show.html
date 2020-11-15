@@ -9,10 +9,9 @@
 </div>
   <div id="show">
   <strong class="texto" style="font-size: x-large;">INFORMACIÓN DEL CENTRO:</strong><br><br>
-    
+
   {#-----------------------   DATOS DEL CENTRO   ----------------------------#}
-  <div style="float: left;">
-    
+  <div style="float: left; margin: 15px;">
       <strong class="texto-show">Nombre: </strong>
       <strong class="text-text"> {{ centro.nombre }}</strong><br>
 
@@ -27,26 +26,43 @@
     
       <strong class="texto-show">Email: </strong>
       <strong class="text-text"> {{ centro.email }} </strong><br>
-    
-      <strong class="texto-show">Estado: </strong>
-      <strong class="text-text"> {{ centro.estado }} </strong><br>
 
       <strong class="texto-show">Protocolo: </strong>
-      <strong class="text-text"> {{ centro.protocolo }} </strong><br>
+      {% if centro.protocolo != 'NULL' %}
+      <strong class="text-text"> {{ centro.protocolo }} </strong>
+      {% else %}
+      <strong class="text-text"> sin protocolo </strong>
+      {% endif %}
+      <br>
+      <strong class="texto-show">Estado: </strong>
+      <strong class="text-text"> {{ centro.estado }} </strong><br>
+      {% if centro.estado == 'PENDIENTE' %}
+      <div style="margin: 15px;">
+        <a href="{{url_for('centro_update_estado', centro_id=centro.id,estado='ACEPTADO')}}" onclick="return aceptarCentro()" class="btn btn-success">ACEPTAR</a>
+        <a href="{{url_for('centro_update_estado', centro_id=centro.id,estado='RECHAZADO')}}" onclick="return rechazarCentro()" class="btn btn-danger">RECHAZAR</a>
+      </div>
+      {% endif %}
+      <br><br>
+
   </div>
-    <div>
-    <strong class="texto-show">Ubicacion: </strong>
-    <input type="hidden" value="{{centro.latitud}}" id="latitud" >
-    <input type="hidden" value="{{centro.longitud}}" id="longitud" >
-        
-    <div id="myMap" style="height: 180px;">
-      <script src="{{ url_for('static', filename='mapaShow.js') }}"></script> 
-    </div> 
+    <div style="margin-left:20px;">
+      <strong class="texto-show">Ubicacion: </strong>
+      <input type="hidden" value="{{centro.latitud}}" id="latitud" >
+      <input type="hidden" value="{{centro.longitud}}" id="longitud" >
+          
+      <div id="myMap" style="height: 230px;">
+        <script src="{{ url_for('static', filename='mapaShow.js') }}"></script> 
+      </div> 
     </div>
 {#-----------------------------------------------#}
-  <br>
-  <a href="{{url_for('turnos_new', centro_id=centro.id)}}" class="btn btn-primary">Solicitar turno</a>
-  <br>
+{% if centro.estado == 'ACEPTADO' and centro.publicado == True %}
+  {% if ( 'turnos_new' in session['permisos'] ) %}
+  <div style="margin: 15px;"> 
+    <br>
+    <a href="{{url_for('turnos_new', centro_id=centro.id)}}" class="btn btn-primary">Solicitar turno</a>
+    <br>
+  </div>
+  {% endif %}
 
   {#-------------busqueda de turnos--------------#}
 
@@ -58,7 +74,7 @@
       <div class="busqueda">
         <strong>Email de solicitante:</strong><br>
         <select name="email" class="form-control mr-sm-1">
-          {% if search["email"] %}
+          {% if search["email"] and search["email"] != "todos" %}
           <option value="{{ search['email'] }}">{{ search["email"] }}</option>
           {% endif%}
           <option value="todos">TODOS</option>
@@ -85,7 +101,7 @@
   <table class="table table-hover">
     <tr>
       <td>
-        <strong class="texto-text">Día:</strong>
+        <strong class="=texto-text">Día:</strong>
       </td>
       <td>
         <strong class="texto-text">Horario:</strong>
@@ -108,9 +124,12 @@
       </td>
       <td>
         {% if turno.estado=="VIGENTE" %}
-        <a href="{{ url_for('turnos_eliminar', turno_id=turno.id, centro_id=centro.id)}}" 
-          onclick="return confirmationTurno()" class="btn btn-danger">Cancelar</a>
-        <script src="{{ url_for('static', filename='validaciones/turnos.js') }}"></script>
+          {% if ( 'turnos_destroy' in session['permisos'] ) %}
+          <a href="{{ url_for('turnos_eliminar', turno_id=turno.id, centro_id=centro.id, page=index_pag.page, email=search['email'])}}" 
+            onclick="return confirmationTurno()" class="btn btn-danger">Cancelar</a>
+          {% else %}
+          <strong class="text-text" style="color: green;"> {{ turno.estado }} </strong>
+          {% endif %}
         {% else %}
         <strong class="text-text" style="color: red;"> {{ turno.estado }} </strong>
         {% endif %}
@@ -144,7 +163,9 @@
       </ul>
     </nav>
     {#----------------------------------------------------------------------#}
-  
+{% endif %}
+<br><br><br><br>
 </div>
-  
+<script src="{{ url_for('static', filename='validaciones/turnos.js') }}"></script>
+<script src="{{ url_for('static', filename='validaciones/centro.js') }}"></script>
 {% endblock %}

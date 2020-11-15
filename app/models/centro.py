@@ -62,6 +62,7 @@ class Turnos(db.Model):
                 order_by(Turnos.dia.asc(), Turnos.turno_id.asc()).\
                 paginate(page=page, per_page=per_page, error_out=False)
 
+    #no se usa
     # con join left
     def all(self):
         return (
@@ -71,7 +72,7 @@ class Turnos(db.Model):
             .all()
         )
 
-    
+    #no se usa
     # turnos de hoy y próx 2 días de un centro
     def turnos_proximos(self, centro_id, fecha_ini, fecha_fin):
         return Turnos.query.filter(
@@ -111,12 +112,28 @@ class Centro(db.Model):
         nullable=False,
         default="PENDIENTE",
     )
-    publicado = db.Column(db.Boolean, nullable=False)
-    activo = db.Column(db.Boolean, nullable=False)
-    protocolo = db.Column(db.String(255), nullable=False)
-    latitud = db.Column(db.String(20), nullable=False)
-    longitud = db.Column(db.String(20), nullable=False)
+    publicado = db.Column(db.Boolean, nullable=False, default=False)
+    activo = db.Column(db.Boolean, nullable=False, default=False)
+    protocolo = db.Column(db.String(255), nullable=True)
+    latitud = db.Column(db.String(20), nullable=True)
+    longitud = db.Column(db.String(20), nullable=True)
     turnos = db.relationship("Turnos", backref="centro", lazy=True)
+
+    def search_by(self, name, estado, page, per_page):
+        if estado == '3': #busco por nombre en todos los estados
+            centro = Centro().query.filter(Centro.nombre.ilike(f'%{name}%')).\
+            paginate(page=page, per_page=per_page, error_out=False)
+        else:
+            if(name == ''): #Si no vino nombre, busca solo por estado
+                centro = Centro().query.\
+                filter(Centro.estado == estado).\
+                paginate(page=page, per_page=per_page, error_out=False)
+            else:        #vino nombre y estado     
+                centro = Centro().query.\
+                filter(and_(Centro.nombre.ilike(f'%{name}%'), Centro.estado == estado)).\
+                paginate(page=page, per_page=per_page, error_out=False)
+        return centro
+
 
     def all(self):
         centros = Centro.query.all()
@@ -152,14 +169,26 @@ class Centro(db.Model):
         db.session.add(nuevo)
         db.session.commit()
 
+    #actualiza centro con datos del form
+    def update(self, formulario, centro):
+        centro.nombre = formulario["nombre"].data
+        centro.direccion = formulario["direccion"].data
+        centro.telefono = formulario["telefono"].data
+        centro.apertura = formulario["apertura"].data
+        centro.cierre = formulario["cierre"].data
+        centro.tipo_centro = formulario["tipo_centro"].data
+        centro.municipio = formulario["municipio"].data
+        centro.web = formulario["web"].data
+        centro.email = formulario["email"].data
+        centro.latitud = formulario["lat"].data
+        centro.longitud = formulario["lng"].data
+        
+        db.session.merge(centro)
+        db.session.commit()
 
-    def validate_centro_creation(self, nombre, direccion, municipio):
-        centro = Centro.query.filter(
-            and_(
-                and_(Centro.municipio == municipio, Centro.direccion == direccion),
-                Centro.nombre == nombre,
-            )
-        ).first()
+
+    def validate_centro_creation(self, nombre,direccion,municipio):
+        centro = Centro.query.filter(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre)).first()
         return centro
 
     def show_one(self, id):
@@ -169,11 +198,44 @@ class Centro(db.Model):
         return centro
 
 
+    #modifica el estado a ACEPTADO o RECHAZADO
+    def update_estado(self, centro_id, estado):
+        centro = Centro().find_by_id(centro_id)
+        centro.estado = estado
+        if estado == 'ACEPTADO':
+            centro.publicado = True
+        else:
+            centro.publicado= False
+        db.session.commit()
+
+    #modifica el centro a publicado o despublicado - boolean -
+    def update_publicado(self, centro_id, publicado):
+        centro = Centro().find_by_id(centro_id)
+        if publicado == 'True':
+            centro.publicado = True
+        else:
+            centro.publicado= False
+        db.session.commit()
+
+    #def update(self, centro):
+    #    db.session.merge(centro)
+    #    db.session.commit()
+
+
+    #valida que no exista centro con mismo municipio, dirección y nombre
+    def validate_centro_update(self, nombre, direccion, municipio, id):
+        centro = Centro.query.filter(and_(and_(and_(Centro.municipio == municipio,Centro.direccion==direccion),Centro.nombre==nombre),Centro.id != id)).first()
+        return centro
+
+    def eliminar(self, id):
+        centro = Centro().find_by_id(id)
+        centro.activo = False
+        db.session.commit()
+        return centro
 
 def empty_value(data):
     if not data:
         raise ValidationError("El campo no puede ser vacio.")
-
 
 class CentroSchema(Schema):
     nombre = fields.Str(required=True, validate=empty_value)
