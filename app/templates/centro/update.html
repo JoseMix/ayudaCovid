@@ -92,7 +92,7 @@
         {% for error in form.protocolo.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
-
+        
         <div class="form-col-left" style="margin-top: 5px; padding-top: 5px; ">
           <label>Ingrese ubicacion del centro</label>
             <div class="map-container">
@@ -101,6 +101,7 @@
             </div> 
         </div>
         <div id="myMap" style="height: 180px; width: 800px;">
+      
             <script src="{{ url_for('static', filename='mapa.js') }}"> </script> 
         </div>        
         

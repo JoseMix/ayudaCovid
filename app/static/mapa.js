@@ -9,9 +9,13 @@ window.onload = () => {
 };
 
 const initializeMap = () => {
-    map = L.map('myMap').setView([-34.9187,-57.956], 13);
+    let lat=document.getElementById('lat').value
+    let lng=document.getElementById('lng').value
+
+    map = L.map('myMap').setView([lat,lng], 12);
     L.tileLayer(tileUrl).addTo(map);
-    
+    marker = L.marker([lat, lng]).addTo(map);
+
     map.on('click', mapClickHandler);
     /*addSearchControl(); llamado al buscador. todavia no*/
 };

@@ -80,6 +80,9 @@ def update(centro_id):
     #busca el centro y carga el formulario de update
     centro = Centro().query.get_or_404(centro_id)
     form = CrearCentroForm(obj=centro)
+    if request.method != 'POST':
+        form.lat.data = centro.latitud
+        form.lng.data = centro.longitud
     if request.method == 'POST':
         #valida y modifica, retorna boolean
         if update_centro(form, centro):
