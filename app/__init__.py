@@ -50,7 +50,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://maruca:maruca@localhost/proyecto"
+    ] = "mysql+pymysql://root:password@172.17.0.3/grupo13"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     ma = Marshmallow(app)
@@ -121,7 +121,7 @@ def create_app(environment="development"):
 
     # Rutas de Turnos
     app.add_url_rule("/turnos/nuevo", "turnos_new", turnos.new, methods=["GET", "POST"])
-    #app.add_url_rule("/turnos/nuevo", "turnos_create", turnos.create, methods=["POST"])
+    # app.add_url_rule("/turnos/nuevo", "turnos_create", turnos.create, methods=["POST"])
     app.add_url_rule(
         "/turnos/eliminar/", "turnos_eliminar", turnos.eliminar, methods=["GET"]
     )
@@ -130,7 +130,7 @@ def create_app(environment="development"):
     @app.route("/")
     def home():
         if authenticated(session):
-            return redirect(url_for('centro_index', page=1))
+            return redirect(url_for("centro_index", page=1))
         else:
             sitio = Configuracion().sitio()
             return render_template("home.html", sitio=sitio)
