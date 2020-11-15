@@ -75,12 +75,24 @@ class Turnos(db.Model):
     #no se usa
     # turnos de hoy y próx 2 días de un centro
     def turnos_proximos(self, centro_id, fecha_ini, fecha_fin):
-        return Turnos.query.filter(
-            and_(
-                Turnos.dia.between(fecha_ini, fecha_fin), Turnos.centro_id == centro_id
+        return db.session.query(Turnos, Bloques).join(Bloque).filter(and_(Turnos.dia.between(fecha_ini, fecha_fin), Turnos.centro_id == centro_id
             )
         ).all()
 
+    # turnos en una fecha para un centro
+    def turno_centro_fecha(self, centro_id, fecha):
+        return Turnos.query.filter(and_(Turnos.dia == fecha, Turnos.centro_id == centro_id)).all()
+
+class TurnoSchema(Schema):
+    centro_id = fields.Str()
+    hora_inicio = fields.DateTime(format="%H:%M:%S")
+    hora_fin = fields.DateTime(format="%H:%M:%S")
+    fecha = fields.Date(format="%Y-%m-%d") 
+    centro = fields.Str()
+
+
+turno_schema = TurnoSchema()
+turnos_schema = TurnoSchema(many=True)
 
 # Modelo Bloque de turnos
 class Bloque(db.Model):
@@ -253,3 +265,4 @@ class CentroSchema(Schema):
 
 centro_schema = CentroSchema()
 centros_schema = CentroSchema(many=True)
+
