@@ -152,7 +152,8 @@ def create_app(environment="development"):
     # Rutas api turnos
     app.add_url_rule("/api/centros/turnos_disponibles/<int:centro_id>/", "api_turno_show", turno.show, methods=["GET"] )
     app.add_url_rule("/api/centros/turnos_disponibles/<int:centro_id>/<fecha>", "api_turno_show", turno.show, methods=["GET"] )
-    
+    app.add_url_rule("/centros/reserva" , "api_new_reserva" , turno.new_reserva, methods=["POST"] )
+
     # Handlers  
     # app.register_error_handler(404, handler.not_found_error)
     # app.register_error_handler(401, handler.unauthorized_error)

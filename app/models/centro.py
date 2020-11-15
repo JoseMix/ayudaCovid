@@ -82,13 +82,19 @@ class Turnos(db.Model):
     # turnos en una fecha para un centro
     def turno_centro_fecha(self, centro_id, fecha):
         return Turnos.query.filter(and_(Turnos.dia == fecha, Turnos.centro_id == centro_id)).all()
+#
 
+    def validar_turno_existente(self, id_bloque,id_centro,fecha):
+        return Turnos.query.filter(and_(and_(Turnos.turno_id==id_bloque,Turnos.centro_id==id_centro),Turnos.dia==fecha)).first()
+
+#esquema de turnos                                        
 class TurnoSchema(Schema):
     centro_id = fields.Str()
-    hora_inicio = fields.DateTime(format="%H:%M:%S")
-    hora_fin = fields.DateTime(format="%H:%M:%S")
+    email_donante = fields.Str()
+    hora_inicio = fields.DateTime(format="%H:%M")
+    hora_fin = fields.DateTime(format="%H:%M")
     fecha = fields.Date(format="%Y-%m-%d") 
-    centro = fields.Str()
+    #centro = fields.Str()
 
 
 turno_schema = TurnoSchema()
@@ -105,6 +111,8 @@ class Bloque(db.Model):
     def all(self):
         return Bloque.query.all()
 
+    def find_by_hora_inicio(self, hora_inicio):
+        return Bloque.query.filter(Bloque.hora_inicio == hora_inicio).first()
 
 # Modelo Centro
 class Centro(db.Model):
