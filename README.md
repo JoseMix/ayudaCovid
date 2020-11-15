@@ -22,12 +22,12 @@ Florencia Paredes 14598/0
 │   │   ├── configuracion.py
 │   │   ├── __init__.py
 │   │   └── models.py
-│   ├── resources  
+│   ├── resources
 │   │   ├── api
 │   │   │   ├── centros.py
 │   │   │   ├── __init__.py
-│   │   ├── auth.py
-│   │   ├── centro.py
+│   │   │   └── turno.py
+
 
 ```
 
@@ -50,7 +50,7 @@ JSON es un formato que almacena información estructurada y se utiliza principal
 Un objeto comienza con { llave de apertura y termina con llave de cierre }. Cada nombre es seguido por :dos puntos y los pares nombre/valor están separados por ,coma.
 
 ## Creación de un ejemplo
-
+**Centros**  
 Usando Postman usamos el endpoint http://127.0.0.1:5000/api/centros y como metodo usamos POST, esto añadirá un nuevo centro a nuestra base de datos
 Seleccionamos body y luego Raw y el tipo debe ser JSON, luego copiamos el codigo:
 
@@ -140,4 +140,73 @@ http://127.0.0.1:5000/api/centros/:id
 ]
 
 
-```
+```  
+**Turnos**  
+En Postman usamos el endpoint http://127.0.0.1:5000/api/centros/:id/:fecha 
+La Api nos devolvera el listado de turnos disponibles para una fecha dada y en caso de no existir la fecha, nos dará los turnos disponibles en la fecha de hoy, para ese centro.
+El formato de la fecha debe ser el siguiente: AAAA-mm-dd
+http://127.0.0.1:5000/api/centros/turnos_disponibles/1/2020-11-15 
+
+```bash
+[
+    {
+        "centro_id": 1,
+        "fecha": "2020-11-15",
+        "turno": [
+            {
+                "hora_fin": "10:00:00",
+                "hora_inicio": "09:30:00"
+            },
+            {
+                "hora_fin": "10:30:00",
+                "hora_inicio": "10:00:00"
+            },
+            {
+                "hora_fin": "11:00:00",
+                "hora_inicio": "10:30:00"
+            },
+            {
+                "hora_fin": "11:30:00",
+                "hora_inicio": "11:00:00"
+            },
+            {
+                "hora_fin": "12:00:00",
+                "hora_inicio": "11:30:00"
+            },
+            {
+                "hora_fin": "12:30:00",
+                "hora_inicio": "12:00:00"
+            },
+            {
+                "hora_fin": "13:00:00",
+                "hora_inicio": "12:30:00"
+            },
+            {
+                "hora_fin": "14:00:00",
+                "hora_inicio": "13:30:00"
+            },
+            {
+                "hora_fin": "14:30:00",
+                "hora_inicio": "14:00:00"
+            },
+            {
+                "hora_fin": "15:00:00",
+                "hora_inicio": "14:30:00"
+            },
+            {
+                "hora_fin": "15:30:00",
+                "hora_inicio": "15:00:00"
+            },
+            {
+                "hora_fin": "16:00:00",
+                "hora_inicio": "15:30:00"
+            }
+        ]
+    },
+    200
+]
+
+
+```  
+
+
