@@ -23,10 +23,10 @@ from _datetime import date
 import datetime
 
 #para local
-UPLOAD_FOLDER = "app/static/uploads/"
+#UPLOAD_FOLDER = "app/static/uploads/"
 
 #para producción
-#UPLOAD_FOLDER = "https://grupo13.proyecto2020.linti.unlp.edu.ar/static/uploads/"
+UPLOAD_FOLDER = "https://grupo13.proyecto2020.linti.unlp.edu.ar/static/uploads/"
 
 def index():
     if not authenticated(session)or not tiene_permiso(session, 'centro_index'):
