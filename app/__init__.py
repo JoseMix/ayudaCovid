@@ -17,7 +17,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_marshmallow import Marshmallow
 from app.resources import user, configuracion, auth, centro, turnos
-from app.resources.api import centros, turno
+from app.resources.api import centros,turno
 
 # from app.resources.api import centro
 from config import config
@@ -121,7 +121,7 @@ def create_app(environment="development"):
     )
     app.add_url_rule("/centro/update/<int:centro_id>", "centro_update", centro.update,  methods=["GET", "POST"])
     app.add_url_rule("/centro/eliminar/<int:centro_id>", "centro_eliminar", centro.eliminar, methods=["GET"])
-   
+
     # Rutas de Turnos
     app.add_url_rule("/turnos/nuevo", "turnos_new", turnos.new, methods=["GET", "POST"])
     #app.add_url_rule("/turnos/nuevo", "turnos_create", turnos.create, methods=["POST"])

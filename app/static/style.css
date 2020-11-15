@@ -198,3 +198,28 @@ a.link {
   display: none;
 }
 
+.form-col-left{
+  float: left;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 70px;
+  margin-right: 90px;
+  padding: 5px;
+}
+
+.form-col-right{
+  float: right;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 20px;
+  margin-right: 70px;
+  padding: 5px;
+}
+
+#pdf{
+  margin-left: 70px;
+  margin-right: 70px;
+  margin-top: 200px;
+  margin-bottom: 20px;
+  padding: 10px;
+}

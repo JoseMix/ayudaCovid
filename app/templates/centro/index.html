@@ -34,6 +34,10 @@
 {#------------------fin------------------------------#}
 
 <div id="index-table">
+{% if not index_pag.items %}
+  <strong style="color: red; margin-left:70px "> No se encontraron centros de ayuda social para las datos ingresados</strong>
+{% else %}
+
   <table class="table table-hover" >
   <tr style="text-align: center;">
   <th>Nombre</th>
@@ -46,6 +50,7 @@
   <th> </th>
   <th> </th>
   </tr>
+  
   {% for centro in index_pag.items %}
   <tr style="text-align: center;">
     <td> {{ centro.nombre }} </td>
@@ -53,31 +58,39 @@
     <td> {{ centro.municipio }} </td>
     <td> {{ centro.email }}</td>
     <td> {{ centro.estado }} </td>
-      
+  {% if centro.activo == True %}
     {% if centro.estado == 'ACEPTADO' and centro.publicado == True %}    
     <td>
-      <a href="{{url_for('centro_update_publicado', centro_id=centro.id, publicado=False) }}" 
+      <a href="{{url_for('centro_update_publicado', centro_id=centro.id, publicado=False, page=index_pag.page,name=mySearch['name'], estado=mySearch['estado']) }}" 
       onclick="return despublicarCentro()" class="btn btn-secondary">Despublicar</a>
     </td> 
     {% endif %}
     {% if centro.estado == 'ACEPTADO' and centro.publicado == False %}    
     <td>
-      <a href="{{ url_for('centro_update_publicado', centro_id=centro.id, publicado=True) }}" 
+      <a href="{{ url_for('centro_update_publicado', centro_id=centro.id, publicado=True, page=index_pag.page,name=mySearch['name'], estado=mySearch['estado']) }}" 
       onclick="return publicarCentro()" class="btn btn-success">Publicar</a>
     </td> 
     {% endif %}
     {% if centro.estado != 'ACEPTADO' %}
     <td> <strong>DESPUBLICADO</strong></td>
     {% endif %}
+  {% else %}
+    <td>  </td>
+  {% endif %}
+
     <td>
       <a href="{{ url_for('centro_update', centro_id=centro.id) }}" class="btn btn-warning">Modificar</a>
     </td>
     <td>
     {% if centro.activo == True %}
+      {% if ( 'centro_destroy' in session['permisos'] ) %}
       <a href="{{ url_for('centro_eliminar', centro_id=centro.id, page=index_pag.page,name=mySearch['name'], estado=mySearch['estado'] )}}" onclick="return eliminarCentro()" class="btn btn-danger">Eliminar</a>
       <script src="{{ url_for('static', filename='validac.js') }}"> </script>
+      {% else %}
+      <strong style="color: green;">Centro ACTIVO</strong>
+      {% endif %}
     {%else %}
-      <strong style="color: rgba(197, 11, 5, 0.89);">Centro eliminado</strong>
+      <strong style="color: rgba(197, 11, 5, 0.89);">Centro ELIMINADO</strong>
     </td>
     {% endif %}
     <td>
@@ -86,7 +99,7 @@
   </tr> 
   {% endfor %}
   </table>
-
+{% endif %}
 {#-----------------------------PAGINADO------------------------------------#}
   <nav aria-label="..." style="margin-left:15%;" >
     <ul class="pagination" style="margin-left: 35%;">   
