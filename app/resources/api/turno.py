@@ -1,15 +1,23 @@
 from flask import jsonify, abort, request
 from flask_sqlalchemy import SQLAlchemy
 
-from app.models.centro import Centro, Bloque, centro_schema, centros_schema, Turnos, turnos_schema, turno_schema
+from app.models.centro import (
+    Centro,
+    Bloque,
+    centro_schema,
+    centros_schema,
+    Turnos,
+    turnos_schema,
+    turno_schema,
+)
 from app.models.configuracion import Configuracion
 from marshmallow import ValidationError
 from datetime import datetime
+
 db = SQLAlchemy()
 
 
-
-def show(centro_id,fecha=datetime.today().strftime('%Y-%m-%d')):
+def show(centro_id, fecha=datetime.today().strftime("%Y-%m-%d")):
     try:
         centro = Centro().show_one(centro_id)
     except:
@@ -23,20 +31,34 @@ def show(centro_id,fecha=datetime.today().strftime('%Y-%m-%d')):
         }
         return jsonify(response), 404
     try:
-        turnos = Turnos().turno_centro_fecha(centro_id, fecha)
+        datetime.strptime(fecha, "%Y-%m-%d")
     except:
         response = {
-            "message": "Fallo en servidor turno",
+            "message": "La fecha no es valida, el formato debe ser AAAA-mm-dd",
         }
-        return jsonify(response), 500    
-    if turnos is None:
-        respo = {
+        return jsonify(response), 404
+
+    try:
+        turnos = Bloque().bloques_ocupados(centro_id, fecha)
+        turnos_all = Bloque().all()
+
+    except:
+        response = {
+            "message": "Fallo en servidor",
+        }
+        return jsonify(response), 500
+
+    bloque = []
+    for turno in turnos_all:
+        if turno not in turnos:
+            bloque.append(turno)
+    if bloque is None:
+        respose = {
             "message": "No existen turnos para ese dia",
         }
-        return jsonify(respo), 404    
-    result = turnos_schema.dump(turnos)
-    return jsonify({"turno": result}, 200)
-
+        return jsonify(response), 404
+    result = turnos_schema.dump(bloque)
+    return jsonify({"turno": result, "centro_id": centro_id, "fecha": fecha}, 200)
 
 def new_reserva():
     json_data = request.get_json()

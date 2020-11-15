@@ -17,7 +17,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_marshmallow import Marshmallow
 from app.resources import user, configuracion, auth, centro, turnos
-from app.resources.api import centros,turno
+from app.resources.api import centros, turno
 
 # from app.resources.api import centro
 from config import config
@@ -26,7 +26,13 @@ from app.resources import user, configuracion, auth, centro
 
 # from app.helpers import handler
 from app.helpers import auth as helper_auth
-from app.resources.forms import RegistrationForm, LoginForm, FilterForm, CrearCentroForm, FilterFormCentro
+from app.resources.forms import (
+    RegistrationForm,
+    LoginForm,
+    FilterForm,
+    CrearCentroForm,
+    FilterFormCentro,
+)
 
 # from app.db import connection
 from app.models.configuracion import Configuracion, configuracion_initialize_db
@@ -114,17 +120,37 @@ def create_app(environment="development"):
         "/centro/listado", "centro_index", centro.index, methods=["GET", "POST"]
     )
     app.add_url_rule("/centro/show", "centro_show", centro.show, methods=["GET"])
-    app.add_url_rule("/centro/update-publicado", "centro_update_publicado", centro.update_publicado, methods=["GET"])
-    app.add_url_rule("/centro/update-estado", "centro_update_estado", centro.update_estado, methods=["GET"])
+    app.add_url_rule(
+        "/centro/update-publicado",
+        "centro_update_publicado",
+        centro.update_publicado,
+        methods=["GET"],
+    )
+    app.add_url_rule(
+        "/centro/update-estado",
+        "centro_update_estado",
+        centro.update_estado,
+        methods=["GET"],
+    )
     app.add_url_rule(
         "/centro/nuevo", "centro_register", centro.register, methods=["GET", "POST"]
     )
-    app.add_url_rule("/centro/update/<int:centro_id>", "centro_update", centro.update,  methods=["GET", "POST"])
-    app.add_url_rule("/centro/eliminar/<int:centro_id>", "centro_eliminar", centro.eliminar, methods=["GET"])
+    app.add_url_rule(
+        "/centro/update/<int:centro_id>",
+        "centro_update",
+        centro.update,
+        methods=["GET", "POST"],
+    )
+    app.add_url_rule(
+        "/centro/eliminar/<int:centro_id>",
+        "centro_eliminar",
+        centro.eliminar,
+        methods=["GET"],
+    )
 
     # Rutas de Turnos
     app.add_url_rule("/turnos/nuevo", "turnos_new", turnos.new, methods=["GET", "POST"])
-    #app.add_url_rule("/turnos/nuevo", "turnos_create", turnos.create, methods=["POST"])
+    # app.add_url_rule("/turnos/nuevo", "turnos_create", turnos.create, methods=["POST"])
     app.add_url_rule(
         "/turnos/eliminar/", "turnos_eliminar", turnos.eliminar, methods=["GET"]
     )
@@ -133,7 +159,7 @@ def create_app(environment="development"):
     @app.route("/")
     def home():
         if authenticated(session):
-            return redirect(url_for('centro_index', page=1))
+            return redirect(url_for("centro_index", page=1))
         else:
             sitio = Configuracion().sitio()
             return render_template("home.html", sitio=sitio)
