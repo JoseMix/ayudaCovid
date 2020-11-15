@@ -96,7 +96,7 @@ def update_centro(form, centro):
             if request.files['protocolo']: #si se cargó protocolo
                 file_protocolo = request.files['protocolo'] #Me quedo el archivo
                 if allowed_file(file_protocolo.filename):
-                    if centro.protocolo:
+                    if centro.protocolo != 'NULL':
                         #si tiene protocolo viejo lo borra
                         path_viejo=os.path.join(UPLOAD_FOLDER, centro.protocolo)
                         os.remove(path_viejo)
