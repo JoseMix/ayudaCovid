@@ -14,18 +14,18 @@
     <div id="formBusqueda">
         <strong class="texto">Formulario de turnos:</strong>
         <br><br>
-        <form action="{{url_for('turnos_new', centro_id=centro.id)}}" method="POST" class="form-inline my-1">
+        <form action="{{url_for('turnos_new', centro_id=centro.id)}}" onsubmit="return validarDatosTurno()" method="POST" class="form-inline my-1">
             <div class="busqueda">
                 <strong>Fecha de turno:</strong><br>
-                <input type="date" name="dia" min="{{rango['inicio']}}" max="{{rango['fin']}}" {% if form.dia %} value="{{form.dia}}" {% endif%} required class="form-control mr-sm-1"><br>
+                <input type="date" name="dia" id="dia" min="{{rango['inicio']}}" max="{{rango['fin']}}" {% if form.dia %} value="{{form.dia}}" {% endif%} required class="form-control mr-sm-1"><br>
             </div>
             <div class="busqueda">
                 <strong>Email del solicitante:</strong><br>
-                <input type="email" name="email" required placeholder="ingrese un email" {% if form.email %} value="{{form.email}}" {% endif%} class="form-control mr-sm-1"><br>
+                <input type="email" name="email" id="email" required placeholder="ingrese un email" {% if form.email %} value="{{form.email}}" {% endif%} class="form-control mr-sm-1"><br>
             </div>
             <div class="busqueda">
                 <strong>Franja horaria:</strong><br>
-                <select name="bloque" class="form-control mr-sm-1">
+                <select name="bloque" id="bloque" class="form-control mr-sm-1">
                     {% for bloque in bloques %}
                     <option value="{{ bloque.id }}"> {{bloque.hora_inicio}}hs - {{bloque.hora_fin}}hs</option>
                     {% endfor %}
@@ -38,5 +38,5 @@
             </div>
         </form>
     </div><br><br>
-
+    <script src="{{ url_for('static', filename='validaciones/turnos.js') }}"></script>
     {% endblock %}
