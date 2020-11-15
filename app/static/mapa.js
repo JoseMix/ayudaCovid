@@ -8,7 +8,7 @@ window.onload = () => {
     initializeMap('myMap');
 };
 
-const initializeMap = (selector) => {
+const initializeMap = () => {
     map = L.map('myMap').setView([-34.9187,-57.956], 13);
     L.tileLayer(tileUrl).addTo(map);
     

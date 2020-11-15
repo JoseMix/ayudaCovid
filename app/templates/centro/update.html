@@ -11,7 +11,7 @@
   </div>
   <div id="formulario">
     <strong class="texto">MODIFICAR CENTRO</strong>
-    <form method="POST" enctype="multipart/form-data">
+    <form method="POST" onsubmit="submitHandler(event)" enctype="multipart/form-data">
       
       {{ form.csrf_token }}
       <div class="form-col-left">
@@ -95,18 +95,15 @@
 
         <div class="form-col-left" style="margin-top: 5px; padding-top: 5px; ">
           <label>Ingrese ubicacion del centro</label>
-          
-          <div class="map-container">
-            <input type="text" name="lat" id=lat>
-            <input type="text" name="lng" id=lng>
-          </div>
+            <div class="map-container">
+              {{form.lat(id="lat")}}
+              {{form.lng(id="lng")}} 
+            </div> 
         </div>
-
         <div id="myMap" style="height: 180px; width: 800px;">
+            <script src="{{ url_for('static', filename='mapa.js') }}"> </script> 
+        </div>        
         
-          <script src="{{ url_for('static', filename='mapa.js') }}"> </script> 
-        </div>
-        <!--<script src="{{ url_for('static', filename='nuevo.js') }}"> </script> -->          
         <div id="centrar"><br>
           <input type="submit" value="Modificar centro" class="btn btn-primary">
           <input type="reset" value="Limpiar formulario" class="btn btn-secundary">
