@@ -12,26 +12,37 @@
     <strong class="texto">CONFIGURACIÓN DEL SITIO</strong>
     <form action="{{ url_for('configuracion_edit') }}" method="post">
       
-      <label>Título del Sitio: </label><br>
-      <input class="form-control" type="text" name="titulo" required value="{{ sitio.titulo }}"/><br>
+      <div class="form-col-left">
+        <label>Título del Sitio: </label><br>
+        <input class="form-control" type="text" name="titulo" required value="{{ sitio.titulo }}"/>
+      </div>
 
+      <div class="form-col-right">
+        <label>Mail de contacto: </label><br>
+        <input class="form-control" type="email" name="email" required value="{{ sitio.email }}"/>
+      </div>
+      
+
+      <div class="form-col-left">
+        <label>Cantidad de elementos por página </label><br>
+        <input class="form-control" type="number" name="paginas" required value="{{ sitio.paginas }}"/>
+      </div><br>
+      
+      <div class="form-col-right">
+        <label>Estado de sitio:</label><br>
+        <select name="activo" class="form-control">
+          <option value="True" {% if sitio.activo is true %} selected {% endif%}>Habilitado</option>
+          <option value="False" {% if sitio.activo is false %} selected {% endif%}>Deshabilitado</option>
+        </select><br>
+      </div>
+      <div  class="form-col-left">
       <label>Descripción: </label><br>
+    </div>
+    <div style="margin-left: 70px; margin-right: 70px;">
       <textarea class="form-control" name="descripcion" 
-      rows="2" maxlength="255" required>{{ sitio.descripcion }}</textarea><br>
-
-      <label>Mail de contacto: </label><br>
-      <input class="form-control" type="email" name="email" required value="{{ sitio.email }}"/><br>
-
-      <label>Cantidad de elementos por página </label><br>
-      <input class="form-control" type="number" name="paginas" required value="{{ sitio.paginas }}"/><br>
-
-      <label>Estado de sitio:</label><br>
-      <select name="activo" class="form-control">
-        <option value="True" {% if sitio.activo is true %} selected {% endif%}>Habilitado</option>
-        <option value="False" {% if sitio.activo is false %} selected {% endif%}>Deshabilitado</option>
-      </select><br><br>
-
-      <div id="centrar">
+      rows="2" maxlength="255" required>{{ sitio.descripcion }}</textarea>
+    </div>
+      <div id="centrar"><br>
         <input type="submit" value="Modificar sitio" class="btn btn-primary">
         <button type="reset" class="btn btn-secundary"></button>
         <a href="{{ url_for('configuracion_update') }}" class="btn btn-secundary">Limpiar Formulario</a>

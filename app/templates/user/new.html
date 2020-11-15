@@ -12,46 +12,52 @@
     <form action="{{ url_for('user_register') }}" method="POST">
       
       {{ form.csrf_token }}
+      <div class="form-col-left">
       {{form.username.label}}
         {{form.username(class_="form-control", placeholder='ingrese un nombre de usuario')}}
-        <br>
+        </div>
         {% for error in form.username.errors %}
-          <div style=color:red>{{ error }}</div>  
+          <br><div style=color:red>{{ error }}</div>  
         {% endfor %}
         
+        <div class="form-col-right">
         <label>Email </label>
         {{form.email(class_="form-control", placeholder='ingrese un email')}}
-        <br>
+        </div>
         {% for error in form.email.errors %}
-          <div style=color:red>{{ error }}</div>
+          <br><div style=color:red>{{ error }}</div>
         {% endfor %}
 
+        <div class="form-col-left">
         <label>Password </label>
         {{form.password(class_="form-control", placeholder='ingrese una password')}}
-        <br>
+        </div>
         {% for error in form.password.errors %}
-          <div style=color:red>{{ error }}</div>
+          <br><div style=color:red>{{ error }}</div>
         {% endfor %}
 
+        <div class="form-col-right">
         <label>Nombre </label>
         {{form.first_name(class_="form-control", placeholder='ingrese un nombre')}}
-        <br>
+        <br><br></div>
         {% for error in form.first_name.errors %}
-          <div style=color:red>{{ error }}</div>
+          <br><div style=color:red>{{ error }}</div>
         {% endfor %}
 
+        <div class="form-col-left">
         <label>Apellido </label>
         {{form.last_name(class_="form-control", placeholder='ingrese un apellido')}}
-        <br>
+        </div>
         {% for error in form.last_name.errors %}
-          <div style=color:red>{{ error }}</div>
+          <br><div style=color:red>{{ error }}</div>
         {% endfor %}
-        <br>
-        <div id="centrar">
+        
+        <div id="centrar" style="padding-left: 300px;">
           <input type="submit" value="Cargar usuario" class="btn btn-primary">
           <button type="reset" class="btn btn-secundary" >Limpiar formulario</button>
         </div>
     </form>
-    </div>
+  <br><br>
+  </div>
   
 {% endblock %}

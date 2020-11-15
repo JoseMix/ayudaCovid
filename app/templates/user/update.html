@@ -11,47 +11,53 @@
   <strong class="texto">MODIFICAR DATOS DE USUARIO</strong>
   <form  method="POST">
     
-    {{ form.csrf_token }}
-    {{form.username.label}}
-      {{form.username(class_="form-control")}}
-      <br>
+      {{ form.csrf_token }}
+      <div class="form-col-left">
+        {{form.username.label}}
+        {{form.username(class_="form-control")}}
+      </div>
       {% for error in form.username.errors %}
-        <div style=color:red>{{ error }}</div>  
+        <br><div style=color:red>{{ error }}</div>  
       {% endfor %}
       
+      <div class="form-col-right">
       <label>Email </label>
       {{form.email(class_="form-control")}}
-      <br>
+      </div>
       {% for error in form.email.errors %}
-        <div style=color:red>{{ error }}</div>
+        <br><div style=color:red>{{ error }}</div>
       {% endfor %}
 
+      <div class="form-col-left">
       <label>Password </label>
-      {{form.password(class_="form-control")}}
-      <br>
+      {{form.password(class_="form-control", placeholder='*******')}}
+      </div>
       {% for error in form.password.errors %}
-        <div style=color:red>{{ error }}</div>
+        <br><div style=color:red>{{ error }}</div>
       {% endfor %}
 
+      <div class="form-col-right">
       <label>Nombre </label>
       {{form.first_name(class_="form-control")}}
-      <br>
+      <br><br></div>
       {% for error in form.first_name.errors %}
-        <div style=color:red>{{ error }}</div>
+        <br><div style=color:red>{{ error }}</div>
       {% endfor %}
 
+      <div class="form-col-left">
       <label>Apellido </label>
       {{form.last_name(class_="form-control")}}
-      <br>
+      </div>
       {% for error in form.last_name.errors %}
-        <div style=color:red>{{ error }}</div>
+        <br><div style=color:red>{{ error }}</div>
       {% endfor %}
-    <div id="centrar">
+    <div id="centrar" style="padding-left: 250px;">
       <input type="submit" value="Modificar usuario" class="btn btn-primary">
       <a href="{{ url_for('user_update', user_id=user_id) }}" class="btn btn-secundary">Limpiar formulario</a>
       
     </div>
   </form>
-  </div>
+  <br><br>
+</div>
 
 {% endblock %}

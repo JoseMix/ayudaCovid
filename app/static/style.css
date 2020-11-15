@@ -223,3 +223,12 @@ a.link {
   margin-bottom: 20px;
   padding: 10px;
 }
+
+#descripcion{
+  margin-left: 70px;
+  margin-right: 70px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  padding: 5px;
+  float: left;
+}
