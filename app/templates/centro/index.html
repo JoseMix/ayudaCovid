@@ -85,7 +85,7 @@
     {% if centro.activo == True %}
       {% if ( 'centro_destroy' in session['permisos'] ) %}
       <a href="{{ url_for('centro_eliminar', centro_id=centro.id, page=index_pag.page,name=mySearch['name'], estado=mySearch['estado'] )}}" onclick="return eliminarCentro()" class="btn btn-danger">Eliminar</a>
-      <script src="{{ url_for('static', filename='validac.js') }}"> </script>
+      
       {% else %}
       <strong style="color: green;">Centro ACTIVO</strong>
       {% endif %}

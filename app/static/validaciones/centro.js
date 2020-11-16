@@ -1,3 +1,15 @@
+
+function eliminarCentro() 
+{
+    if(confirm("Esta seguro que desea eliminar el Centro?"))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 function aceptarCentro(){
     if(confirm("Esta seguro que desea aceptar el centro?")){
         return true;
