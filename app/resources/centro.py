@@ -23,10 +23,10 @@ from _datetime import date
 import datetime
 
 # para local
-UPLOAD_FOLDER = "app/static/uploads/"
+#UPLOAD_FOLDER = "app/static/uploads/"
 
 # para producción
-#UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
+UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
 
 
 def index():
