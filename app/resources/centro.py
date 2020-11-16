@@ -26,7 +26,7 @@ import datetime
 #UPLOAD_FOLDER = "app/static/uploads/"
 
 # para producción
-UPLOAD_FOLDER = "https://grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
+UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
 
 
 def index():
