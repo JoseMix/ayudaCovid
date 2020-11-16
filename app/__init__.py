@@ -56,7 +56,11 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
+<<<<<<< HEAD
     ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+=======
+    ] = "mysql+pymysql://root:password@172.17.0.4/grupo13"
+>>>>>>> feature/josemix
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     ma = Marshmallow(app)
@@ -176,11 +180,26 @@ def create_app(environment="development"):
         "/api/centros/<int:centro_id>", "api_centros_show_one", centros.show_one
     )
     # Rutas api turnos
-    app.add_url_rule("/api/centros/turnos_disponibles/<int:centro_id>/", "api_turno_show", turno.show, methods=["GET"] )
-    app.add_url_rule("/api/centros/turnos_disponibles/<int:centro_id>/<fecha>", "api_turno_show", turno.show, methods=["GET"] )
-    app.add_url_rule("/centros/reserva" , "api_new_reserva" , turno.new_reserva, methods=["POST"] )
+    app.add_url_rule(
+        "/api/centros/turnos_disponibles/<int:centro_id>/",
+        "api_turno_show",
+        turno.show,
+        methods=["GET"],
+    )
+    app.add_url_rule(
+        "/api/centros/turnos_disponibles/<int:centro_id>/<fecha>",
+        "api_turno_show",
+        turno.show,
+        methods=["GET"],
+    )
+    app.add_url_rule(
+        "/api/centros/<int:centro_id>/reserva",
+        "api_new_reserva",
+        turno.new_reserva,
+        methods=["POST"],
+    )
 
-    # Handlers  
+    # Handlers
     # app.register_error_handler(404, handler.not_found_error)
     # app.register_error_handler(401, handler.unauthorized_error)
     # Implementar lo mismo para el error 500 y 401

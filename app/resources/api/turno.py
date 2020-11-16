@@ -60,7 +60,8 @@ def show(centro_id, fecha=datetime.today().strftime("%Y-%m-%d")):
     result = turnos_schema.dump(bloque)
     return jsonify({"turno": result, "centro_id": centro_id, "fecha": fecha}, 200)
 
-def new_reserva():
+
+def new_reserva(centro_id):
     json_data = request.get_json()
     if not json_data:
         response = {
@@ -71,24 +72,19 @@ def new_reserva():
         data = turno_schema.load(json_data)
     except ValidationError as err:
         return jsonify(err.messages), 422
-    (
-        centro_id,
-        email_donante,
-        hora_inicio,
-        hora_fin,
-        fecha,
-    ) = (
+    (centro_id, email, hora_inicio, hora_fin, fecha, telefono) = (
         data["centro_id"],
-        data["email_donante"],
+        data["email"],
         data["hora_inicio"],
         data["hora_fin"],
         data["fecha"],
+        data["telefono"],
     )
-
     try:
-        bloque = Bloque().find_by_hora_inicio(hora_inicio="14:00")
+        timeStr = hora_inicio.strftime("%H:%M")
+        bloque = Bloque().find_by_hora_inicio(timeStr)
         id_bloque = bloque.id
-        turno = Turnos().validar_turno_existente(bloque.id,'2',"2020-11-16")
+        turno = Turnos().validar_turno_existente(id_bloque, centro_id, fecha)
     except:
         response = {
             "message": "Fallo en servidor",
@@ -96,15 +92,23 @@ def new_reserva():
         return jsonify(response), 500
     if turno is None:
         turno = Turnos(
-            email = email_donante,
+            email=email,
             dia=fecha,
             turno_id=id_bloque,
-            centro_id='2'
+            centro_id=centro_id,
         )
         db.session.add(turno)
         db.session.commit()
         result = turno_schema.dump(turno)
-        return jsonify({"turno": result}, 201)
+        return jsonify(
+            {
+                "turno": result,
+                "telefono": telefono,
+                "hora_inicio": hora_inicio.strftime("%H:%M"),
+                "hora_fin": hora_fin.strftime("%H:%M"),
+            },
+            201,
+        )
     else:
         response = {
             "message": "El turno ya existe",
