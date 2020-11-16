@@ -4,7 +4,6 @@ from marshmallow import Schema, fields, ValidationError
 
 db = SQLAlchemy()
 
-
 # Inicializo contexto
 def centro_turnos_initialize_db(app):
     app.app_context().push()
@@ -24,7 +23,6 @@ class Turnos(db.Model):
     turno_id = db.Column(db.Integer, db.ForeignKey("bloque.id"), nullable=False)
     centro_id = db.Column(db.Integer, db.ForeignKey("centro.id"), nullable=False)
 
-    # Persiste un turno
     def create(self, form):
         turno = Turnos(
             email=form["email"],
@@ -70,25 +68,31 @@ class Turnos(db.Model):
                 .paginate(page=page, per_page=per_page, error_out=False)
             )
 
-    # turnos en una fecha para un centro
     def turno_centro_fecha(self, centro_id, fecha):
-        return Turnos.query.filter(and_(Turnos.dia == fecha, Turnos.centro_id == centro_id)).all()
-#
+        return Turnos.query.filter(
+            and_(Turnos.dia == fecha, Turnos.centro_id == centro_id)
+        ).all()
 
-    def validar_turno_existente(self, id_bloque,id_centro,fecha):
-        return Turnos.query.filter(and_(and_(Turnos.turno_id==id_bloque,Turnos.centro_id==id_centro),Turnos.dia==fecha)).first()
+    def validar_turno_existente(self, id_bloque, id_centro, fecha):
+        return Turnos.query.filter(
+            and_(
+                and_(Turnos.turno_id == id_bloque, Turnos.centro_id == id_centro),
+                Turnos.dia == fecha,
+            )
+        ).first()
 
-#esquema de turnos                                        
+
 class TurnoSchema(Schema):
     centro_id = fields.Str()
-    email_donante = fields.Str()
+    email = fields.Str()
+    telefono = fields.Str()
     hora_inicio = fields.DateTime(format="%H:%M")
     hora_fin = fields.DateTime(format="%H:%M")
-    fecha = fields.Date(format="%Y-%m-%d") 
+    fecha = fields.Date(format="%Y-%m-%d")
+
 
 turno_schema = TurnoSchema()
 turnos_schema = TurnoSchema(many=True)
-
 # Modelo Bloque de turnos
 class Bloque(db.Model):
     __tablename__ = "bloque"
@@ -100,8 +104,10 @@ class Bloque(db.Model):
     def all(self):
         return Bloque.query.all()
 
-    def find_by_hora_inicio(self, hora_inicio):
-        return Bloque.query.filter(Bloque.hora_inicio == hora_inicio).first()
+    def find_by_hora_inicio(self, hora):
+        bloque = Bloque.query.filter_by(hora_inicio=hora).first()
+        return bloque
+
     def bloques_ocupados(self, centro_id, fecha):
         return (
             db.session.query(Bloque)
