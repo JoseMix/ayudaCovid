@@ -207,6 +207,45 @@ http://127.0.0.1:5000/api/centros/turnos_disponibles/1/2020-11-15
 ]
 
 
-```  
+``` 
 
+Utilizamos el endpoint http://127.0.0.1:5000/api/centros/:id/reserva con el metodo POST. Esto dará de alta un turno en caso de que esté disponible para el centro, el día y la hora indicada.
+La entrada debería ser de la siguiente forma:
+```bash
+[
+    {
+        "centro_id" : '1' ,
+        "email" : "juan.perez@gmail.com" ,
+        "telefono" : "221-5930941" ,
+        "hora_inicio" : "15:00" ,
+        "hora_fin" : "15:30" ,
+        "fecha" : "2020-10-10" ,
+    }
+]
+```
+Al precionar SEND, en caso de que el turno haya sido creado exitosamente se producirá la siguiente salida:
+
+```bash
+[
+    {
+        "hora_fin": "15:00",
+        "hora_inicio": "15:30",
+        "telefono": "221-5930941",
+        "turno": {
+            "centro_id": "1",
+            "email": "juan.perez@gmail.com"
+        }
+    },
+    201
+]
+```
+
+En caso de que para los datos seleccionados ya exista un turno ocupado se mostrará lo siguiente:
+```bash
+[
+    {
+        "message": "El turno ya existe",
+    }
+]
+```
 
