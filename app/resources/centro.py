@@ -23,10 +23,10 @@ from _datetime import date
 import datetime
 
 # para local
-#UPLOAD_FOLDER = "app/static/uploads/"
+UPLOAD_FOLDER = "app/static/uploads/"
 
 # para producción
-UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
+#UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
 
 
 def index():
@@ -66,13 +66,11 @@ def register():
 
     if request.method == "POST":
         if not validate(form):  # valida que no exista centro con mismos datos
-            if validate_horarios(form):  # Si los horarios ok
+            if validate_horarios(form) and validate_tipo_centro(form.tipo_centro.data):  # Si los horarios ok
                 if validate_pdf(
                     form, request.files["protocolo"]
                 ):  # valido pdf y crea centro
                     return redirect(url_for("centro_index", page=1))
-            else:
-                flash("El horario de apertura debe ser menor que el horario de cierre")
         else:
             flash("El centro que intenta crear ya existe.")
     return render_template(
@@ -109,7 +107,7 @@ def update_centro(form, centro):
     if not centro.validate_centro_update(
         form.nombre.data, form.direccion.data, form.municipio.data, centro.id
     ):
-        if validate_horarios(form):
+        if validate_horarios(form) and validate_tipo_centro(form.tipo_centro.data):
             if request.files["protocolo"]:  # si se cargó protocolo
                 file_protocolo = request.files["protocolo"]  # Me quedo el archivo
                 if allowed_file(file_protocolo.filename):
@@ -128,7 +126,6 @@ def update_centro(form, centro):
             Centro().update(form, centro)  # actualiza centro
             return True
         else:
-            flash("El horario de apertura debe ser menor que el horario de cierre")
             return False
     else:
         flash("Ya existe un centro con nombre, dirección y municipio ingresado")
@@ -137,8 +134,18 @@ def update_centro(form, centro):
 
 # horario de apertura y cierre coherente
 def validate_horarios(form):
-    return form["apertura"].data < form["cierre"].data
+    if (form["apertura"].data < form["cierre"].data):
+        return True
+    else:
+        flash("El horario de apertura debe ser menor que el horario de cierre")
+        return False 
 
+def validate_tipo_centro(tipo):
+    if tipo == '0':
+        flash("No ha seleccionado un tipo de centro válido")
+        return False
+    else:
+        return True
 
 def validate_pdf(form, file_protocolo):
     # Si el pdf esta ok almaceno con el file, sino en null
