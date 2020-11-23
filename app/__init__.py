@@ -10,6 +10,7 @@ from flask import (
     url_for,
     flash,
     abort,
+    make_response,
 )
 import requests
 from flask_bcrypt import Bcrypt
@@ -26,6 +27,7 @@ from app.resources import user, configuracion, auth, centro
 
 # from app.helpers import handler
 from app.helpers import auth as helper_auth
+from app.helpers import handler
 from app.resources.forms import (
     RegistrationForm,
     LoginForm,
@@ -44,7 +46,7 @@ from app.helpers.auth import authenticated
 def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
-
+    app.config["JSON_SORT_KEYS"] = False
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)
     app.config.from_object(config[env])
@@ -56,7 +58,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    ] = "mysql+pymysql://root:password@172.17.0.4/grupo13"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     ma = Marshmallow(app)
@@ -177,17 +179,19 @@ def create_app(environment="development"):
     )
     # Rutas api turnos
     app.add_url_rule(
-        "/api/centros/turnos_disponibles/<int:centro_id>/",
+        "/api/centros/<int:centro_id>/turnos_disponibles/?fecha=<fecha>",
         "api_turno_show",
         turno.show,
         methods=["GET"],
     )
+
     app.add_url_rule(
-        "/api/centros/turnos_disponibles/<int:centro_id>/<fecha>",
+        "/api/centros/<int:centro_id>/turnos_disponibles/",
         "api_turno_show",
         turno.show,
         methods=["GET"],
     )
+
     app.add_url_rule(
         "/api/centros/<int:centro_id>/reserva",
         "api_new_reserva",
@@ -196,9 +200,9 @@ def create_app(environment="development"):
     )
 
     # Handlers
-    # app.register_error_handler(404, handler.not_found_error)
-    # app.register_error_handler(401, handler.unauthorized_error)
-    # Implementar lo mismo para el error 500 y 401
+    app.register_error_handler(404, handler.not_found_error)
+    app.register_error_handler(401, handler.unauthorized_error)
+    app.register_error_handler(500, handler.internal_error)
 
     # Retornar la instancia de app configurada
     return app

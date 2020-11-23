@@ -9,6 +9,7 @@ from flask import (
     url_for,
     session,
     abort,
+    json,
 )
 import requests
 
@@ -23,7 +24,7 @@ from _datetime import date
 import datetime
 
 # para local
-#UPLOAD_FOLDER = "app/static/uploads/"
+# UPLOAD_FOLDER = "app/static/uploads/"
 
 # para producción
 UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
@@ -66,7 +67,9 @@ def register():
 
     if request.method == "POST":
         if not validate(form):  # valida que no exista centro con mismos datos
-            if validate_horarios(form) and validate_tipo_centro(form.tipo_centro.data):  # Si los horarios ok
+            if validate_horarios(form) and validate_tipo_centro(
+                form.tipo_centro.data
+            ):  # Si los horarios ok
                 if validate_pdf(
                     form, request.files["protocolo"]
                 ):  # valido pdf y crea centro
@@ -85,11 +88,11 @@ def update(centro_id):
     # busca el centro y carga el formulario de update
     centro = Centro().query.get_or_404(centro_id)
     form = CrearCentroForm(obj=centro)
-    if request.method != 'POST':
+    if request.method != "POST":
         form.lat.data = centro.latitud
         form.lng.data = centro.longitud
-    if request.method == 'POST':
-        #valida y modifica, retorna boolean
+    if request.method == "POST":
+        # valida y modifica, retorna boolean
         if update_centro(form, centro):
             return redirect(url_for("centro_index", page=1))
 
@@ -134,18 +137,20 @@ def update_centro(form, centro):
 
 # horario de apertura y cierre coherente
 def validate_horarios(form):
-    if (form["apertura"].data < form["cierre"].data):
+    if form["apertura"].data < form["cierre"].data:
         return True
     else:
         flash("El horario de apertura debe ser menor que el horario de cierre")
-        return False 
+        return False
+
 
 def validate_tipo_centro(tipo):
-    if tipo == '0':
+    if tipo == "0":
         flash("No ha seleccionado un tipo de centro válido")
         return False
     else:
         return True
+
 
 def validate_pdf(form, file_protocolo):
     # Si el pdf esta ok almaceno con el file, sino en null
@@ -185,7 +190,7 @@ def create(form, nameProtocolo):
 
 def show_municipio():
     data = requests.get(
-        "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios"
+        "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=135"
     ).json()
     lista = []
     for x in data["data"]["Town"]:

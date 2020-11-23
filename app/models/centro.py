@@ -83,6 +83,7 @@ class Turnos(db.Model):
 
 
 class TurnoSchema(Schema):
+
     centro_id = fields.Str()
     email = fields.Str()
     telefono = fields.Str()
@@ -90,11 +91,16 @@ class TurnoSchema(Schema):
     hora_fin = fields.DateTime(format="%H:%M")
     fecha = fields.Date(format="%Y-%m-%d")
 
+    class Meta:
+        fields = ("centro_id", "fecha", "hora_inicio", "hora_fin")
+        ordered = True
+
 
 turno_schema = TurnoSchema()
 turnos_schema = TurnoSchema(many=True)
 # Modelo Bloque de turnos
 class Bloque(db.Model):
+
     __tablename__ = "bloque"
     id = db.Column(db.Integer, primary_key=True)
     hora_inicio = db.Column(db.Time, nullable=False)
@@ -132,7 +138,7 @@ class Centro(db.Model):
     apertura = db.Column(db.Time, nullable=False)
     cierre = db.Column(db.Time, nullable=False)
     tipo_centro = db.Column(db.Enum("COMIDA", "ROPA", "PLASMA"), nullable=False)
-    municipio = db.Column(db.String(20), nullable=False)
+    municipio = db.Column(db.Integer, nullable=False)
     web = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     estado = db.Column(
@@ -141,7 +147,7 @@ class Centro(db.Model):
         default="PENDIENTE",
     )
     publicado = db.Column(db.Boolean, nullable=False, default=False)
-    activo = db.Column(db.Boolean, nullable=False, default=False)
+    activo = db.Column(db.Boolean, nullable=False, default=True)
     protocolo = db.Column(db.String(255), nullable=True)
     latitud = db.Column(db.String(20), nullable=True)
     longitud = db.Column(db.String(20), nullable=True)
@@ -173,6 +179,12 @@ class Centro(db.Model):
 
     def all(self):
         centros = Centro.query.all()
+        return centros
+
+    def aprobados_paginado(self, page, per_page):
+        centros = Centro.query.filter(
+            and_(Centro.estado == "Aceptado", Centro.activo == True)
+        ).paginate(page=page, per_page=per_page, error_out=False)
         return centros
 
     def find_by_id(self, id):
@@ -292,8 +304,10 @@ class CentroSchema(Schema):
     apertura = fields.DateTime(format="%H:%M:%S", required=True, validate=empty_value)
     cierre = fields.DateTime(format="%H:%M:%S", required=True, validate=empty_value)
     tipo_centro = fields.Str(required=True, validate=empty_value)
-    web = fields.Str()
-    email = fields.Str()
+    web = fields.URL(required=False)
+    email = fields.Email(required=False)
+    latitud = fields.Float(required=True)
+    longitud = fields.Float(required=True)
     municipio = fields.Str(required=True, validate=empty_value)
     pages = fields.Str()
     per_page = fields.Str()

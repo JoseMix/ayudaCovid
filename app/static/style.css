@@ -55,7 +55,7 @@ body {
   margin-right: 20px;
 }
 
-.show-right{
+.show-right {
   text-align: right;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -66,24 +66,24 @@ div #centrar {
   margin-left: 25%;
 }
 
-.texto{
+.texto {
   font-size: x-large;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   margin-left: 25%;
   color: rgb(56, 62, 90);
 }
 
-.texto-show{
-  font-size: large ;
+.texto-show {
+  font-size: large;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
   color: rgb(56, 62, 90);
   margin: 2px;
 }
 
-.text-text{
+.text-text {
   font-size: medium;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  
+
   color: black;
 }
 
@@ -95,7 +95,7 @@ div #formulario {
   margin-bottom: 20px;
   margin-left: 150px;
   margin-right: 150px;
-  
+
   background-color: #5eafe6cc; /*  cambiar color jeje */
   border-radius: 12px;
   border: 1px solid #06bedf; /*  cambiar color jeje */
@@ -106,11 +106,11 @@ div #formulario {
   padding-left: 70px;
 }
 
-#login{
+#login {
   margin-top: 5%;
   margin-left: 30%;
   margin-right: 30%;
-    
+
   background-color: #5eafe6cc; /*  cambiar color jeje */
   border-radius: 12px;
   border: 1px solid #06bedf; /*  cambiar color jeje */
@@ -118,7 +118,7 @@ div #formulario {
   padding: 20px;
 }
 
-#show{
+#show {
   margin-top: 10px;
   margin-left: 50px;
   margin-right: 170px;
@@ -150,14 +150,13 @@ a.link {
   color: red;
 }
 
-
-.busqueda{
+.busqueda {
   text-align: left;
   margin-right: 2%;
   margin-bottom: 2%;
 }
 
-#formBusqueda{
+#formBusqueda {
   margin-top: 2%;
   margin-left: 10%;
   margin-right: 20%;
@@ -171,7 +170,7 @@ a.link {
   border: 1px solid #06bedf;
 }
 
-#index-table{
+#index-table {
   margin-top: 2%;
   margin-left: 2%;
   margin-right: 2%;
@@ -185,20 +184,20 @@ a.link {
   background-color: rgba(33, 94, 105, 0.13);
 }
 
-#lat{
+#lat {
   display: none;
 }
-#lng{
+#lng {
   display: none;
 }
-#longitud{
+#longitud {
   display: none;
 }
-#latitud{
+#latitud {
   display: none;
 }
 
-.form-col-left{
+.form-col-left {
   float: left;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -207,7 +206,7 @@ a.link {
   padding: 5px;
 }
 
-.form-col-right{
+.form-col-right {
   float: right;
   margin-top: 5px;
   margin-bottom: 5px;
@@ -216,7 +215,7 @@ a.link {
   padding: 5px;
 }
 
-#pdf{
+#pdf {
   margin-left: 70px;
   margin-right: 70px;
   margin-top: 200px;
@@ -224,7 +223,7 @@ a.link {
   padding: 10px;
 }
 
-#descripcion{
+#descripcion {
   margin-left: 70px;
   margin-right: 70px;
   margin-top: 5px;
