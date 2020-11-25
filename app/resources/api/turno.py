@@ -63,8 +63,13 @@ def show(centro_id):
     return jsonify({"centro_id": centro_id, "fecha": fecha, "turno": result}, 200)
 
 
+def es_turno_de_30(hora_inicio, hora_fin):
+    return ((hora_fin - hora_inicio).total_seconds() / 60) != 30
+
+
 def new_reserva(centro_id):
     json_data = request.get_json()
+
     if not json_data:
         response = {
             "message": "No se ingreso ningun dato",
@@ -82,7 +87,13 @@ def new_reserva(centro_id):
         data["fecha"],
         data["telefono"],
     )
+    if es_turno_de_30(hora_inicio, hora_fin):
+        response = {
+            "message": "La hora de inicio y fin, deben ser bloques de 30 minutos",
+        }
+        return jsonify(response), 500
     try:
+        print("holis")
         timeStr = hora_inicio.strftime("%H:%M")
         bloque = Bloque().find_by_hora_inicio(timeStr)
         id_bloque = bloque.id

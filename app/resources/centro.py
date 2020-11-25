@@ -192,10 +192,10 @@ def show_municipio():
     data = requests.get(
         "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=135"
     ).json()
-    lista = []
+    lista = {}
     for x in data["data"]["Town"]:
         muni = data["data"]["Town"][x]["name"]
-        lista.append(muni)
+        lista[x] = muni
     return lista
 
 

@@ -43,13 +43,13 @@ def show_one(centro_id):
     return jsonify({"centro": result}, 200)
 
 
-def show_id_municipio(municipio):
+"""def show_id_municipio(municipio):
     data = requests.get(
         "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=135"
     ).json()
     for i in data["data"]["Town"]:
         if data["data"]["Town"][i]["name"] == municipio:
-            return data["data"]["Town"][i]["id"]
+            return data["data"]["Town"][i]["id"]"""
 
 
 def new_centro():
@@ -60,7 +60,7 @@ def new_centro():
         }
         return jsonify(response), 400
     try:
-        id_municipio = show_id_municipio(json_data["municipio"])
+        """id_municipio = show_id_municipio(json_data["municipio"])"""
         data = centro_schema.load(json_data)
     except ValidationError as err:
         return jsonify(err.messages), 500
@@ -88,7 +88,7 @@ def new_centro():
         data["telefono"],
         data["tipo_centro"],
         data["web"],
-        id_municipio,
+        data["id_municipio"],
     )
 
     try:

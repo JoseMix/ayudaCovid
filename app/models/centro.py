@@ -92,7 +92,7 @@ class TurnoSchema(Schema):
     fecha = fields.Date(format="%Y-%m-%d")
 
     class Meta:
-        fields = ("centro_id", "fecha", "hora_inicio", "hora_fin")
+        fields = ("centro_id", "email", "telefono", "fecha", "hora_inicio", "hora_fin")
         ordered = True
 
 
@@ -308,7 +308,7 @@ class CentroSchema(Schema):
     email = fields.Email(required=False)
     latitud = fields.Float(required=True)
     longitud = fields.Float(required=True)
-    municipio = fields.Str(required=True, validate=empty_value)
+    id_municipio = fields.Int(required=True, validate=empty_value)
     pages = fields.Str()
     per_page = fields.Str()
 
