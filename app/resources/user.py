@@ -146,11 +146,14 @@ def update_rol(user_id):
         for rol in roles:
             if (rol not in checked):
                 if (rol in user.roles): # si usuario lo tiene asignado: lo borro
-                    User().delete_rol(rol, user)
+                    if (Rol().is_admin(rol.id) and not (User().unico_admin(rol.id, user_id)) ):
+                        flash("No se puede eliminar el rol administrador al usuario. es el unico administrador")
+                    else:
+                        User().delete_rol(rol, user)
         #roles seleccionados
         for rol in checked:
             if (rol not in user.roles): #asigna si no lo tiene
                 User().add_rol(rol, user)
-
+        flash("La modificación de roles fue exitosa!")
         user = User().find_by_id(user_id) #busco a usuario actualizado
     return render_template("user/update_rol.html",user=user, roles=roles)

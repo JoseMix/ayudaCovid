@@ -23,10 +23,10 @@ from _datetime import date
 import datetime
 
 # para local
-#UPLOAD_FOLDER = "app/static/uploads/"
+UPLOAD_FOLDER = "app/static/uploads/"
 
 # para producción
-UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
+#UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
 
 
 def index():
@@ -84,6 +84,8 @@ def update(centro_id):
     lista_municipio = show_municipio()
     # busca el centro y carga el formulario de update
     centro = Centro().query.get_or_404(centro_id)
+    if(centro.activo == False ):
+        abort(401)
     form = CrearCentroForm(obj=centro)
     if request.method != 'POST':
         form.lat.data = centro.latitud
@@ -198,6 +200,8 @@ def show():
     if not authenticated(session) or not tiene_permiso(session, "centro_show"):
         abort(401)
     centro = Centro().find_by_id(request.args.get("centro_id"))
+    if centro == None:
+        abort(404)
     page = request.args.get("page", 1, type=int)
     # para no tener emails repetidos en el select
     select_email = []

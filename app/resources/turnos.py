@@ -10,6 +10,8 @@ def new():
     if not authenticated(session)or not tiene_permiso(session, 'turnos_new'):
         abort(401)
     centro = Centro().find_by_id(request.args.get("centro_id"))
+    if(centro.activo == False ):
+        abort(401)
     bloques = Bloque().all()
     rango= {}
     rango["inicio"] = date.today()

@@ -51,6 +51,10 @@ class Rol(db.Model):
     def find_by_id(self, id):
         return Rol.query.filter(Rol.id == id).first()
 
+    def is_admin(self, id_rol):
+        return Rol.query.filter(and_(Rol.nombre == "administrador", Rol.id==id_rol) ).first()
+
+
 # Modelo Permiso
 class Permiso(db.Model):
     __tablename__ = "permiso"
@@ -205,5 +209,9 @@ class User(db.Model):
     def add_rol(self, rol, user):
         user.roles.append(rol)
         db.session.commit()
+
+    #verifica que exista otro administrador
+    def unico_admin(self, id_rol, id_user):
+        return db.session.query(Rol).join(User.roles).filter(and_(Rol.id==id_rol, User.id!=id_user)).all()
 
 

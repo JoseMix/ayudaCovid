@@ -12,44 +12,44 @@
   <div id="formulario">
     <strong class="texto">MODIFICAR CENTRO</strong>
     <form method="POST" onsubmit="submitHandler(event)" enctype="multipart/form-data">
-      
+      <br>
       {{ form.csrf_token }}
       <div class="form-col-left">
-      {{form.nombre.label}}
+      {{form.nombre.label}} <strong style="color: red;">(*)</strong>
         {{form.nombre(class="form-control")}}
       </div>
         {% for error in form.nombre.errors %}
-          <div style="color:red">{{ error }}</div>  
+          <br><div style="color:red">{{ error }}</div>  
         {% endfor %}
 
         <div class="form-col-right">
-        {{form.direccion.label}}
+        {{form.direccion.label}}<strong style="color: red;">(*)</strong>
         {{form.direccion(class="form-control")}}
-        </div>
+        </div><br>
         {% for error in form.direccion.errors %}
-          <div style=color:red>{{ error }}</div>
+          <br><div style=color:red>{{ error }}</div>
         {% endfor %}
 
         <div class="form-col-left">
-        {{form.telefono.label}}
+        {{form.telefono.label}}<strong style="color: red;">(*)</strong>
         {{form.telefono(class="form-control")}}
         </div>
         {% for error in form.telefono.errors %}
-          <div style=color:red>{{ error }}</div>
+          <br><div style=color:red>{{ error }}</div>
         {% endfor %}
 
         <div class="form-col-left" style="margin-right: 0px;">
-        {{form.apertura.label}}
+        {{form.apertura.label}}<strong style="color: red;">(*)</strong>
         {{form.apertura(class="form-control", type="time")}}
-        </div>
+        </div><br>
 
         <div class="form-col-right">
-        {{form.cierre.label}}
+        {{form.cierre.label}}<strong style="color: red;">(*)</strong>
         {{form.cierre(class="form-control", type="time")}}
-        </div>
+        </div><br>
 
         <div class="form-col-left">
-        {{form.tipo_centro.label}}
+        {{form.tipo_centro.label}}<strong style="color: red;">(*)</strong>
         {{form.tipo_centro(class="form-control")}}
         </div>
 
@@ -60,14 +60,14 @@
         <div class="form-col-right">
         {{form.email.label}}
         {{form.email(class="form-control")}}
-        </div>
+        </div><br>
         {% for error in form.email.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
 
         <div class="form-col-left">
         
-          <label>Municipio</label>          
+          <label>Municipio</label><strong style="color: red;">(*)</strong><br>       
           <select name="municipio" class="form-control">
               <option>{{ form.municipio.data }}</option>            
             {% for muni in lista_municipio %}
@@ -84,11 +84,10 @@
           <div style=color:red>{{ error }}</div>
         {% endfor %}
 
-        <div style="float:left; margin-left: 70px; margin-right: 30px; margin-top: 10px; margin-bottom: 5px; padding: 5px;" >
+        <div id="pdf">
           <label>Protocolo</label>
           {{form.protocolo(class="form-control", type="file" )}}
         </div>
-
         {% for error in form.protocolo.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
@@ -106,6 +105,7 @@
         </div>        
         
         <div id="centrar"><br>
+          <strong style="color: red;">campos obligatorios con *</strong><br><br>
           <input type="submit" value="Modificar centro" class="btn btn-primary">
           <input type="reset" value="Limpiar formulario" class="btn btn-secundary">
           

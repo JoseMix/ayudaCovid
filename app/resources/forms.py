@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, TimeField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, TimeField, FloatField
 from wtforms.validators import DataRequired, Length, Email
 from flask_wtf.file import FileField, FileRequired
-
+from wtforms.fields.html5 import EmailField, URLField, IntegerField
 
 class RegistrationForm(FlaskForm):
     username = StringField(
@@ -96,13 +96,10 @@ class CrearCentroForm(FlaskForm):
             ),
         ],
     )
-    telefono = StringField(
+    telefono = IntegerField(
         "Telefono",
         validators=[
-            DataRequired(message="El campo Telefono no puede estar vacio"),
-            Length(
-                min=2, max=15, message="La Telefono debe tener entre 2-10 caracteres"
-            ),
+            DataRequired(message="El campo Telefono no puede estar vacio ni contener caracteres especiales")
         ],
     )
 
@@ -131,20 +128,18 @@ class CrearCentroForm(FlaskForm):
             ),
         ],
     )
-    web = StringField(
+    web = URLField(
         "Web",
         validators=[
-            DataRequired(message="El campo web no puede estar vacio"),
             Length(
                 min=2, max=20, message="La web debe tener entre 8-20 caracteres"
             ),
         ],
     )
 
-    email = StringField(
+    email = EmailField(
         "Email",
         validators=[
-            DataRequired(message="El campo web no puede estar vacio"),
             Email(message="El email no es valido"
             ),
         ],
@@ -152,7 +147,7 @@ class CrearCentroForm(FlaskForm):
 
     protocolo=FileField("Protocolo")
 
-    lng = StringField()
-    lat = StringField()
+    lng = FloatField()
+    lat = FloatField()
     
     submit = SubmitField("Enviar")

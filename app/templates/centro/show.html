@@ -26,14 +26,12 @@
     
       <strong class="texto-show">Email: </strong>
       <strong class="text-text"> {{ centro.email }} </strong><br>
-
-      <strong class="texto-show">Protocolo: </strong>
       {% if centro.protocolo != 'NULL' %}
-      <strong class="text-text"> {{ centro.protocolo }} </strong>
-      {% else %}
-      <strong class="text-text"> sin protocolo </strong>
+        <strong class="texto-show">Protocolo: </strong>
+        
+        <a href="#" class="text-text"> {{ centro.protocolo }} </a>     <br>
       {% endif %}
-      <br>
+
       <strong class="texto-show">Estado: </strong>
       <strong class="text-text"> {{ centro.estado }} </strong><br>
       {% if centro.estado == 'PENDIENTE' %}
@@ -55,7 +53,7 @@
       </div> 
     </div>
 {#-----------------------------------------------#}
-{% if centro.estado == 'ACEPTADO' and centro.publicado == True %}
+{% if centro.estado == 'ACEPTADO' and centro.publicado == True and centro.activo == True %}
   {% if ( 'turnos_new' in session['permisos'] ) %}
   <div style="margin: 15px;"> 
     <br>

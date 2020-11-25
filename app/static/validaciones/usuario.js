@@ -19,4 +19,5 @@ function validarUser(){
         alert("El campo apellido no puede estar vacío");
         return false;
     }
+
 }
