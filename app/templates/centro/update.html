@@ -69,9 +69,9 @@
         
           <label>Municipio</label><strong style="color: red;">(*)</strong><br>       
           <select name="municipio" class="form-control">
-              <option>{{ form.municipio.data }}</option>            
-            {% for muni in lista_municipio %}
-              <option value="{{muni}}">{{muni}}</option>
+              <option value="{{ form.municipio.data }}">{{ muni }}</option>            
+            {% for municipio in lista_municipio %}
+              <option value="{{municipio}}">{{lista_municipio[municipio]}}</option>
             {% endfor %}
           </select> 
         </div><br><br>

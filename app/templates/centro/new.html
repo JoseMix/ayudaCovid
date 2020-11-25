@@ -75,8 +75,8 @@
         <label>Municipio</label>
         <br>      
         <select name="municipio" class="form-control">
-          {% for muni in lista_municipio %}
-            <option value="{{muni}}">{{muni}}</option>
+          {% for municipio in lista_municipio %}
+            <option value="{{municipio}}">{{lista_municipio[municipio]}}</option>
           {% endfor %}
         </select></div>
         <br><br>

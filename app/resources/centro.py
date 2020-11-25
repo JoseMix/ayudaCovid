@@ -9,6 +9,7 @@ from flask import (
     url_for,
     session,
     abort,
+    json,
 )
 import requests
 
@@ -23,10 +24,10 @@ from _datetime import date
 import datetime
 
 # para local
-UPLOAD_FOLDER = "app/static/uploads/"
+#UPLOAD_FOLDER = "app/static/uploads/"
 
 # para producción
-#UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
+UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
 
 
 def index():
@@ -66,7 +67,9 @@ def register():
 
     if request.method == "POST":
         if not validate(form):  # valida que no exista centro con mismos datos
-            if validate_horarios(form) and validate_tipo_centro(form.tipo_centro.data):  # Si los horarios ok
+            if validate_horarios(form) and validate_tipo_centro(
+                form.tipo_centro.data
+            ):  # Si los horarios ok
                 if validate_pdf(
                     form, request.files["protocolo"]
                 ):  # valido pdf y crea centro
@@ -87,11 +90,12 @@ def update(centro_id):
     if(centro.activo == False ):
         abort(401)
     form = CrearCentroForm(obj=centro)
-    if request.method != 'POST':
+    if request.method != "POST":
         form.lat.data = centro.latitud
         form.lng.data = centro.longitud
-    if request.method == 'POST':
-        #valida y modifica, retorna boolean
+        muni = get_municipio(form.municipio.data)
+    if request.method == "POST":
+        # valida y modifica, retorna boolean
         if update_centro(form, centro):
             return redirect(url_for("centro_index", page=1))
 
@@ -100,12 +104,13 @@ def update(centro_id):
         "centro/update.html",
         form=form,
         centro_id=centro_id,
-        lista_municipio=lista_municipio,
+        lista_municipio=lista_municipio,muni = muni
     )
 
 
-# valida los datos y modifica si todo OK
+
 def update_centro(form, centro):
+    """ valida los datos y modifica si todo OK """
     if not centro.validate_centro_update(
         form.nombre.data, form.direccion.data, form.municipio.data, centro.id
     ):
@@ -134,23 +139,26 @@ def update_centro(form, centro):
         return False
 
 
-# horario de apertura y cierre coherente
+
 def validate_horarios(form):
-    if (form["apertura"].data < form["cierre"].data):
+    """ valida horario de apertura y cierre. retorna boolean """
+    if form["apertura"].data < form["cierre"].data:
         return True
     else:
         flash("El horario de apertura debe ser menor que el horario de cierre")
-        return False 
+        return False
+
 
 def validate_tipo_centro(tipo):
-    if tipo == '0':
+    if tipo == "0":
         flash("No ha seleccionado un tipo de centro válido")
         return False
     else:
         return True
 
+
 def validate_pdf(form, file_protocolo):
-    # Si el pdf esta ok almaceno con el file, sino en null
+    """ Si el pdf esta ok almaceno con el file, sino en null """
     if file_protocolo:
         if allowed_file(file_protocolo.filename):
             filename = secure_filename(file_protocolo.filename)
@@ -166,7 +174,7 @@ def validate_pdf(form, file_protocolo):
 
 
 def allowed_file(filename):
-    # Chequeo de la extension y que solo exista un solo . antes de la extension
+    """ Chequeo de la extension y que solo exista un solo . antes de la extension """
     ALLOWED_EXTENSIONS = {"pdf"}
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -187,14 +195,21 @@ def create(form, nameProtocolo):
 
 def show_municipio():
     data = requests.get(
-        "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios"
+        "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=135"
     ).json()
-    lista = []
+    lista = {}
     for x in data["data"]["Town"]:
         muni = data["data"]["Town"][x]["name"]
-        lista.append(muni)
+        lista[x] = muni
     return lista
 
+
+def get_municipio(id):
+    """ busca el nombre del municipio con id recibido por parametro. returna string """
+    data = requests.get(
+        "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=135"
+    ).json()
+    return data["data"]["Town"][str(id)]["name"]
 
 def show():
     if not authenticated(session) or not tiene_permiso(session, "centro_show"):
@@ -208,6 +223,7 @@ def show():
     for turno in centro.turnos:
         if turno.email not in select_email:
             select_email.append(turno.email)
+    select_email.sort()
     sitio = Configuracion().sitio()
     search = {}
 
@@ -248,8 +264,9 @@ def eliminar(
     )
 
 
-# lógica para aceptar o rechazar un centro
+
 def update_estado():
+    """ lógica para aceptar o rechazar un centro """
     if not authenticated(session) or not tiene_permiso(session, "centro_update"):
         abort(401)
     Centro().update_estado(request.args.get("centro_id"), request.args.get("estado"))
@@ -260,8 +277,9 @@ def update_estado():
     return redirect(url_for("centro_show", centro_id=request.args.get("centro_id")))
 
 
-# lógica para publicar o despublicar un centro
+
 def update_publicado():
+    """ lógica para publicar o despublicar un centro """
     if not authenticated(session) or not tiene_permiso(session, "centro_update"):
         abort(401)
 
