@@ -12,7 +12,7 @@ from app.models.centro import (
 )
 from app.models.configuracion import Configuracion
 from marshmallow import ValidationError
-from datetime import datetime
+from datetime import datetime, timedelta
 
 db = SQLAlchemy()
 
@@ -32,11 +32,17 @@ def show(centro_id):
         }
         return jsonify(response), 404
     try:
-        fecha = request.args.get("fecha", default=datetime.today().strftime("%Y-%m-%d"))
-        datetime.strptime(fecha, "%Y-%m-%d")
+        fecha = request.args.get("fecha", default=datetime.today().strftime("%d-%m-%Y"))
+        datetime.strptime(fecha, "%d-%m-%Y")
     except:
         response = {
-            "message": "La fecha no es valida, el formato debe ser AAAA-mm-dd",
+            "message": "La fecha no es valida, el formato debe ser dd-mm-AAAA",
+        }
+        return jsonify(response), 500
+
+    if datetime.strptime(fecha, "%d-%m-%Y") < datetime.now() - timedelta(days=1):
+        response = {
+            "message": "La fecha es anterior al dia de hoy",
         }
         return jsonify(response), 500
 
@@ -69,7 +75,6 @@ def es_turno_de_30(hora_inicio, hora_fin):
 
 def new_reserva(centro_id):
     json_data = request.get_json()
-
     if not json_data:
         response = {
             "message": "No se ingreso ningun dato",
@@ -80,20 +85,28 @@ def new_reserva(centro_id):
     except ValidationError as err:
         return jsonify(err.messages), 422
     (centro_id, email, hora_inicio, hora_fin, fecha, telefono) = (
-        data["centro_id"],
+        centro_id,
         data["email"],
         data["hora_inicio"],
         data["hora_fin"],
         data["fecha"],
         data["telefono"],
     )
+    obj_fecha = datetime.strftime(fecha, "%d-%m-%Y")
+    if datetime.strptime(obj_fecha, "%d-%m-%Y") < datetime.now() - timedelta(
+        days=1
+    ) or datetime.strptime(obj_fecha, "%d-%m-%Y") > datetime.now() + timedelta(days=2):
+
+        response = {
+            "message": "La fecha no esta en el rango de los 3 proximos días",
+        }
+        return jsonify(response), 500
     if es_turno_de_30(hora_inicio, hora_fin):
         response = {
             "message": "La hora de inicio y fin, deben ser bloques de 30 minutos",
         }
         return jsonify(response), 500
     try:
-        print("holis")
         timeStr = hora_inicio.strftime("%H:%M")
         bloque = Bloque().find_by_hora_inicio(timeStr)
         id_bloque = bloque.id

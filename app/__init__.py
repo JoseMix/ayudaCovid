@@ -58,7 +58,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://root:password@172.17.0.4/grupo13"
+    ] = "mysql+pymysql://root:password@172.17.0.3/grupo13"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     ma = Marshmallow(app)
@@ -167,9 +167,9 @@ def create_app(environment="development"):
             return render_template("home.html", sitio=sitio)
 
     # Rutas de API-rest
-    app.add_url_rule("/api/centros", "api_centros_index", centros.index)
+    app.add_url_rule("/api/centros/", "api_centros_index", centros.index)
     app.add_url_rule(
-        "/api/centros",
+        "/api/centros/",
         "api_centros_new_centro",
         centros.new_centro,
         methods=["POST"],
@@ -193,7 +193,7 @@ def create_app(environment="development"):
     )
 
     app.add_url_rule(
-        "/api/centros/<int:centro_id>/reserva",
+        "/api/centros/<int:centro_id>/reserva/",
         "api_new_reserva",
         turno.new_reserva,
         methods=["POST"],

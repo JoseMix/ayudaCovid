@@ -89,7 +89,7 @@ class TurnoSchema(Schema):
     telefono = fields.Str()
     hora_inicio = fields.DateTime(format="%H:%M")
     hora_fin = fields.DateTime(format="%H:%M")
-    fecha = fields.Date(format="%Y-%m-%d")
+    fecha = fields.Date(format="%d-%m-%Y")
 
     class Meta:
         fields = ("centro_id", "email", "telefono", "fecha", "hora_inicio", "hora_fin")
@@ -301,8 +301,8 @@ class CentroSchema(Schema):
     nombre = fields.Str(required=True, validate=empty_value)
     direccion = fields.Str(required=True, validate=empty_value)
     telefono = fields.Str()
-    apertura = fields.DateTime(format="%H:%M:%S", required=True, validate=empty_value)
-    cierre = fields.DateTime(format="%H:%M:%S", required=True, validate=empty_value)
+    apertura = fields.DateTime(format="%H:%M", required=True, validate=empty_value)
+    cierre = fields.DateTime(format="%H:%M", required=True, validate=empty_value)
     tipo_centro = fields.Str(required=True, validate=empty_value)
     web = fields.URL(required=False)
     email = fields.Email(required=False)
