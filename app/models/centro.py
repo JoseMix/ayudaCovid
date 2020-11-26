@@ -110,6 +110,10 @@ class Bloque(db.Model):
     def all(self):
         return Bloque.query.all()
 
+    def find_by_id(self, id):
+        return Bloque.query.filter_by(id=id).first()
+
+
     def find_by_hora_inicio(self, hora):
         bloque = Bloque.query.filter_by(hora_inicio=hora).first()
         return bloque
@@ -149,8 +153,8 @@ class Centro(db.Model):
     publicado = db.Column(db.Boolean, nullable=False, default=False)
     activo = db.Column(db.Boolean, nullable=False, default=True)
     protocolo = db.Column(db.String(255), nullable=True)
-    latitud = db.Column(db.String(20), nullable=True)
-    longitud = db.Column(db.String(20), nullable=True)
+    latitud = db.Column(db.Float, nullable=True)
+    longitud = db.Column(db.Float, nullable=True)
     turnos = db.relationship("Turnos", backref="centro", lazy=True)
 
     def search_by(self, name, estado, page, per_page):

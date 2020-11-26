@@ -49,7 +49,7 @@ class ProductionConfig(BaseConfig):
     DB_USER = environ.get("DB_USER", "grupo13")
     DB_PASS = environ.get("DB_PASS", "NWE3YTMzYmU4YjY1")
     DB_NAME = environ.get("DB_NAME", "grupo13")
-
+    #UPLOAD_FOLDER = environ.get("UPLOAD_FOLDER", "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/")
 
 config = dict(
     development=DevelopmentConfig, testing=TestingConfig, production=ProductionConfig

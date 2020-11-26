@@ -58,7 +58,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://root:password@172.17.0.3/grupo13"
+    ] = "mysql+pymysql://maruca:maruca@localhost/proyecto"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     ma = Marshmallow(app)

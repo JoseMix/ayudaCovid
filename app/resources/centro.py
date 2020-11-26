@@ -24,10 +24,10 @@ from _datetime import date
 import datetime
 
 # para local
-# UPLOAD_FOLDER = "app/static/uploads/"
+UPLOAD_FOLDER = "app/static/uploads/"
 
 # para producción
-UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
+#UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
 
 
 def index():
@@ -57,8 +57,9 @@ def index():
     )
 
 
-# vista del formulario y lógica de create de centro
+
 def register():
+    """  vista del formulario y lógica de create de centro """
     if not authenticated(session) or not tiene_permiso(session, "centro_new"):
         abort(401)
 
@@ -87,26 +88,29 @@ def update(centro_id):
     lista_municipio = show_municipio()
     # busca el centro y carga el formulario de update
     centro = Centro().query.get_or_404(centro_id)
+    if(centro.activo == False ):
+        abort(401)
     form = CrearCentroForm(obj=centro)
     if request.method != "POST":
         form.lat.data = centro.latitud
         form.lng.data = centro.longitud
+        muni = get_municipio(form.municipio.data)
     if request.method == "POST":
         # valida y modifica, retorna boolean
         if update_centro(form, centro):
             return redirect(url_for("centro_index", page=1))
-
-    # si falla alguna validación que redireccione al update
+        #si falla alguna validación que redireccione al update
     return render_template(
         "centro/update.html",
         form=form,
         centro_id=centro_id,
-        lista_municipio=lista_municipio,
+        lista_municipio=lista_municipio,muni = muni
     )
 
 
-# valida los datos y modifica si todo OK
+
 def update_centro(form, centro):
+    """ valida los datos y modifica si todo OK """
     if not centro.validate_centro_update(
         form.nombre.data, form.direccion.data, form.municipio.data, centro.id
     ):
@@ -135,8 +139,9 @@ def update_centro(form, centro):
         return False
 
 
-# horario de apertura y cierre coherente
+
 def validate_horarios(form):
+    """ valida horario de apertura y cierre. retorna boolean """
     if form["apertura"].data < form["cierre"].data:
         return True
     else:
@@ -153,7 +158,7 @@ def validate_tipo_centro(tipo):
 
 
 def validate_pdf(form, file_protocolo):
-    # Si el pdf esta ok almaceno con el file, sino en null
+    """ Si el pdf esta ok almaceno con el file, sino en null """
     if file_protocolo:
         if allowed_file(file_protocolo.filename):
             filename = secure_filename(file_protocolo.filename)
@@ -169,7 +174,7 @@ def validate_pdf(form, file_protocolo):
 
 
 def allowed_file(filename):
-    # Chequeo de la extension y que solo exista un solo . antes de la extension
+    """ Chequeo de la extension y que solo exista un solo . antes de la extension """
     ALLOWED_EXTENSIONS = {"pdf"}
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -199,16 +204,26 @@ def show_municipio():
     return lista
 
 
+def get_municipio(id):
+    """ busca el nombre del municipio con id recibido por parametro. returna string """
+    data = requests.get(
+        "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=135"
+    ).json()
+    return data["data"]["Town"][str(id)]["name"]
+
 def show():
     if not authenticated(session) or not tiene_permiso(session, "centro_show"):
         abort(401)
     centro = Centro().find_by_id(request.args.get("centro_id"))
+    if centro == None:
+        abort(404)
     page = request.args.get("page", 1, type=int)
     # para no tener emails repetidos en el select
     select_email = []
     for turno in centro.turnos:
         if turno.email not in select_email:
             select_email.append(turno.email)
+    select_email.sort()
     sitio = Configuracion().sitio()
     search = {}
 
@@ -249,8 +264,9 @@ def eliminar(
     )
 
 
-# lógica para aceptar o rechazar un centro
+
 def update_estado():
+    """ lógica para aceptar o rechazar un centro """
     if not authenticated(session) or not tiene_permiso(session, "centro_update"):
         abort(401)
     Centro().update_estado(request.args.get("centro_id"), request.args.get("estado"))
@@ -261,8 +277,9 @@ def update_estado():
     return redirect(url_for("centro_show", centro_id=request.args.get("centro_id")))
 
 
-# lógica para publicar o despublicar un centro
+
 def update_publicado():
+    """ lógica para publicar o despublicar un centro """
     if not authenticated(session) or not tiene_permiso(session, "centro_update"):
         abort(401)
 

@@ -62,7 +62,7 @@
     {% if centro.estado == 'ACEPTADO' and centro.publicado == True %}    
     <td>
       <a href="{{url_for('centro_update_publicado', centro_id=centro.id, publicado=False, page=index_pag.page,name=mySearch['name'], estado=mySearch['estado']) }}" 
-      onclick="return despublicarCentro()" class="btn btn-secondary">Despublicar</a>
+      onclick="return despublicarCentro()" class="btn btn-dark">Despublicar</a>
     </td> 
     {% endif %}
     {% if centro.estado == 'ACEPTADO' and centro.publicado == False %}    
@@ -78,9 +78,14 @@
     <td>  </td>
   {% endif %}
 
+  {% if centro.activo == True %}
     <td>
       <a href="{{ url_for('centro_update', centro_id=centro.id) }}" class="btn btn-warning">Modificar</a>
     </td>
+    {% else %}
+    <td>  </td>
+  {% endif %}
+  
     <td>
     {% if centro.activo == True %}
       {% if ( 'centro_destroy' in session['permisos'] ) %}
@@ -94,7 +99,7 @@
     </td>
     {% endif %}
     <td>
-      <a href="{{ url_for('centro_show', centro_id=centro.id) }}" class="btn btn-link">Ver Mas</a>
+      <a href="{{ url_for('centro_show', centro_id=centro.id) }}" class="btn btn-info">Ver Mas</a>
     </td>
   </tr> 
   {% endfor %}
