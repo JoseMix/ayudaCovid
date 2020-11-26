@@ -112,10 +112,10 @@
     {% for turno in index_pag.items %}
     <tr>
       <td>
-        <strong class="text-text"> {{ turno.dia }} </strong>
+        <strong class="text-text"> {{ turno.dia.strftime("%d-%m-%Y") }} </strong>
       </td>
       <td>
-        <strong class="text-text"> {{ turno.bloque.hora_inicio }}hs - {{ turno.bloque.hora_fin }}hs </strong>
+        <strong class="text-text"> {{ turno.bloque.hora_inicio.strftime("%H:%M") }}hs - {{ turno.bloque.hora_fin.strftime("%H:%M") }}hs </strong>
       </td>
       <td>
         <strong class="text-text"> {{ turno.email }} </strong>

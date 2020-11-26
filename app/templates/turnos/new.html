@@ -27,7 +27,7 @@
                 <strong>Franja horaria:</strong><br>
                 <select name="bloque" id="bloque" class="form-control mr-sm-1">
                     {% for bloque in bloques %}
-                    <option value="{{ bloque.id }}"> {{bloque.hora_inicio}}hs - {{bloque.hora_fin}}hs</option>
+                    <option value="{{ bloque.id }}"> {{bloque.hora_inicio.strftime("%H:%M")}}hs - {{bloque.hora_fin.strftime("%H:%M")}}hs</option>
                     {% endfor %}
                 </select>
             </div>

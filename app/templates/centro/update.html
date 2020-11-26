@@ -15,59 +15,65 @@
       <br>
       {{ form.csrf_token }}
       <div class="form-col-left">
-      {{form.nombre.label}} <strong style="color: red;">(*)</strong>
+      {{form.nombre.label}} <strong style="color: red;">*</strong>
         {{form.nombre(class="form-control")}}
-      </div>
         {% for error in form.nombre.errors %}
           <br><div style="color:red">{{ error }}</div>  
         {% endfor %}
+      
+      </div>
 
         <div class="form-col-right">
-        {{form.direccion.label}}<strong style="color: red;">(*)</strong>
+        {{form.direccion.label}}<strong style="color: red;">*</strong>
         {{form.direccion(class="form-control")}}
-        </div><br>
         {% for error in form.direccion.errors %}
           <br><div style=color:red>{{ error }}</div>
         {% endfor %}
+        
+      </div><br>
 
         <div class="form-col-left">
-        {{form.telefono.label}}<strong style="color: red;">(*)</strong>
+        {{form.telefono.label}}<strong style="color: red;">*</strong>
         {{form.telefono(class="form-control")}}
-        </div>
         {% for error in form.telefono.errors %}
           <br><div style=color:red>{{ error }}</div>
         {% endfor %}
+        
+      </div>
 
-        <div class="form-col-left" style="margin-right: 0px;">
-        {{form.apertura.label}}<strong style="color: red;">(*)</strong>
-        {{form.apertura(class="form-control", type="time")}}
-        </div><br>
-
-        <div class="form-col-right">
-        {{form.cierre.label}}<strong style="color: red;">(*)</strong>
-        {{form.cierre(class="form-control", type="time")}}
-        </div><br>
+      <div class="form-col-right" >
+        <div style="float:left; padding-right: 25px; ">
+          {{form.apertura.label}}<strong style="color: red;">*</strong>
+          {{form.apertura(class="form-control", type="time")}}
+        </div>
+        <div style="float: right; padding-left: 50px;">
+          {{form.cierre.label}}<strong style="color: red;">*</strong>
+          {{form.cierre(class="form-control", type="time")}}       
+        </div>  
+      </div><br>
 
         <div class="form-col-left">
-        {{form.tipo_centro.label}}<strong style="color: red;">(*)</strong>
+        {{form.tipo_centro.label}}<strong style="color: red;">*</strong>
         {{form.tipo_centro(class="form-control")}}
-        </div>
 
         {% for error in form.tipo_centro.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
+        
+      </div>
 
         <div class="form-col-right">
         {{form.email.label}}
         {{form.email(class="form-control")}}
-        </div><br>
         {% for error in form.email.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
+        
+        </div><br>
 
         <div class="form-col-left">
         
-          <label>Municipio</label><strong style="color: red;">(*)</strong><br>       
+          <label>Municipio</label><strong style="color: red;">*</strong><br>       
           <select name="municipio" class="form-control">
               <option value="{{ form.municipio.data }}">{{ muni }}</option>            
             {% for municipio in lista_municipio %}
@@ -79,19 +85,21 @@
         <div class="form-col-right">
         {{form.web.label}}
         {{form.web(class="form-control")}}
-        </div><br>
+        <strong style="color: red; opacity: 50%;"> Debe comenzar con http://</strong>
         {% for error in form.web.errors %}
           <div style=color:red>{{ error }}</div>
         {% endfor %}
+        
+        </div><br><br>
 
         <div id="pdf">
           <label>Protocolo</label>
           {{form.protocolo(class="form-control", type="file" )}}
+          {% for error in form.protocolo.errors %}
+            <div style=color:red>{{ error }}</div>
+          {% endfor %}
         </div>
-        {% for error in form.protocolo.errors %}
-          <div style=color:red>{{ error }}</div>
-        {% endfor %}
-        
+
         <div class="form-col-left" style="margin-top: 5px; padding-top: 5px; ">
           <label>Ingrese ubicacion del centro</label>
             <div class="map-container">

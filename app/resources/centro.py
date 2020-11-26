@@ -24,10 +24,10 @@ from _datetime import date
 import datetime
 
 # para local
-#UPLOAD_FOLDER = "app/static/uploads/"
+UPLOAD_FOLDER = "app/static/uploads/"
 
 # para producción
-UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
+#UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
 
 
 def index():
@@ -57,8 +57,9 @@ def index():
     )
 
 
-# vista del formulario y lógica de create de centro
+
 def register():
+    """  vista del formulario y lógica de create de centro """
     if not authenticated(session) or not tiene_permiso(session, "centro_new"):
         abort(401)
 
@@ -98,8 +99,7 @@ def update(centro_id):
         # valida y modifica, retorna boolean
         if update_centro(form, centro):
             return redirect(url_for("centro_index", page=1))
-
-    # si falla alguna validación que redireccione al update
+        #si falla alguna validación que redireccione al update
     return render_template(
         "centro/update.html",
         form=form,
