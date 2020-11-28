@@ -45,42 +45,46 @@ Para adaptar el modelo al uso de Marshmallow, tenemos que definir un Schema, est
 
 
 ## Definición de formato de respuesta para todos los enpoints
-El formatode respues viene dado en formato JSON.
+El formato de respuesta viene dado en formato JSON.
 JSON es un formato que almacena información estructurada y se utiliza principalmente para transferir datos entre un servidor y un cliente.
 Un objeto comienza con { llave de apertura y termina con llave de cierre }. Cada nombre es seguido por :dos puntos y los pares nombre/valor están separados por ,coma.
 
 ## Creación de un ejemplo
 **Centros**  
-Usando Postman usamos el endpoint http://127.0.0.1:5000/api/centros y como metodo usamos POST, esto añadirá un nuevo centro a nuestra base de datos
+Usando Postman usamos el endpoint http://127.0.0.1:5000/api/centros/ y como metodo usamos POST, esto añadirá un nuevo centro a nuestra base de datos
 Seleccionamos body y luego Raw y el tipo debe ser JSON, luego copiamos el codigo:
 
 ```bash
 {
-            "apertura": "09:00:00",
-            "cierre": "20:00:00",
+            "apertura": "09:00",
+            "cierre": "20:00",
             "direccion": "Calle 24 y 12",
             "email": "pruebajson@gmail.com",
             "nombre": "Centro los alamos",
+            "latitud": "1.4556",
+            "longitud": "-12.567",
             "telefono": "112233123",
             "tipo_centro": "ropa",
-            "web": "centrolosalamos.com",
-            "municipio": "La Plata"
+            "web": "http://centrolosalamos.com",
+            "id_municipio": 1
 }
+
 ```
 Al pulsar send deberiamos obtener la respuesta:
 ```bash
 [
     {
         "centro": {
-            "apertura": "09:00:00",
-            "cierre": "20:00:00",
-            "direccion": "Calle 24 y 12",
-            "email": "pruebajson@gmail.com",
-            "municipio": "La Plata",
             "nombre": "Centro los alamos",
-            "telefono": "112233123",
-            "tipo_centro": "COMIDA",
-            "web": "centrolosalamos.com"
+            "tipo_centro": "ROPA",
+            "cierre": "20:00",
+            "direccion": "Calle 24 y 12",
+            "apertura": "09:00",
+            "web": "http://centrolosalamos.com",
+            "email": "pruebajson@gmail.com",
+            "latitud": 1.4556,
+            "longitud": -12.567,
+            "telefono": "112233123"
         }
     },
     201
@@ -142,64 +146,72 @@ http://127.0.0.1:5000/api/centros/:id
 
 ```  
 **Turnos**  
-En Postman usamos el endpoint http://127.0.0.1:5000/api/centros/:id/:fecha 
+En Postman usamos el endpoint http://127.0.0.1:5000/api/centros/<int:centro_id>/turnos_disponibles/?fecha=<fecha>
 La Api nos devolvera el listado de turnos disponibles para una fecha dada y en caso de no existir la fecha, nos dará los turnos disponibles en la fecha de hoy, para ese centro.
-El formato de la fecha debe ser el siguiente: AAAA-mm-dd
-http://127.0.0.1:5000/api/centros/turnos_disponibles/1/2020-11-15 
+El formato de la fecha debe ser el siguiente: dd-mm-AAAAA
+http://127.0.0.1:5000/api/centros/1/turnos_disponibles/?fecha=22-11-2020
 
 ```bash
 [
     {
         "centro_id": 1,
-        "fecha": "2020-11-15",
+        "fecha": "22-11-2020",
         "turno": [
             {
-                "hora_fin": "10:00:00",
-                "hora_inicio": "09:30:00"
+                "hora_inicio": "09:00",
+                "hora_fin": "09:30"
             },
             {
-                "hora_fin": "10:30:00",
-                "hora_inicio": "10:00:00"
+                "hora_inicio": "09:30",
+                "hora_fin": "10:00"
             },
             {
-                "hora_fin": "11:00:00",
-                "hora_inicio": "10:30:00"
+                "hora_inicio": "10:00",
+                "hora_fin": "10:30"
             },
             {
-                "hora_fin": "11:30:00",
-                "hora_inicio": "11:00:00"
+                "hora_inicio": "10:30",
+                "hora_fin": "11:00"
             },
             {
-                "hora_fin": "12:00:00",
-                "hora_inicio": "11:30:00"
+                "hora_inicio": "11:00",
+                "hora_fin": "11:30"
             },
             {
-                "hora_fin": "12:30:00",
-                "hora_inicio": "12:00:00"
+                "hora_inicio": "11:30",
+                "hora_fin": "12:00"
             },
             {
-                "hora_fin": "13:00:00",
-                "hora_inicio": "12:30:00"
+                "hora_inicio": "12:00",
+                "hora_fin": "12:30"
             },
             {
-                "hora_fin": "14:00:00",
-                "hora_inicio": "13:30:00"
+                "hora_inicio": "12:30",
+                "hora_fin": "13:00"
             },
             {
-                "hora_fin": "14:30:00",
-                "hora_inicio": "14:00:00"
+                "hora_inicio": "13:00",
+                "hora_fin": "13:30"
             },
             {
-                "hora_fin": "15:00:00",
-                "hora_inicio": "14:30:00"
+                "hora_inicio": "13:30",
+                "hora_fin": "14:00"
             },
             {
-                "hora_fin": "15:30:00",
-                "hora_inicio": "15:00:00"
+                "hora_inicio": "14:00",
+                "hora_fin": "14:30"
             },
             {
-                "hora_fin": "16:00:00",
-                "hora_inicio": "15:30:00"
+                "hora_inicio": "14:30",
+                "hora_fin": "15:00"
+            },
+            {
+                "hora_inicio": "15:00",
+                "hora_fin": "15:30"
+            },
+            {
+                "hora_inicio": "15:30",
+                "hora_fin": "16:00"
             }
         ]
     },
@@ -212,29 +224,27 @@ http://127.0.0.1:5000/api/centros/turnos_disponibles/1/2020-11-15
 Utilizamos el endpoint http://127.0.0.1:5000/api/centros/:id/reserva con el metodo POST. Esto dará de alta un turno en caso de que esté disponible para el centro, el día y la hora indicada.
 La entrada debería ser de la siguiente forma:
 ```bash
-[
     {
-        "centro_id" : '1' ,
         "email" : "juan.perez@gmail.com" ,
         "telefono" : "221-5930941" ,
         "hora_inicio" : "15:00" ,
         "hora_fin" : "15:30" ,
-        "fecha" : "2020-10-10" ,
+        "fecha" : "29-11-2020" ,
     }
-]
+
 ```
 Al precionar SEND, en caso de que el turno haya sido creado exitosamente se producirá la siguiente salida:
 
 ```bash
-[
+[[
     {
-        "hora_fin": "15:00",
-        "hora_inicio": "15:30",
-        "telefono": "221-5930941",
         "turno": {
             "centro_id": "1",
             "email": "juan.perez@gmail.com"
-        }
+        },
+        "telefono": "112233123",
+        "hora_inicio": "15:00",
+        "hora_fin": "15:30"
     },
     201
 ]
@@ -249,3 +259,11 @@ En caso de que para los datos seleccionados ya exista un turno ocupado se mostra
 ]
 ```
 
+Si intentamos reservar un turno en una fecha anterior a la actual o a más de 3 días se mostrará lo siguiente:
+```bash
+[
+    {
+        "message": "La fecha no esta en el rango de los 3 proximos días"
+    }
+]
+```
