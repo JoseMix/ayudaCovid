@@ -1,7 +1,7 @@
 
 function eliminarCentro() 
 {
-    if(confirm("Esta seguro que desea eliminar el Centro?"))
+    if(confirm("¿Esta seguro que desea eliminar el Centro? Se CANCELARAN los turnos para este centro"))
     {
         return true;
     }
@@ -11,7 +11,7 @@ function eliminarCentro()
     }
 }
 function aceptarCentro(){
-    if(confirm("Esta seguro que desea aceptar el centro?")){
+    if(confirm("¿Esta seguro que desea aceptar el centro?")){
         return true;
     } else {
         return false;
@@ -19,7 +19,7 @@ function aceptarCentro(){
 }
 
 function rechazarCentro() {
-    if(confirm("Esta seguro que desea rechazar el centro?")){
+    if(confirm("¿Esta seguro que desea rechazar el centro?")){
         return true;
     } else {
         return false;
@@ -27,7 +27,7 @@ function rechazarCentro() {
 }
 
 function publicarCentro() {
-    if(confirm("Esta seguro que desea publicar el centro?")) {
+    if(confirm("¿Esta seguro que desea publicar el centro?")) {
         return true;
     } else {
         return false;
@@ -35,7 +35,7 @@ function publicarCentro() {
 }
 
 function despublicarCentro() {
-    if(confirm("Esta seguro que desea despublicar el centro?")) {
+    if(confirm("¿Esta seguro que desea despublicar el centro?")) {
         return true;
     } else {
         return false;

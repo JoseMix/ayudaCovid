@@ -38,22 +38,25 @@ def index():
     page = request.args.get("page", 1, type=int)
     mySearch = {}
     name = request.args.get("name")
-
+    orden = request.args.get("orden")
     estado = request.args.get("estado")
     if name is None or name == "":
         name = ""
     if estado is None or estado == "":
         estado = ""
-
+    if orden is None or orden == "":
+        orden = "nombre"
     mySearch["name"] = name
     mySearch["estado"] = estado
+    mySearch["orden"] = orden
     if name != "" or estado != "" or request.method == "POST":
         # si estan seteados o se usó el buscador
-        index_pag = Centro().search_by(name, estado, page, sitio.paginas)
+        index_pag = Centro().search_by(name, estado, orden, page, sitio.paginas)
     else:
-        index_pag = Centro().all_paginado(page, sitio.paginas)
+        index_pag = Centro().all_paginado(orden, page, sitio.paginas)
+    lista_municipio = show_municipio()
     return render_template(
-        "centro/index.html", form=form, mySearch=mySearch, index_pag=index_pag
+        "centro/index.html", form=form, mySearch=mySearch, index_pag=index_pag, municipios=lista_municipio
     )
 
 
@@ -98,6 +101,7 @@ def update(centro_id):
     if request.method == "POST":
         # valida y modifica, retorna boolean
         if update_centro(form, centro):
+            flash("Centro modificado exitosamente!")
             return redirect(url_for("centro_index", page=1))
         #si falla alguna validación que redireccione al update
     return render_template(
@@ -255,7 +259,7 @@ def eliminar(
     if not authenticated(session) or not tiene_permiso(session, "centro_destroy"):
         abort(401)
     Centro().eliminar(id=centro_id)
-    flash("Centro eliminado correctamente")
+    flash("Centro eliminado y turnos cancelados correctamente")
     page = request.args.get("page", 1, type=int)
     name = request.args.get("name")
     estado = request.args.get("estado")
