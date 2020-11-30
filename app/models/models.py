@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, text
 from datetime import date
 
 
@@ -132,8 +132,8 @@ class User(db.Model):
         return users
 
     # page= página actual, per_page = elementos x página
-    def all_paginado(self, page, per_page):
-        return User.query.order_by(User.id.desc()).paginate(
+    def all_paginado(self,orden, page, per_page):
+        return User.query.order_by(text(orden)).paginate(
             page=page, per_page=per_page, error_out=False
         )
 
@@ -182,13 +182,12 @@ class User(db.Model):
         db.session.commit()
         return user
 
-    def search_by(self, username, estado, page, per_page):
+    def search_by(self, username, estado,orden, page, per_page):
         if estado == '2':
-            users = User().query.filter(User.username.ilike(f'%{username}%')).\
-            paginate(page=page, per_page=per_page, error_out=False)
+            users = User().query.filter(User.username.ilike(f'%{username}%')).order_by(text(orden)).paginate(page=page, per_page=per_page, error_out=False)
         else:
             users = User().query.\
-            filter(and_(User.username.ilike(f'%{username}%'), User.activo == estado)).\
+            filter(and_(User.username.ilike(f'%{username}%'), User.activo == estado)).order_by(text(orden)).\
             paginate(page=page, per_page=per_page, error_out=False)
         
         return users

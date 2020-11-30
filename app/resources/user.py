@@ -16,20 +16,22 @@ def index():
     page = request.args.get('page',1, type=int)
     mySearch = {}
     username = request.args.get("username")
-
+    orden = request.args.get("orden")
     estado = request.args.get("estado")
     if username is None or username == '':
         username = ""
     if estado is None or estado == '':
         estado = ""
-    
+    if orden is None or orden == '':
+        orden = "username"
     mySearch["username"] = username
     mySearch["estado"] = estado
+    mySearch["orden"] = orden
     if username != "" or estado != "" or request.method == "POST":
         #si estan seteados o se usó el buscador
-        index_pag = User().search_by(username,estado, page, sitio.paginas)
+        index_pag = User().search_by(username,estado,orden, page, sitio.paginas)
     else:
-        index_pag = User().all_paginado(page, sitio.paginas)
+        index_pag = User().all_paginado(orden, page, sitio.paginas)
     return render_template("user/index.html",form=form, mySearch=mySearch, index_pag=index_pag)
 
 
@@ -66,6 +68,7 @@ def update(user_id):
             ).decode("utf-8")
             form.populate_obj(user)
             User().update(user)
+            flash("Usuario modificado exitosamente!")
             return redirect(url_for("user_index", page=1))
         else:
             flash("El usuario o el email ya existe")
@@ -107,11 +110,13 @@ def eliminar(user_id, page):
         User().eliminar(id=user_id)
         flash("Usuario eliminado correctamente")
     sitio = Configuracion().sitio()
-    index_pag = User().all_paginado(page, sitio.paginas)
+    
     form = FilterForm()
     mySearch = {}
     mySearch["username"] = request.args.get("username")
     mySearch["estado"] = request.args.get("estado")
+    mySearch["orden"] = request.args.get("orden")
+    index_pag = User().all_paginado(mySearch["orden"], page, sitio.paginas)
     return render_template("user/index.html",form=form, index_pag=index_pag, sitio=sitio, mySearch=mySearch)
 
 
@@ -120,12 +125,14 @@ def activar(user_id, page):
         abort(401)
     User().activar(id=user_id)
     sitio = Configuracion().sitio()
-    index_pag = User().all_paginado(page, sitio.paginas)
+    
     flash("Usuario activado correctamente")
     form = FilterForm()
     mySearch = {}
     mySearch["username"] = request.args.get("username")
     mySearch["estado"] = request.args.get("estado")
+    mySearch["orden"] = request.args.get("orden")
+    index_pag = User().all_paginado(mySearch["orden"], page, sitio.paginas)
     return render_template("user/index.html",form=form, index_pag=index_pag, mySearch=mySearch)
 
 #muestra vista para roles y, si se oprime submit, modifica roles de usuario
