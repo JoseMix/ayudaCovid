@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 from operator import and_
 from marshmallow import Schema, fields, ValidationError
 
@@ -43,16 +44,18 @@ class Turnos(db.Model):
     def find_by_id(self, id):
         return Turnos.query.filter(Turnos.id == id).first()
 
-    # Para validar turno repetido de centro
+    
     def find_by(self, dia, bloque, centro_id):
+        """  Para validar turno repetido de centro """
         return Turnos.query.filter(
             and_(Turnos.centro_id == centro_id, Turnos.turno_id == bloque),
             Turnos.dia == dia,
             Turnos.estado == "VIGENTE",
         ).first()
 
-    # busca turnos por email
+    
     def turnos_by_email(self, email, centro_id, page, per_page):
+        """  busca turnos por email """
         if email == "todos":
             return (
                 Turnos.query.filter(Turnos.centro_id == centro_id)
@@ -98,6 +101,8 @@ class TurnoSchema(Schema):
 
 turno_schema = TurnoSchema()
 turnos_schema = TurnoSchema(many=True)
+
+
 # Modelo Bloque de turnos
 class Bloque(db.Model):
 
@@ -157,18 +162,18 @@ class Centro(db.Model):
     longitud = db.Column(db.Float, nullable=True)
     turnos = db.relationship("Turnos", backref="centro", lazy=True)
 
-    def search_by(self, name, estado, page, per_page):
+    def search_by(self, name, estado,orden, page, per_page):
         if estado == "3":  # busco por nombre en todos los estados
             centro = (
                 Centro()
-                .query.filter(Centro.nombre.ilike(f"%{name}%"))
+                .query.filter(Centro.nombre.ilike(f"%{name}%")).order_by(text(orden))
                 .paginate(page=page, per_page=per_page, error_out=False)
             )
         else:
             if name == "":  # Si no vino nombre, busca solo por estado
                 centro = (
                     Centro()
-                    .query.filter(Centro.estado == estado)
+                    .query.filter(Centro.estado == estado).order_by(text(orden))
                     .paginate(page=page, per_page=per_page, error_out=False)
                 )
             else:  # vino nombre y estado
@@ -176,7 +181,7 @@ class Centro(db.Model):
                     Centro()
                     .query.filter(
                         and_(Centro.nombre.ilike(f"%{name}%"), Centro.estado == estado)
-                    )
+                    ).order_by(text(orden))
                     .paginate(page=page, per_page=per_page, error_out=False)
                 )
         return centro
@@ -196,8 +201,8 @@ class Centro(db.Model):
         return centro
 
     # page= página actual, per_page = elementos x página
-    def all_paginado(self, page, per_page):
-        return Centro.query.order_by(Centro.id.asc()).paginate(
+    def all_paginado(self,orden, page, per_page):
+        return Centro.query.order_by(text(orden)).paginate(
             page=page, per_page=per_page, error_out=False
         )
 
@@ -253,8 +258,9 @@ class Centro(db.Model):
         ).first()
         return centro
 
-    # modifica el estado a ACEPTADO o RECHAZADO
+
     def update_estado(self, centro_id, estado):
+        """  modifica el estado a ACEPTADO o RECHAZADO """
         centro = Centro().find_by_id(centro_id)
         centro.estado = estado
         if estado == "ACEPTADO":
@@ -263,8 +269,9 @@ class Centro(db.Model):
             centro.publicado = False
         db.session.commit()
 
-    # modifica el centro a publicado o despublicado - boolean -
+    
     def update_publicado(self, centro_id, publicado):
+        """ modifica el centro a publicado o despublicado - boolean - """
         centro = Centro().find_by_id(centro_id)
         if publicado == "True":
             centro.publicado = True
@@ -272,12 +279,10 @@ class Centro(db.Model):
             centro.publicado = False
         db.session.commit()
 
-    # def update(self, centro):
-    #    db.session.merge(centro)
-    #    db.session.commit()
 
-    # valida que no exista centro con mismo municipio, dirección y nombre
+    
     def validate_centro_update(self, nombre, direccion, municipio, id):
+        """  valida que no exista centro con mismo municipio, dirección y nombre """
         centro = Centro.query.filter(
             and_(
                 and_(
