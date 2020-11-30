@@ -218,6 +218,7 @@ def show():
     if centro == None:
         abort(404)
     page = request.args.get("page", 1, type=int)
+    ruta = os.path.join(UPLOAD_FOLDER, centro.protocolo)
     # para no tener emails repetidos en el select
     select_email = []
     for turno in centro.turnos:
@@ -243,6 +244,7 @@ def show():
         emails=select_email,
         index_pag=turnos,
         search=search,
+        protocolo=ruta
     )
 
 

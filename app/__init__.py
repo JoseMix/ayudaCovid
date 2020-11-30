@@ -58,7 +58,7 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://maruca:maruca@localhost/proyecto"
+    ] = "mysql+pymysql://root:@localhost/proyecto"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     ma = Marshmallow(app)
@@ -121,7 +121,9 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/centro/listado", "centro_index", centro.index, methods=["GET", "POST"]
     )
+    
     app.add_url_rule("/centro/show", "centro_show", centro.show, methods=["GET"])
+    #app.add_url_rule("/app/static/uploads/Protocolo.pdf")
     app.add_url_rule(
         "/centro/update-publicado",
         "centro_update_publicado",

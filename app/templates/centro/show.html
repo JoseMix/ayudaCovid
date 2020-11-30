@@ -29,7 +29,8 @@
       {% if centro.protocolo != 'NULL' %}
         <strong class="texto-show">Protocolo: </strong>
         
-        <a href="#" class="text-text"> {{ centro.protocolo }} </a>     <br>
+        <button  onclick="window.open('{{ protocolo }}')" class="btn btn-link"> {{ centro.protocolo }} </button>     
+      <br>
       {% endif %}
 
       <strong class="texto-show">Estado: </strong>
