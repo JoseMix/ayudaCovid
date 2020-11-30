@@ -43,6 +43,9 @@ class Turnos(db.Model):
     def find_by_id(self, id):
         return Turnos.query.filter(Turnos.id == id).first()
 
+    def turno_centro(self, centro_id):
+        return Turnos.query.filter(Turnos.centro_id == centro_id).all()
+
     # Para validar turno repetido de centro
     def find_by(self, dia, bloque, centro_id):
         return Turnos.query.filter(
@@ -290,6 +293,9 @@ class Centro(db.Model):
         return centro
 
     def eliminar(self, id):
+        turno = Turnos().turno_centro(id)
+        for x in turno: 
+            x.estado = "CANCELADO"
         centro = Centro().find_by_id(id)
         centro.activo = False
         db.session.commit()

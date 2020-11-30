@@ -76,6 +76,11 @@
         {% if messages %}
           <ul class=flashes>
           {% for message in messages %}
+              <div
+              class="alert alert-primary"
+              role="alert"
+              style="margin-right: 70px"
+            >
             <li>{{ message }}</li>
           {% endfor %}
           </ul>

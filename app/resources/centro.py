@@ -253,7 +253,7 @@ def eliminar(
     if not authenticated(session) or not tiene_permiso(session, "centro_destroy"):
         abort(401)
     Centro().eliminar(id=centro_id)
-    flash("Centro eliminado correctamente")
+    flash("Centro eliminado y turnos cancelados correctamente")
     page = request.args.get("page", 1, type=int)
     name = request.args.get("name")
     estado = request.args.get("estado")
