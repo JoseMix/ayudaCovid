@@ -58,10 +58,12 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://root:@localhost/proyecto"
+    ] = "mysql+pymysql://"+app.config['DB_USER']+":"+app.config['DB_PASS']+"@"+app.config['DB_HOST']+"/"+app.config['DB_NAME']
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     ma = Marshmallow(app)
+    #ver path
+    #print(app.config["UPLOAD_FOLDER"])
     initialize_db(app)
     configuracion_initialize_db(app)
     centro_turnos_initialize_db(app)

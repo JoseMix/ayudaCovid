@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <NavBar></NavBar>
     <!--
     <div id="nav">
       <router-link to="/">Home</router-link> |
@@ -9,6 +10,18 @@
     <router-view />
   </div>
 </template>
+
+<script>
+// @ is an alias to /src
+import NavBar from "@/components/HomeComponents/NavBar.vue";
+
+export default {
+  name: "App",
+  components: {
+    NavBar,
+  },
+};
+</script>
 
 <style>
 #app {
