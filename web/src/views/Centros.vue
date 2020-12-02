@@ -13,6 +13,7 @@
       ese día y al seleccionar uno y completar su datos de contacto (Nombre,
       apellido, email y teléfono) puede realizar la solicitud.
     </p>
+    <upload-component></upload-component>
     <br />
     <router-link to="/" class="btn btn-primary">Volver </router-link>
   </div>
