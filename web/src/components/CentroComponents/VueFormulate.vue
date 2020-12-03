@@ -56,7 +56,8 @@
           <FormulateInput
             name="id_municipio"
             label="id_municipio"
-            validation="required"
+            type="select"
+            :options="options"
           />
 
           <FormulateInput type="submit" label="Enviar" />
@@ -92,7 +93,8 @@ export default {
         "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=135"
       )
       .then((result) => {
-        self.options = result.datadata["data"]["Town"];
+        this.options = result.data["data"]["Town"];
+        this.options.map((muni) => console.log(muni));
       });
   },
 };
