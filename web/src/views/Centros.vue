@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <my-map />
     <div class="Centros">
       <h1>Página de centros</h1>
       <p>
@@ -21,8 +22,22 @@
 </template>
 
 <script>
+import MyMap from "../components/MapsComponents/MyMaps.vue";
+
 export default {
   name: "Centros",
-  components: {},
+  components: {
+    MyMap,
+  },
 };
 </script>
+
+<style>
+html,
+body,
+#app,
+div.container {
+  height: 100%;
+  margin: 0;
+}
+</style>
