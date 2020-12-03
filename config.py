@@ -22,11 +22,12 @@ class DevelopmentConfig(BaseConfig):
 
     ENV = "development"
     DEBUG = environ.get("DEBUG", True)
-    DB_HOST = environ.get("DB_HOST", "localhost")
-    DB_USER = environ.get("DB_USER", "maruca")
-    DB_PASS = environ.get("DB_PASS", "maruca")
-    DB_NAME = environ.get("DB_NAME", "proyecto")
-    UPLOAD_FOLDER = environ.get("UPLOAD_FOLDER","app/static/uploads/")
+    DB_HOST = environ.get("DB_HOST", "172.17.0.4")
+    DB_USER = environ.get("DB_USER", "root")
+    DB_PASS = environ.get("DB_PASS", "password")
+    DB_NAME = environ.get("DB_NAME", "grupo13")
+    UPLOAD_FOLDER = environ.get("UPLOAD_FOLDER", "app/static/uploads/")
+
 
 class TestingConfig(BaseConfig):
     """Testing configuration."""
@@ -49,7 +50,11 @@ class ProductionConfig(BaseConfig):
     DB_USER = environ.get("DB_USER", "grupo13")
     DB_PASS = environ.get("DB_PASS", "NWE3YTMzYmU4YjY1")
     DB_NAME = environ.get("DB_NAME", "grupo13")
-    UPLOAD_FOLDER = environ.get("UPLOAD_FOLDER", "/home/admin-grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/")
+    UPLOAD_FOLDER = environ.get(
+        "UPLOAD_FOLDER",
+        "/home/admin-grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/",
+    )
+
 
 config = dict(
     development=DevelopmentConfig, testing=TestingConfig, production=ProductionConfig
