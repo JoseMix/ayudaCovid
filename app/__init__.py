@@ -132,7 +132,9 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/centro/listado", "centro_index", centro.index, methods=["GET", "POST"]
     )
+    
     app.add_url_rule("/centro/show", "centro_show", centro.show, methods=["GET"])
+    #app.add_url_rule("/app/static/uploads/Protocolo.pdf")
     app.add_url_rule(
         "/centro/update-publicado",
         "centro_update_publicado",

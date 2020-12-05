@@ -112,3 +112,5 @@ flask_session
 coc-settings.json
 .vscode
 
+#node
+node_modules
