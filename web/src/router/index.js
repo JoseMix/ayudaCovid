@@ -20,7 +20,7 @@ const routes = [
     component: Centros,
   },
   {
-    path: "/turnos",
+    path: "/turnos/:nombre",
     name: "Turnos",
     component: Turnos,
   },

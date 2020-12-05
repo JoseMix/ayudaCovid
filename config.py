@@ -22,10 +22,10 @@ class DevelopmentConfig(BaseConfig):
 
     ENV = "development"
     DEBUG = environ.get("DEBUG", True)
-    DB_HOST = environ.get("DB_HOST", "172.17.0.4")
+    DB_HOST = environ.get("DB_HOST", "localhost")
     DB_USER = environ.get("DB_USER", "root")
-    DB_PASS = environ.get("DB_PASS", "password")
-    DB_NAME = environ.get("DB_NAME", "grupo13")
+    DB_PASS = environ.get("DB_PASS", "")
+    DB_NAME = environ.get("DB_NAME", "proyecto")
     UPLOAD_FOLDER = environ.get("UPLOAD_FOLDER", "app/static/uploads/")
 
 

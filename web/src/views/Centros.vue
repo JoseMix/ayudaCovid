@@ -9,6 +9,7 @@
       </p>
       <router-link to="/turnos" class="btn btn-primary">Turnos</router-link>
       <p>
+        <ListaCentros/>
         Dado un centro de ayuda seleccionado, se debe brindar la posibilidad de
         solicitar un turno. El usuario debe especificar primero para que fecha
         espera el turno. La aplicación debe mostrarles los turnos disponibles
@@ -23,11 +24,12 @@
 
 <script>
 import MyMap from "../components/MapsComponents/MyMaps.vue";
-
+import ListaCentros from "../components/CentroComponents/ListaCentros.vue";
 export default {
   name: "Centros",
   components: {
     MyMap,
+    ListaCentros,
   },
 };
 </script>
