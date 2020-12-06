@@ -4,7 +4,9 @@
         
         <v-list v-for="centro in centros" :key="centro.id" > 
                 <v-list-item>{{ centro.nombre }} | {{centro.web}} </v-list-item>
-                <router-link  :to="{ name:'Turnos', params: {nombre: centro.nombre, fecha: formValues.fecha} }" class="btn btn-primary">Sacar Turno</router-link> -->
+               
+                <router-link  :to="{ name:'Turnos', params: {id: centro.id, fecha: formValues.fecha} }" class="btn btn-primary">Sacar Turno</router-link> -->
+      
         <FormulateForm v-model="formValues">
         <h2>Formulario Turnos</h2>
             <FormulateInput
