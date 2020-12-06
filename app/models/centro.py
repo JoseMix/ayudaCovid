@@ -17,6 +17,9 @@ class Turnos(db.Model):
     __tablename__ = "turnos"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), nullable=False)
+    nombre = db.Column(db.String(255))
+    apellido = db.Column(db.String(255))
+    telefono = db.Column(db.String(20))
     dia = db.Column(db.DateTime, nullable=False)
     estado = db.Column(
         db.Enum("VIGENTE", "CANCELADO"), nullable=False, default="VIGENTE"
@@ -56,7 +59,6 @@ class Turnos(db.Model):
             Turnos.estado == "VIGENTE",
         ).first()
 
-    
     def turnos_by_email(self, email, centro_id, page, per_page):
         """  busca turnos por email """
         if email == "todos":
@@ -92,13 +94,24 @@ class TurnoSchema(Schema):
 
     centro_id = fields.Str()
     email = fields.Str()
+    nombre = fields.Str()
+    apellido = fields.Str()
     telefono = fields.Str()
     hora_inicio = fields.DateTime(format="%H:%M")
     hora_fin = fields.DateTime(format="%H:%M")
     fecha = fields.Date(format="%d-%m-%Y")
 
     class Meta:
-        fields = ("centro_id", "email", "telefono", "fecha", "hora_inicio", "hora_fin")
+        fields = (
+            "centro_id",
+            "email",
+            "nombre",
+            "apellido",
+            "telefono",
+            "fecha",
+            "hora_inicio",
+            "hora_fin",
+        )
         ordered = True
 
 
@@ -120,7 +133,6 @@ class Bloque(db.Model):
 
     def find_by_id(self, id):
         return Bloque.query.filter_by(id=id).first()
-
 
     def find_by_hora_inicio(self, hora):
         bloque = Bloque.query.filter_by(hora_inicio=hora).first()
@@ -165,18 +177,20 @@ class Centro(db.Model):
     longitud = db.Column(db.Float, nullable=True)
     turnos = db.relationship("Turnos", backref="centro", lazy=True)
 
-    def search_by(self, name, estado,orden, page, per_page):
+    def search_by(self, name, estado, orden, page, per_page):
         if estado == "3":  # busco por nombre en todos los estados
             centro = (
                 Centro()
-                .query.filter(Centro.nombre.ilike(f"%{name}%")).order_by(text(orden))
+                .query.filter(Centro.nombre.ilike(f"%{name}%"))
+                .order_by(text(orden))
                 .paginate(page=page, per_page=per_page, error_out=False)
             )
         else:
             if name == "":  # Si no vino nombre, busca solo por estado
                 centro = (
                     Centro()
-                    .query.filter(Centro.estado == estado).order_by(text(orden))
+                    .query.filter(Centro.estado == estado)
+                    .order_by(text(orden))
                     .paginate(page=page, per_page=per_page, error_out=False)
                 )
             else:  # vino nombre y estado
@@ -184,7 +198,8 @@ class Centro(db.Model):
                     Centro()
                     .query.filter(
                         and_(Centro.nombre.ilike(f"%{name}%"), Centro.estado == estado)
-                    ).order_by(text(orden))
+                    )
+                    .order_by(text(orden))
                     .paginate(page=page, per_page=per_page, error_out=False)
                 )
         return centro
@@ -204,7 +219,7 @@ class Centro(db.Model):
         return centro
 
     # page= página actual, per_page = elementos x página
-    def all_paginado(self,orden, page, per_page):
+    def all_paginado(self, orden, page, per_page):
         return Centro.query.order_by(text(orden)).paginate(
             page=page, per_page=per_page, error_out=False
         )
@@ -261,7 +276,6 @@ class Centro(db.Model):
         ).first()
         return centro
 
-
     def update_estado(self, centro_id, estado):
         """  modifica el estado a ACEPTADO o RECHAZADO """
         centro = Centro().find_by_id(centro_id)
@@ -272,7 +286,6 @@ class Centro(db.Model):
             centro.publicado = False
         db.session.commit()
 
-    
     def update_publicado(self, centro_id, publicado):
         """ modifica el centro a publicado o despublicado - boolean - """
         centro = Centro().find_by_id(centro_id)
@@ -282,8 +295,6 @@ class Centro(db.Model):
             centro.publicado = False
         db.session.commit()
 
-
-    
     def validate_centro_update(self, nombre, direccion, municipio, id):
         """  valida que no exista centro con mismo municipio, dirección y nombre """
         centro = Centro.query.filter(
@@ -299,7 +310,7 @@ class Centro(db.Model):
 
     def eliminar(self, id):
         turno = Turnos().turno_centro(id)
-        for x in turno: 
+        for x in turno:
             x.estado = "CANCELADO"
         centro = Centro().find_by_id(id)
         centro.activo = False

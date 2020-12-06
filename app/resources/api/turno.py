@@ -84,9 +84,11 @@ def new_reserva(centro_id):
         data = turno_schema.load(json_data)
     except ValidationError as err:
         return jsonify(err.messages), 422
-    (centro_id, email, hora_inicio, hora_fin, fecha, telefono) = (
+    (centro_id, email, nombre, apellido, hora_inicio, hora_fin, fecha, telefono) = (
         centro_id,
         data["email"],
+        data["nombre"],
+        data["apellido"],
         data["hora_inicio"],
         data["hora_fin"],
         data["fecha"],
@@ -119,9 +121,12 @@ def new_reserva(centro_id):
     if turno is None:
         turno = Turnos(
             email=email,
+            nombre=nombre,
+            apellido=apellido,
             dia=fecha,
             turno_id=id_bloque,
             centro_id=centro_id,
+            telefono=telefono,
         )
         db.session.add(turno)
         db.session.commit()
