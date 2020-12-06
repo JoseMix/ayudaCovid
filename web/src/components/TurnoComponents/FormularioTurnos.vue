@@ -5,7 +5,6 @@
         <v-row>
         <v-col>
         <h2>Formulario Turnos</h2>
-            <FormulateInput name="fecha" label="Fecha" type="date" validation="required"/>
             <FormulateInput name="hora"  label="Hora"  type="time" validation="required"/>
             <FormulateInput name="email" label="Email" type="text" validation="required"/>
             <FormulateInput name="telefono" label="Telefono" type="text" validation="required"/>
@@ -26,6 +25,7 @@ export default {
     mounted: function () {
         //axios.get('http://127.0.0.1:5000/api/centros/').then(response =>console.log(response.data[0].centros[0][0].nombre))
         axios.get('http://127.0.0.1:5000/api/centros/').then(response => this.centros = response.data[0].centros[0])
+        //http://127.0.0.1:5000/api/centros/<int:centro_id>/turnos_disponibles/?fecha=<fecha>
     }
 }
 </script> 

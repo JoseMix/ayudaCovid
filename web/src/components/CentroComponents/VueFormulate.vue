@@ -65,6 +65,7 @@
       </v-row>
     </v-container>
     <h3>{{ formValues }}</h3>
+    
   </FormulateForm>
 </template>
 
