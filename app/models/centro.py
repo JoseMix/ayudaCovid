@@ -313,6 +313,7 @@ def empty_value(data):
 
 
 class CentroSchema(Schema):
+    id = fields.Int()
     nombre = fields.Str(required=True, validate=empty_value)
     direccion = fields.Str(required=True, validate=empty_value)
     telefono = fields.Str()
