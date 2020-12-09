@@ -2,50 +2,25 @@
   <div class="Turnos">
     <h1>Página de Turnos</h1>
 
-    <h3>{{ urlApi($route.params.id, $route.params.fecha) }}</h3>
+    <h3>{{ rutasApi($route.params.id, $route.params.fecha) }}</h3>
 
     <router-link to="/centros" class="btn btn-primary">Volver </router-link>
-    <FormulateForm v-model="formValues" @submit="llamarAlOtroCOmponente">
-      <v-container>
-        <v-row>
-          <v-col>
-            <h2>Formulario Turnos</h2>
-            <FormulateInput
-              name="email"
-              label="Email"
-              type="text"
-              validation="required"
-            />
-            <FormulateInput
-              name="nombre"
-              label="Nombre"
-              type="text"
-              validation="required"
-            />
-            <FormulateInput
-              name="apellido"
-              label="Hora"
-              type="text"
-              validation="required"
-            />
-            <FormulateInput
-              name="telefono"
-              label="Telefono"
-              type="text"
-              validation="required"
-            />
-            <FormulateInput
-              name="hora"
-              label="hora"
-              type="select"
-              :options="options"
-            />
-            <FormulateInput type="submit" label="Enviar" />
-          </v-col>
-        </v-row>
-      </v-container>
-      <h3>{{ formValues }}</h3>
-    </FormulateForm>
+    <v-form class="pa-15">
+      <v-text-field v-model="email" label="Email"></v-text-field>
+      <v-text-field v-model="nombre" label="Nombre"></v-text-field>
+      <v-text-field v-model="apellido" label="Apellido"></v-text-field>
+      <v-text-field v-model="telefono" label="Telefono"></v-text-field>
+      <v-select
+        v-model="hora_inicio"
+        :items="options"
+        label="Horario"
+        data-vv-name="select"
+        required
+      ></v-select>
+    </v-form>
+    <h1>
+      {{ this.email }}{{ this.nombre }} {{ this.apellido }} {{ this.telefono }}
+    </h1>
   </div>
 </template>
 <script>
@@ -54,31 +29,55 @@ export default {
   name: "Turnos",
   components: {},
   data: () => ({
-    turnos: null,
+    email: "",
+    nombre: "",
+    apellido: "",
+    telefono: "",
+    hora_inicio: "",
     options: [],
     fecha: null,
-    url: null,
+    apiHorarios: null,
+    apiReservarTurno: null,
   }),
   methods: {
-    urlApi(id, fecha) {
+    rutasApi(id, fecha) {
       this.fecha = fecha
         .split("-")
         .reverse()
         .join("-");
-      this.url =
+      this.apiHorarios =
         "http://127.0.0.1:5000/api/centros/" +
         id +
         "/turnos_disponibles/?fecha=" +
         this.fecha;
+      this.apiReservarTurno =
+        "http://127.0.0.1:5000/api/centros/" + id + "/reserva/";
+    },
+    reservarTurno() {
+      alert("holita");
+      axios({
+        method: "POST",
+        url: this.apiReservarTurno,
+        data: {
+          email: "cata@gmail.com",
+          nombre: "Cata",
+          apellido: "Lina",
+          telefono: "221-3330941",
+          hora_inicio: "14:00",
+          hora_fin: "14:30",
+          fecha: "10-12-2020",
+        },
+      })
+        .then((res) => console.log(res.data))
+        .catch((err) => console.log(err));
     },
   },
   mounted: function() {
-    /*axios
-      .get(this.url)
-      .then((response) => console.log(response.data[0].turno.all));*/
-    axios
-      .get(this.url)
-      .then((result) => (this.options = result.data[0].turno[0]));
+    axios.get(this.apiHorarios).then((response) => {
+      for (let i = 0; i < response.data[0].turno.length; i++) {
+        this.options.push(response.data[0].turno[i].hora_inicio);
+      }
+    });
   },
 };
 </script>
