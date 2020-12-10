@@ -5,7 +5,7 @@
     <h3>{{ rutasApi($route.params.id, $route.params.fecha) }}</h3>
 
     <router-link to="/centros" class="btn btn-primary">Volver </router-link>
-    <v-form class="pa-15">
+    <v-form class="pa-15" >
       <v-text-field v-model="email" label="Email"></v-text-field>
       <v-text-field v-model="nombre" label="Nombre"></v-text-field>
       <v-text-field v-model="apellido" label="Apellido"></v-text-field>
@@ -17,14 +17,16 @@
         data-vv-name="select"
         required
       ></v-select>
+      <v-btn class="mr-4" @click="reservarTurno">
+      submit
+      </v-btn>
     </v-form>
-    <h1>
-      {{ this.email }}{{ this.nombre }} {{ this.apellido }} {{ this.telefono }}
-    </h1>
+    <h1>{{this.error}}</h1>
   </div>
 </template>
 <script>
 import axios from "axios";
+import moment from "moment"; 
 export default {
   name: "Turnos",
   components: {},
@@ -34,10 +36,12 @@ export default {
     apellido: "",
     telefono: "",
     hora_inicio: "",
+    hora_fin:"",
     options: [],
     fecha: null,
     apiHorarios: null,
     apiReservarTurno: null,
+    error:null,
   }),
   methods: {
     rutasApi(id, fecha) {
@@ -54,22 +58,21 @@ export default {
         "http://127.0.0.1:5000/api/centros/" + id + "/reserva/";
     },
     reservarTurno() {
-      alert("holita");
+      this.hora_fin = moment("2016-03-12 "+this.hora_inicio+":00").add(30, 'minutes').format('HH:mm');
       axios({
         method: "POST",
         url: this.apiReservarTurno,
         data: {
-          email: "cata@gmail.com",
-          nombre: "Cata",
-          apellido: "Lina",
-          telefono: "221-3330941",
-          hora_inicio: "14:00",
-          hora_fin: "14:30",
-          fecha: "10-12-2020",
+          email: this.email,
+          nombre: this.nombre,
+          apellido: this.apellido,
+          telefono: this.telefono,
+          hora_inicio: this.hora_inicio,
+          hora_fin: this.hora_fin,
+          fecha: this.fecha,
         },
       })
-        .then((res) => console.log(res.data))
-        .catch((err) => console.log(err));
+      .catch((e) => {this.error =e.response.data.message});
     },
   },
   mounted: function() {
