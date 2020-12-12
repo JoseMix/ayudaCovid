@@ -19,6 +19,7 @@
             {{ marker.telefono }}
           </p>
           <!-- llamamos componente  -->
+          <FormFecha />
           <br /><button style="margin:5%;" @click="addStops(marker)">
             Solicitar turno
           </button>
@@ -34,6 +35,7 @@ import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
+import FormFecha from "../components/CentroComponents/FormFecha.vue";
 
 L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.4/dist/images/";
 
@@ -45,6 +47,7 @@ export default {
     "l-marker": LMarker,
     // "l-tooltip": LTooltip,
     "l-popup": LPopup,
+    FormFecha,
   },
   data() {
     return {
