@@ -1,6 +1,6 @@
 <template>
   <v-container >
-    <v-layout row wrap  > {{ horarios() }} {{this.fecha_ini}} | {{this.fecha_fin}}
+    <v-layout row wrap  > {{ horarios() }} 
     <v-flex  xs12 sm6 >
     <v-card >
       <v-card-title>Centros</v-card-title>
@@ -13,10 +13,9 @@
           label="Fecha"
           type="date"
           validation="required"
-          min= "fecha_ini"
-          max= "fecha_fin" 
+          :min="fecha_ini"
+          :max="fecha_fin" 
         />        
-        <h3>{{ formValues.fecha }}</h3>
       </FormulateForm></v-list-item>
       <v-list-item><router-link  :to="{ name:'Turnos', params: {id: centro.id, fecha: formValues.fecha} }" >
       <v-btn depressed color="primary">Sacar Turno</v-btn></router-link></v-list-item>
@@ -38,6 +37,7 @@ export default {
     formValues: {},
     fecha_fin:null,
     fecha_ini:null,
+    date: null,
   }),
   methods:{
     horarios(){
@@ -46,7 +46,10 @@ export default {
       this.fecha_fin = moment("2020-12-12"+ " 00:00:00").add(3, 'days').format("YYYY[-]M[-]D"); 
       console.log("3 dias",this.fecha_fin);
 
-    }
+    },
+    methods: {
+      allowedDates: val => parseInt(val.split('-')[1], 10) % 2 === 0,
+    },
   },
   mounted: function() {
     //axios.get('http://127.0.0.1:5000/api/centros/').then(response =>console.log(response.data[0].centros[0][0].nombre))
