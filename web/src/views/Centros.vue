@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <my-map />
+    <my-map/>
     <div class="Centros">
       <h1>Página de centros</h1>
       <p>
