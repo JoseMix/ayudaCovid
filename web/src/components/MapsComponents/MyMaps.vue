@@ -1,26 +1,39 @@
 <template>
-  <div class="container">
+  <div class="mapa">
     <l-map :zoom="zoom" :center="center">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
       <l-marker
         v-for="(marker, index) in markers"
         :key="index"
         ref="markersRef"
-        :lat-lng="marker.position"
+        :lat-lng="{ lat: marker.latitud, lng: marker.longitud }"
       >
-        <!-- en la siguiente linea ponemos info para ver cuando nos posicionamos en el punto -->
-        <l-tooltip :content="marker.name.nombre + marker.name.horario" />
-        <!-- l-popup :content="marker.name"/ -->
+        <l-popup>
+          <strong>{{ marker.nombre }}</strong>
+          <p>
+            Dirección:
+            {{ marker.direccion }} <br />
+            Horario:
+            {{ marker.apertura + "-" + marker.cierre }}<br />
+            Teléfono:
+            {{ marker.telefono }}
+          </p>
+          <!-- llamamos componente  -->
+          <br /><button style="margin:5%;" @click="addStops(marker)">
+            Solicitar turno
+          </button>
+        </l-popup>
       </l-marker>
     </l-map>
   </div>
 </template>
 
 <script>
-// , LPopup }
-import { LMap, LTileLayer, LMarker, LTooltip } from "vue2-leaflet";
+//   LTooltip,
+import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import axios from "axios";
 
 L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.4/dist/images/";
 
@@ -30,65 +43,57 @@ export default {
     "l-map": LMap,
     "l-tile-layer": LTileLayer,
     "l-marker": LMarker,
-    "l-tooltip": LTooltip,
-    // "l-popup": LPopup,
+    // "l-tooltip": LTooltip,
+    "l-popup": LPopup,
   },
   data() {
     return {
       zoom: 14,
       center: { lat: -34.9187, lng: -57.956 },
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      markers: [
-        /* aca se muestran todos los puntos */
-        {
-          Id: 1,
-          name: { nombre: "Centro 1", tipo: "comedor", horario: "12hs a 22hs" },
-          position: { lat: -34.9135, lng: -57.9651 },
-        },
-        {
-          Id: 2,
-          name: { nombre: "Centro 1", tipo: "comedor", horario: "12hs a 22hs" },
-          position: { lat: -34.9248, lng: -57.967 },
-        },
-        {
-          Id: 3,
-          name: { nombre: "Centro 1", tipo: "comedor", horario: "12hs a 22hs" },
-          position: { lat: -34.9158, lng: -57.9725 },
-        },
-        {
-          Id: 4,
-          name: { nombre: "Centro 1", tipo: "comedor", horario: "12hs a 22hs" },
-          position: { lat: -34.9177, lng: -57.9587 },
-        },
-        {
-          Id: 5,
-          name: { nombre: "Centro 1", tipo: "comedor", horario: "12hs a 22hs" },
-          position: { lat: -34.9231, lng: -57.9637 },
-        },
-      ],
+      markers: [],
       markerObjects: null,
     };
   },
   mounted: function() {
-    L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.4/dist/images/";
-    this.$nextTick(() => {
-      this.markerObjects = this.$refs.markersRef.map((ref) => ref.mapObject);
+    axios.get("http://127.0.0.1:5000/api/centros-all/").then((response) => {
+      this.markers = response.data[0].centros[0];
     });
   },
+  // mounted: function() {
+  //   L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.4/dist/images/";
+  //   this.$nextTick(() => {
+  //     this.markerObjects = this.$refs.markersRef.map((ref) => ref.mapObject);
+  //   });
+  // },
 
-  methods: {
-    displayTooltip(selectedIndex) {
-      for (let markerObject of this.markerObjects) {
-        markerObject.closeTooltip();
-      }
-      this.markerObjects[selectedIndex].toggleTooltip();
-    },
-  },
+  // methods: {
+  //   displayTooltip(selectedIndex) {
+  //     for (let markerObject of this.markerObjects) {
+  //       markerObject.closeTooltip();
+  //     }
+  //     this.markerObjects[selectedIndex].toggleTooltip();
+  //   },
+  // },
+
+  // axios
+  //     .get("http://127.0.0.1:5000/api/centros/").catch((e) => {
+  //       if (e=="Error: Network Error"){
+  //           alert("En este momento no se puede visualizar los centros, intente mas tarde.");
+  //       }
+  //       })
+  //     .then((response) => (this.centros = response.data[0].centros[0]) );
+  // },
 };
 </script>
 
 <style>
 li {
   cursor: pointer;
+}
+.mapa {
+  height: 60%;
+
+  margin: 10px;
 }
 </style>
