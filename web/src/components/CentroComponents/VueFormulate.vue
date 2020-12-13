@@ -54,29 +54,106 @@
             validation="required"
           />
           <FormulateInput
-            name="id_municipio"
-            label="id_municipio"
             type="select"
-            :options="options"
+            name="Municipio"
+            :options="municipios"
           />
 
           <FormulateInput type="submit" label="Enviar" />
         </v-col>
       </v-row>
     </v-container>
+
     <h3>{{ formValues }}</h3>
-    
+    <h3>{{ municipios }}</h3>
   </FormulateForm>
 </template>
 
+<!--
+<template>
+  <v-form v-model="valid">
+    <v-container>
+      <v-row>
+        <v-col cols="12" md="6">
+          <v-text-field
+            v-model="nombre"
+            :rules="nameRules"
+            label="Nombre del centro"
+            required
+          ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <v-text-field
+            v-model="direccion"
+            :rules="nameRules"
+            label="Direccion"
+            required
+          ></v-text-field>
+        </v-col>
+
+        <v-col cols="12" md="6">
+          <v-text-field
+            v-model="email"
+            :rules="emailRules"
+            label="E-mail"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <v-text-field
+            v-model="phoneNumber"
+            :counter="7"
+            :error-messages="errors"
+            label="Numero de telefono"
+            required
+          ></v-text-field>
+        </v-col>
+
+        <v-col class="d-flex" cols="12" sm="6">
+          <v-select :items="items" label="Tipo de centro"></v-select>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-text-field
+            v-model="direccion"
+            :rules="nameRules"
+            label="Direccion"
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col class="d-flex" cols="12" sm="6">
+          <v-select
+            :items="municipios"
+            :item-text="municipios.name"
+            name="Municipio"
+            v-validate="'required'"
+            menu-props="auto"
+            hide-details
+            label="Select"
+            single-line
+          />
+        </v-col>
+      </v-row>
+      <h3>{{ municipios }}</h3>
+    </v-container>
+  </v-form>
+</template>
+-->
 <script>
 import axios from "axios";
 export default {
-  data: () => ({
-    formValues: {},
-    value: [],
-    options: [],
-  }),
+  data: () => {
+    return {
+      items: ["Comida", "Ropa", "Plasma"],
+      formValues: {},
+      municipios: {},
+      nombre: "",
+      direccion: "",
+      email: "",
+      errors: "",
+      phoneNumber: "",
+    };
+  },
   methods: {
     handleSubmit() {
       axios
@@ -88,15 +165,37 @@ export default {
         });
     },
   },
-  mounted() {
+  created() {
     axios
       .get(
-        "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=135"
+        "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=140",
+        {}
       )
       .then((result) => {
-        this.options = result.data["data"]["Town"];
-        this.options.map((muni) => console.log(muni));
+        console.log(result);
+        this.municipios = result.data.data.Town;
+        //this.municipios = Object.values(this.municipios);
+        // this.municipios.forEach((elemento) => {
+
+        //this.nuevinsky[elemento.id] = elemento.name;
+        //this.nuevinsky.push({ value: elemento.id, label: elemento.name });
+
+        //this.municipios = this.municipios.map((item) => {
+        //  return {
+        //    value: item.id,
+        //    label: item.name,
+        //  };
+        //});
       });
+
+    //});
+  },
+
+  nameRules() {
+    return true;
+  },
+  emailRules() {
+    return true;
   },
 };
 </script>

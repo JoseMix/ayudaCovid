@@ -20,7 +20,7 @@
           </v-card-text>
           <br />
           <v-card-actions>
-            <v-btn href="#" color="info" flat text>
+            <v-btn href="#" color="info" text>
               Acceder
             </v-btn>
 
@@ -49,7 +49,7 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-btn href="/carga-centro" color="info" flat text>
+            <v-btn href="/carga-centro" color="info" text>
               Acceder
             </v-btn>
 
@@ -75,7 +75,7 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-btn href="/centros" color="info" flat text>
+            <v-btn href="/centros" color="info" text>
               Acceder
             </v-btn>
 
