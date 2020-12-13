@@ -1,7 +1,7 @@
 from flask import jsonify, abort, request
 from flask_sqlalchemy import SQLAlchemy
 import requests
-from app.models.centro import Centro, centro_schema, centros_schema
+from app.models.centro import Centro, centro_schema, centros_schema#, centro_schema_all, centros_schema_all
 from app.models.configuracion import Configuracion
 from marshmallow import ValidationError
 
@@ -25,6 +25,18 @@ def index():
         centros = centros.next()
     return jsonify({"centros": centrosAPI, "pages": pages, "per_page": per_page}, 200)
 
+def index_all():
+    
+    centros = Centro().aprobados()
+    if centros is None:
+        response = {
+            "message": "No existen centros",
+        }
+        return jsonify(response), 404
+    centrosAPI = []
+    centrosAPI.append(centros_schema.dump(centros))
+    return jsonify({"centros": centrosAPI}, 200)
+
 
 def show_one(centro_id):
     try:
@@ -42,14 +54,6 @@ def show_one(centro_id):
     result = centro_schema.dump(centro)
     return jsonify({"centro": result}, 200)
 
-
-"""def show_id_municipio(municipio):
-    data = requests.get(
-        "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=135"
-    ).json()
-    for i in data["data"]["Town"]:
-        if data["data"]["Town"][i]["name"] == municipio:
-            return data["data"]["Town"][i]["id"]"""
 
 
 def new_centro():

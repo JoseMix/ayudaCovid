@@ -181,6 +181,7 @@ def create_app(environment="development"):
 
     # Rutas de API-rest
     app.add_url_rule("/api/centros/", "api_centros_index", centros.index)
+    app.add_url_rule("/api/centros-all/", "api_centros_index_all", centros.index_all)
     app.add_url_rule(
         "/api/centros/",
         "api_centros_new_centro",

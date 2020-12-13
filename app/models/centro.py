@@ -214,6 +214,12 @@ class Centro(db.Model):
         ).paginate(page=page, per_page=per_page, error_out=False)
         return centros
 
+    def aprobados(self):
+        centros = Centro.query.filter(
+            and_(and_(Centro.estado == "Aceptado", Centro.activo == True), Centro.publicado == True)
+        ).all()
+        return centros
+
     def find_by_id(self, id):
         centro = Centro.query.filter(Centro.id == id).first()
         return centro
