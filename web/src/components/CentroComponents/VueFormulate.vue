@@ -104,13 +104,6 @@ export default {
       .then((result) => {
         this.municipios = result.data.data.Town;
         this.municipios = Object.values(this.municipios);
-<<<<<<< HEAD
-        //this.municipios.forEach((elemento) => {
-        this.municipios = JSON.parse(this.municipios);
-        //this.nuevinsky[elemento.id] = elemento.name;
-        //this.nuevinsky.push({ value: elemento.id, label: elemento.name });
-=======
->>>>>>> 6293b5e7bb05570371660e938658cce2cd75807f
 
         let arr = [];
         this.municipios.forEach((element) => {
@@ -119,7 +112,6 @@ export default {
         this.municipios = arr;
       });
   },
-
   nameRules() {
     return true;
   },
