@@ -52,8 +52,9 @@
           <FormulateInput name="email" label="Email" type="email" />
         </v-col>
         <v-col>
-          <FormulateInput name="latitud" />
-          <FormulateInput name="longitud" />
+
+          <FormulateInput name="latitud"  label="Latitud" />
+          <FormulateInput name="longitud"  label="Longitud"/>
           <FormulateInput
             name="telefono"
             label="Teléfono"
