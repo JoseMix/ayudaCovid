@@ -87,7 +87,7 @@ export default {
   methods: {
     handleSubmit() {
       axios
-        .post("http://127.0.0.1:5000/api/centros/", this.formValues, {
+        .post("https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/centros/", this.formValues, {
           headers: {},
         })
         .then((result) => {
