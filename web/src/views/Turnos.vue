@@ -182,7 +182,7 @@ export default {
         .then((response) => {
           response.data[1] == 201;
           alert("Se registro el turno con exito");
-          window.location.href = 'javascript:history.go(-1)';
+          this.$router.push({name:'Centros'});
         })
         .catch((e) => {
 
@@ -192,7 +192,7 @@ export default {
           else { 
           if(e == "Error: Network Error"){
             alert("En este momento no se puede registrar su turno, intente mas tarde.");
-            window.location.href = 'javascript:history.go(-1)';
+            this.$router.push({name:'Home'});
           }else{
             alert(e.response.data.message);
           }
@@ -210,11 +210,11 @@ export default {
     .catch((e) => {
       if (e == "Error: Network Error") {
           alert("En este momento no se puede visualizar los horarios para este centro, intente mas tarde.");
-          window.location.href = 'javascript:history.go(-1)';
       }else{
         alert(e.response.data.message);
-        window.location.href = 'javascript:history.go(-1)';
-        }});
+        }
+      this.$router.push({name:'Home'});
+      });
   },
 };
 </script>

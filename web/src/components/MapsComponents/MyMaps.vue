@@ -63,7 +63,7 @@ export default {
         this.markers = response.data[0].centros[0];
       })
       .catch((e) => {
-        window.location.href = 'http://localhost:8080/'; //Cuando se suba a prod hay que poner la url de produccion 
+        this.$router.push({name:'Home'}); //Cuando se suba a prod hay que poner la url de produccion 
         if (e == "Error: Network Error") {
           alert(
             "En este momento no se puede visualizar los centros, intente mas tarde."
