@@ -3,61 +3,85 @@
     <v-container>
       <v-row>
         <v-col>
-          <h2>Formulario centros</h2>
-
-          <FormulateInput name="nombre" label="nombre" validation="required" />
+          <FormulateInput
+            name="nombre"
+            label="Nombre del centro"
+            validation="required|alpha:latin"
+            :validation-messages="{
+              required: 'El nombre es requerido.',
+              alpha: 'El nombre solo puede contener letras',
+            }"
+          />
           <FormulateInput
             name="direccion"
-            label="direccion"
+            label="Direccion del centro"
             validation="required"
+            :validation-messages="{
+              required: 'La direccion es requerida.',
+            }"
           />
           <FormulateInput
             name="apertura"
-            label="apertura"
+            label="Horario de apertura"
             type="time"
+            error-behavior="live"
             validation="required"
+            :validation-messages="{
+              required: 'La hora de apertura es requerida.',
+            }"
           />
           <FormulateInput
             name="cierre"
-            label="cierre"
+            label="Horario de cierre"
             type="time"
             validation="required"
+            :validation-messages="{
+              required: 'La hora de apertura es requerida.',
+            }"
           />
+          <span
+            style="color: #960505;
+            font-size: 0.8em;
+            font-weight: 300;
+            line-height: 1.5;
+            margin-bottom: 0.25em;"
+          >
+            {{ errorDate }}
+          </span>
 
-          <FormulateInput
-            name="email"
-            label="email"
-            type="email"
-            validation="required"
-          />
+          <FormulateInput name="email" label="Email" type="email" />
         </v-col>
         <v-col>
-          <FormulateInput name="latitud" label="latitud" />
-          <FormulateInput name="longitud" label="longitud" />
+          <FormulateInput name="latitud" type="hidden" />
+          <FormulateInput name="longitud" type="hidden" />
           <FormulateInput
             name="telefono"
-            label="telefono"
-            type="number"
-            validation="required"
+            label="Teléfono"
+            type="text"
+            validation="required|number"
+            :validation-messages="{
+              required: 'El telefono es requerido.',
+              number: 'Introduzca un telefono valido',
+            }"
           />
           <FormulateInput
             name="tipo_centro"
-            label="tipo de centro"
+            label="Tipo de centro"
             type="select"
             :options="{ Ropa: 'ropa', Plasma: 'plasma', Comida: 'comida' }"
             validation="required"
           />
-          <FormulateInput
-            name="web"
-            label="web"
-            type="url"
-            validation="required"
-          />
+          <FormulateInput name="web" label="Web" type="url" />
           <FormulateInput
             type="select"
             name="id_municipio"
             label="Municipio"
             :options="municipios"
+            validation="required"
+            placeholder="Seleccione un municipio"
+            :validation-messages="{
+              required: 'El municipio es requerido.',
+            }"
           />
 
           <FormulateInput type="submit" label="Enviar" />
@@ -82,17 +106,25 @@ export default {
       email: "",
       errors: "",
       phoneNumber: "",
+      apertura: "",
+      cierre: "",
+      errorDate: "",
     };
   },
   methods: {
     handleSubmit() {
-      axios
-        .post("http://127.0.0.1:5000/api/centros/", this.formValues, {
-          headers: {},
-        })
-        .then((result) => {
-          console.log(typeof result);
-        });
+      if (this.formValues.apertura < this.formValues.cierre) {
+        axios
+          .post("http://127.0.0.1:5000/api/centros/", this.formValues, {
+            headers: {},
+          })
+          .then((result) => {
+            console.log(typeof result);
+          });
+      } else {
+        this.errorDate =
+          "La hora de cierre debe ser posterior a la de apertura";
+      }
     },
   },
   created() {
@@ -112,9 +144,13 @@ export default {
         this.municipios = arr;
       });
   },
+<<<<<<< HEAD
+
+=======
   nameRules() {
     return true;
   },
+>>>>>>> development
   emailRules() {
     return true;
   },
