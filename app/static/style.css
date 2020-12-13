@@ -16,11 +16,6 @@ body {
   background-color: rgba(24, 58, 82, 0.24);
   position: relative; /*  queria dejarlo abajo de todo pero pasaron cosas   */
   text-align: center;
-  margin-top: 4%;
-  padding: 2%;
-  padding-bottom: 1.5%;
-
-  width: 100%;
 }
 
 #container {
