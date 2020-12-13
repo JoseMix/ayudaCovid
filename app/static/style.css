@@ -182,11 +182,7 @@ a.link {
   overflow-x: auto;
   display: block;
 }
-#contenidoForm {
-  display: inline-block;
-  overflow-x: auto;
-  box-sizing: border-box;
-}
+
 #lat {
   display: none;
 }

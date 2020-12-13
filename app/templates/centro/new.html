@@ -3,14 +3,9 @@
 {% block head %}
   {{ super() }}
 {% endblock %}
-
-
 {% block content %} 
-
-  <div id="derecha">
-    <a href="{{ url_for('centro_index', page=1) }}" class="btn btn-primary">Volver</a>
-  </div>
   <div id="formulario" class="container">
+    <a href="{{ url_for('centro_index', page=1) }}" class="btn btn-primary" style="float: right;">Volver</a><br>
     <strong class="texto">CARGAR UN NUEVO CENTRO</strong>
     <!--    onsubmit="return validarCentro()"  onsubmit repetido, no funciona     -->
     <form action="{{ url_for('centro_register') }}" method="POST" onsubmit="submitHandler(event)" enctype="multipart/form-data">
