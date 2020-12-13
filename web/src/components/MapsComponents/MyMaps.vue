@@ -10,19 +10,17 @@
       >
         <l-popup>
           <strong>{{ marker.nombre }}</strong>
-          <p>
+          <br />
+          <span>
             Dirección:
             {{ marker.direccion }} <br />
             Horario:
             {{ marker.apertura + "-" + marker.cierre }}<br />
             Teléfono:
             {{ marker.telefono }}
-          </p>
+          </span>
           <!-- llamamos componente  -->
-          <FormFecha />
-          <br /><button style="margin:5%;" @click="addStops(marker)">
-            Solicitar turno
-          </button>
+          <FormFecha :centro_id="marker.id" />
         </l-popup>
       </l-marker>
     </l-map>
@@ -35,7 +33,7 @@ import { LMap, LTileLayer, LMarker, LPopup } from "vue2-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
-import FormFecha from "../components/CentroComponents/FormFecha.vue";
+import FormFecha from "@/components/CentroComponents/FormFecha.vue";
 
 L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.4/dist/images/";
 
@@ -59,34 +57,19 @@ export default {
     };
   },
   mounted: function() {
-    axios.get("http://127.0.0.1:5000/api/centros-all/").then((response) => {
-      this.markers = response.data[0].centros[0];
-    });
+    axios
+      .get("http://127.0.0.1:5000/api/centros-all/")
+      .then((response) => {
+        this.markers = response.data[0].centros[0];
+      })
+      .catch((e) => {
+        if (e == "Error: Network Error") {
+          alert(
+            "En este momento no se puede visualizar los centros, intente mas tarde."
+          );
+        }
+      });
   },
-  // mounted: function() {
-  //   L.Icon.Default.imagePath = "https://unpkg.com/leaflet@1.3.4/dist/images/";
-  //   this.$nextTick(() => {
-  //     this.markerObjects = this.$refs.markersRef.map((ref) => ref.mapObject);
-  //   });
-  // },
-
-  // methods: {
-  //   displayTooltip(selectedIndex) {
-  //     for (let markerObject of this.markerObjects) {
-  //       markerObject.closeTooltip();
-  //     }
-  //     this.markerObjects[selectedIndex].toggleTooltip();
-  //   },
-  // },
-
-  // axios
-  //     .get("http://127.0.0.1:5000/api/centros/").catch((e) => {
-  //       if (e=="Error: Network Error"){
-  //           alert("En este momento no se puede visualizar los centros, intente mas tarde.");
-  //       }
-  //       })
-  //     .then((response) => (this.centros = response.data[0].centros[0]) );
-  // },
 };
 </script>
 
@@ -95,7 +78,7 @@ li {
   cursor: pointer;
 }
 .mapa {
-  height: 60%;
+  height: 80%;
 
   margin: 10px;
 }

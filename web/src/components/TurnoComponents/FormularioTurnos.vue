@@ -31,18 +31,4 @@
     </FormulateForm>
   </div>
 </template>
-<script>
-import axios from "axios";
-export default {
-  data: () => ({
-    centros: null,
-  }),
-  mounted: function() {
-    //axios.get('http://127.0.0.1:5000/api/centros/').then(response =>console.log(response.data[0].centros[0][0].nombre))
-    axios
-      .get("https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/centros/")
-      .then((response) => (this.centros = response.data[0].centros[0]));
-    //http://127.0.0.1:5000/api/centros/<int:centro_id>/turnos_disponibles/?fecha=<fecha>
-  },
-};
-</script>
+<script></script>

@@ -28,7 +28,6 @@ def index():
 def index_all():
     
     centros = Centro().aprobados()
-    print(centros)
     if centros is None:
         response = {
             "message": "No existen centros",

@@ -124,6 +124,9 @@ export default {
     },
   },
   methods: {
+    submit() {
+      this.$v.$touch();
+    },
     rutasApi(id, fecha) {
       this.fecha = fecha
         .split("-")
