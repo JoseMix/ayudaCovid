@@ -47,7 +47,7 @@ from app.helpers.auth import authenticated
 def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
-    CORS(app)
+    cors = CORS(app)
     app.config["JSON_SORT_KEYS"] = False
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)
