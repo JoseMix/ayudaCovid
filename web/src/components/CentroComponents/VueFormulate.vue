@@ -174,9 +174,9 @@ export default {
       .then((result) => {
         console.log(result);
         this.municipios = result.data.data.Town;
-        //this.municipios = Object.values(this.municipios);
-        // this.municipios.forEach((elemento) => {
-
+        this.municipios = Object.values(this.municipios);
+        //this.municipios.forEach((elemento) => {
+        this.municipios = JSON.parse(this.municipios);
         //this.nuevinsky[elemento.id] = elemento.name;
         //this.nuevinsky.push({ value: elemento.id, label: elemento.name });
 
