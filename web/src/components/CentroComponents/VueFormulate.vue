@@ -52,8 +52,8 @@
           <FormulateInput name="email" label="Email" type="email" />
         </v-col>
         <v-col>
-          <FormulateInput name="latitud" type="hidden" />
-          <FormulateInput name="longitud" type="hidden" />
+          <FormulateInput name="latitud" />
+          <FormulateInput name="longitud" />
           <FormulateInput
             name="telefono"
             label="Teléfono"
@@ -87,17 +87,45 @@
           <FormulateInput type="submit" label="Enviar" />
         </v-col>
       </v-row>
+      <vue-recaptcha
+        sitekey="6LeaMgUaAAAAAMO68Dyq8L61D8UDRHM-aY0luK8v"
+        :loadRecaptchaScript="true"
+        @verify="captchaVerificado"
+        @expired="captchaExpired"
+      ></vue-recaptcha>
+      <span
+        style="color: #960505;
+            font-size: 0.8em;
+            font-weight: 300;
+            line-height: 1.5;
+            margin-bottom: 0.25em;"
+      >
+        {{ errorCaptcha }}
+      </span>
     </v-container>
-
-    <h5>{{ formValues }}</h5>
   </FormulateForm>
 </template>
 
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script
+  src="https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit"
+  async
+  defer
+></script>
+<script src="https://unpkg.com/vue-recaptcha@latest/dist/vue-recaptcha.min.js%22%3E"></script>
+
 <script>
 import axios from "axios";
+import VueRecaptcha from "vue-recaptcha";
+
 export default {
+  name: "CrearCentro",
+  components: {
+    VueRecaptcha,
+  },
   data: () => {
     return {
+      captchaFlag: false,
       items: ["Comida", "Ropa", "Plasma"],
       formValues: {},
       municipios: {},
@@ -109,24 +137,37 @@ export default {
       apertura: "",
       cierre: "",
       errorDate: "",
+      errorCaptcha: "",
     };
   },
   methods: {
     handleSubmit() {
-      if (this.formValues.apertura < this.formValues.cierre) {
-        axios
-          .post("http://127.0.0.1:5000/api/centros/", this.formValues, {
-            headers: {},
-          })
-          .then((result) => {
-            console.log(typeof result);
-          });
+      if (this.captchaFlag) {
+        if (this.formValues.apertura < this.formValues.cierre) {
+          axios
+            .post("http://127.0.0.1:5000/api/centros/", this.formValues, {
+              headers: {},
+            })
+            .then((result) => {
+              console.log(typeof result);
+            });
+        } else {
+          this.errorDate =
+            "La hora de cierre debe ser posterior a la de apertura";
+        }
       } else {
-        this.errorDate =
-          "La hora de cierre debe ser posterior a la de apertura";
+        this.errorCaptcha = "Por favor verificar Captcha";
       }
     },
+    captchaVerificado() {
+      this.captchaFlag = true;
+      this.errorCaptcha = "";
+    },
+    captchaExpired() {
+      this.captchaFlag = false;
+    },
   },
+
   created() {
     axios
       .get(
@@ -143,16 +184,6 @@ export default {
         });
         this.municipios = arr;
       });
-  },
-<<<<<<< HEAD
-
-=======
-  nameRules() {
-    return true;
-  },
->>>>>>> development
-  emailRules() {
-    return true;
   },
 };
 </script>

@@ -47,7 +47,7 @@ from app.helpers.auth import authenticated
 def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
-    cors = CORS(app)
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
     app.config["JSON_SORT_KEYS"] = False
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)
@@ -132,9 +132,9 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/centro/listado", "centro_index", centro.index, methods=["GET", "POST"]
     )
-    
+
     app.add_url_rule("/centro/show", "centro_show", centro.show, methods=["GET"])
-    #app.add_url_rule("/app/static/uploads/Protocolo.pdf")
+    # app.add_url_rule("/app/static/uploads/Protocolo.pdf")
     app.add_url_rule(
         "/centro/update-publicado",
         "centro_update_publicado",
