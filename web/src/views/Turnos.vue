@@ -160,18 +160,39 @@ export default {
         .then((response) => {
           response.data[1] == 201;
           alert("Se registro el turno con exito");
+          window.location.href = 'javascript:history.go(-1)';
         })
         .catch((e) => {
-          alert(e.response.data.message);
-        });
+
+          if (e == "Error: Request failed with status code 422"){
+            alert('Debe completar todos los campos.')
+          }
+          else { 
+          if(e == "Error: Network Error"){
+            alert("En este momento no se puede registrar su turno, intente mas tarde.");
+            window.location.href = 'javascript:history.go(-1)';
+          }else{
+            alert(e.response.data.message);
+          }
+          }
+          });
     },
   },
   mounted: function() {
-    axios.get(this.apiHorarios).then((response) => {
+    axios.get(this.apiHorarios)
+    .then((response) => {
       for (let i = 0; i < response.data[0].turno.length; i++) {
         this.options.push(response.data[0].turno[i].hora_inicio);
       }
-    });
+    })
+    .catch((e) => {
+      if (e == "Error: Network Error") {
+          alert("En este momento no se puede visualizar los horarios para este centro, intente mas tarde.");
+          window.location.href = 'javascript:history.go(-1)';
+      }else{
+        alert(e.response.data.message);
+        window.location.href = 'javascript:history.go(-1)';
+        }});
   },
 };
 </script>
