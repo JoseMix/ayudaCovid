@@ -219,7 +219,10 @@ def show():
     if centro == None:
         abort(404)
     page = request.args.get("page", 1, type=int)
-    ruta = os.path.join(DOWNLOAD_FOLDER, centro.protocolo)
+    if centro.protocolo:
+        ruta = os.path.join(DOWNLOAD_FOLDER, centro.protocolo)
+    else:
+        ruta = '/'
     # para no tener emails repetidos en el select
     select_email = []
     for turno in centro.turnos:
