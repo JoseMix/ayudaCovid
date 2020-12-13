@@ -49,7 +49,7 @@
         @change="$v.hora_inicio.$touch()"
         @blur="$v.hora_inicio.$touch()"
       ></v-select>
-      <v-btn class="mr-4" @click="reservarTurno">
+      <v-btn class="mr-4" @click="validaciones">
         submit
       </v-btn>
     </v-form>
@@ -59,15 +59,15 @@
 import axios from "axios";
 import moment from "moment";
 import { validationMixin } from "vuelidate";
-import { required, email, maxLength } from "vuelidate/lib/validators";
+import { required, email } from "vuelidate/lib/validators";
 
 export default {
   mixins: [validationMixin],
   validations: {
-    nombre: { required, maxLength: maxLength(15) },
+    nombre: { required },
     email: { required, email },
-    ape: { required, maxLength: maxLength(15) },
-    telefono: { required, maxLength: maxLength(15) },
+    ape: { required },
+    telefono: { required },
     hora_inicio: { required },
   },
   name: "Turnos",
@@ -88,8 +88,6 @@ export default {
     nameErrors() {
       const errors = [];
       if (!this.$v.nombre.$dirty) return errors;
-      !this.$v.nombre.maxLength &&
-        errors.push("Nombre debe tener como maximo 15 caracteres");
       !this.$v.nombre.required && errors.push("Campo obligatorio");
       return errors;
     },
@@ -103,16 +101,12 @@ export default {
     apeErrors() {
       const errors = [];
       if (!this.$v.ape.$dirty) return errors;
-      !this.$v.ape.maxLength &&
-        errors.push("Apellido debe tener como maximo 15 caracteres");
       !this.$v.ape.required && errors.push("Campo obligatorio");
       return errors;
     },
     telefonoErrors() {
       const errors = [];
       if (!this.$v.telefono.$dirty) return errors;
-      !this.$v.telefono.maxLength &&
-        errors.push("Telefono debe tener como maximo 15 caracteres");
       !this.$v.telefono.required && errors.push("Campo obligatorio");
       return errors;
     },
@@ -140,6 +134,34 @@ export default {
       this.apiReservarTurno =
         "http://127.0.0.1:5000/api/centros/" + id + "/reserva/";
     },
+    validaciones() {
+        if ((this.email=="")){
+          alert("El campo email no puede estar vacío");
+          return false;
+        }
+        let emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
+        if (!emailRegex.test(this.email)) {
+          alert("Debe ingresar un email valido");
+            return false;
+        }  
+        if ((this.nombre=="")){
+          alert("El campo nombre no puede estar vacío");
+          return false;
+        }
+        if ((this.ape=="" ) ){ 
+          alert("El campo apellido no puede estar vacío");
+          return false;
+        }
+        if ((this.telefono=="" ) ){ 
+          alert("El campo telefono no puede estar vacío");
+          return false;
+        }
+        if ((this.hora_inicio=="" ) ){ 
+          alert("El campo hora no puede estar vacío");
+          return false;
+        }
+      this.reservarTurno()
+    },
     reservarTurno() {
       this.hora_fin = moment("2016-03-12 " + this.hora_inicio + ":00")
         .add(30, "minutes")
@@ -160,18 +182,39 @@ export default {
         .then((response) => {
           response.data[1] == 201;
           alert("Se registro el turno con exito");
+          this.$router.push({name:'Centros'});
         })
         .catch((e) => {
-          alert(e.response.data.message);
-        });
+
+          if (e == "Error: Request failed with status code 422"){
+            alert('Debe completar todos los campos.')
+          }
+          else { 
+          if(e == "Error: Network Error"){
+            alert("En este momento no se puede registrar su turno, intente mas tarde.");
+            this.$router.push({name:'Home'});
+          }else{
+            alert(e.response.data.message);
+          }
+          }
+          });
     },
   },
   mounted: function() {
-    axios.get(this.apiHorarios).then((response) => {
+    axios.get(this.apiHorarios)
+    .then((response) => {
       for (let i = 0; i < response.data[0].turno.length; i++) {
         this.options.push(response.data[0].turno[i].hora_inicio);
       }
-    });
+    })
+    .catch((e) => {
+      if (e == "Error: Network Error") {
+          alert("En este momento no se puede visualizar los horarios para este centro, intente mas tarde.");
+      }else{
+        alert(e.response.data.message);
+        }
+      this.$router.push({name:'Home'});
+      });
   },
 };
 </script>
