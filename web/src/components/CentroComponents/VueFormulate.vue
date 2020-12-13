@@ -144,15 +144,5 @@ export default {
         this.municipios = arr;
       });
   },
-<<<<<<< HEAD
-
-=======
-  nameRules() {
-    return true;
-  },
->>>>>>> development
-  emailRules() {
-    return true;
-  },
 };
 </script>

@@ -2,7 +2,7 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-card class="mx-auto" max-width="344">
+        <v-card class="mx-auto" max-width="360">
           <v-img
             src="https://www.ocyt.org.co/wp-content/uploads/2017/08/img-area-estadistica.jpg"
             height="200px"
@@ -30,10 +30,11 @@
       </v-col>
 
       <v-col>
-        <v-card class="mx-auto" max-width="344">
+        <v-card class="mx-auto" max-width="360">
           <v-img
             src="https://www.publicdomainpictures.net/pictures/100000/nahled/heart-plus.jpg"
             height="200px"
+            max-width="300px"
           ></v-img>
 
           <v-card-title>
@@ -58,7 +59,7 @@
         </v-card>
       </v-col>
       <v-col>
-        <v-card class="mx-auto" max-width="344">
+        <v-card class="mx-auto" max-width="360">
           <v-img
             src="https://img.unocero.com/2020/06/google-maps.jpg"
             height="200px"
