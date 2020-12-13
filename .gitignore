@@ -111,4 +111,8 @@ flask_session
 .vim
 coc-settings.json
 .vscode
+<<<<<<< HEAD
 node_modules
+=======
+
+>>>>>>> c3b67844c7ab11f2b0a7c1a0885eeeb6dee804d8

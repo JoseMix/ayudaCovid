@@ -10,30 +10,43 @@ from flask import (
     url_for,
     flash,
     abort,
+    make_response,
 )
+import requests
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
+from flask_marshmallow import Marshmallow
+from app.resources import user, configuracion, auth, centro, turnos
+from app.resources.api import centros, turno
+
+# from app.resources.api import centro
 from config import config
 from app import db
-from app.resources import user, rol, permiso, configuracion
-from app.resources import auth
-from app.resources.api import issue as api_issue
-from app.helpers import handler
-from app.helpers import auth as helper_auth
-from app.models.modelos import initialize_db
-from app.resources.forms import RegistrationForm, LoginForm, FilterForm
+from app.resources import user, configuracion, auth, centro
 
+# from app.helpers import handler
+from app.helpers import auth as helper_auth
+from app.helpers import handler
+from app.resources.forms import (
+    RegistrationForm,
+    LoginForm,
+    FilterForm,
+    CrearCentroForm,
+    FilterFormCentro,
+)
 
 # from app.db import connection
-from app.models.modelos import User, Configuracion
+from app.models.configuracion import Configuracion, configuracion_initialize_db
+from app.models.centro import Bloque, Centro, Turnos, centro_turnos_initialize_db
+from app.models.models import Rol, Permiso, User, initialize_db
 from app.helpers.auth import authenticated
 
 
 def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
-
+    app.config["JSON_SORT_KEYS"] = False
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)
     app.config.from_object(config[env])
@@ -45,39 +58,25 @@ def create_app(environment="development"):
     # Configure db
     app.config[
         "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://grupo13:NWE3YTMzYmU4YjY1@localhost/grupo13"
+    ] = "mysql+pymysql://"+app.config['DB_USER']+":"+app.config['DB_PASS']+"@"+app.config['DB_HOST']+"/"+app.config['DB_NAME']
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
-    """db.init_app(app)"""
+    ma = Marshmallow(app)
+    #ver path
+    #print(app.config["UPLOAD_FOLDER"])
     initialize_db(app)
-    bcrypt = Bcrypt(app)
+    configuracion_initialize_db(app)
+    centro_turnos_initialize_db(app)
+    # bcrypt = Bcrypt(app)
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
 
     # Autenticación
-    # app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
+    app.add_url_rule(
+        "/iniciar_sesion", "auth_login", auth.login, methods=["GET", "POST"]
+    )
     app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
-    # app.add_url_rule("/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"])
-
-    @app.route("/iniciar_sesion", methods=["GET", "POST"])
-    def login():
-        form = LoginForm()
-        if form.validate_on_submit():
-            if auth.authenticate(form):
-                flash("Usuario logueado correctamente")
-                return redirect(url_for("home"))
-        sitio = Configuracion.sitio()
-        return render_template("auth/login.html", form=form, sitio=sitio)
-
-    # Rutas de Roles
-    app.add_url_rule("/roles", "rol_index", rol.index)
-    app.add_url_rule("/roles", "rol_create", rol.create, methods=["POST"])
-    app.add_url_rule("/roles/nueva", "rol_new", rol.new)
-
-    # Rutas de Permisos
-    app.add_url_rule("/permisos", "permiso_index", permiso.index)
-    app.add_url_rule("/permisos", "permiso_create", permiso.create, methods=["POST"])
-    app.add_url_rule("/permisos/nueva", "permiso_new", permiso.new)
 
     # Rutas de Configuración
     app.add_url_rule(
@@ -89,95 +88,123 @@ def create_app(environment="development"):
     app.add_url_rule("/configuracion", "configuracion_show", configuracion.show)
 
     # Rutas de Usuarios
-    app.add_url_rule("/usuarios", "user_index", user.index)
+    app.add_url_rule("/usuarios", "user_index", user.index, methods=["GET", "POST"])
     app.add_url_rule("/usuarios/show", "user_show", user.show)
     app.add_url_rule(
         "/usuarios/roles/<int:user_id>",
         "user_update_rol",
         user.update_rol,
+        methods=["GET", "POST"],
+    )
+
+    app.add_url_rule(
+        "/usuarios/eliminar/<int:user_id>,<int:page>",
+        "user_eliminar",
+        user.eliminar,
         methods=["GET"],
     )
-    # app.add_url_rule(
-    #   "/usuarios/roles/update", "user_edit_rol", user.edit_rol,methods=["POST"]
-    #  )
-    
-    app.add_url_rule("/usuarios/eliminar<int:user_id>","user_eliminar",user.eliminar, methods=["GET"])
-    app.add_url_rule("/usuarios/activar<int:user_id>","user_activar",user.activar, methods=["GET"])
+    app.add_url_rule(
+        "/usuarios/activar/<int:user_id>,<int:page>",
+        "user_activar",
+        user.activar,
+        methods=["GET"],
+    )
+    app.add_url_rule(
+        "/usuarios/nuevo", "user_register", user.register, methods=["GET", "POST"]
+    )
+    app.add_url_rule(
+        "/usuarios/modificar/<int:user_id>",
+        "user_update",
+        user.update,
+        methods=["GET", "POST"],
+    )
 
-    app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
-    # app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
-    # app.add_url_rule("/usuarios/modificar", "user_update", user.update)
-    # app.add_url_rule("/usuarios", "user_", user., methods=["POST"])
+    # Rutas de Centros
+    app.add_url_rule(
+        "/centro/listado", "centro_index", centro.index, methods=["GET", "POST"]
+    )
+    app.add_url_rule("/centro/show", "centro_show", centro.show, methods=["GET"])
+    app.add_url_rule(
+        "/centro/update-publicado",
+        "centro_update_publicado",
+        centro.update_publicado,
+        methods=["GET"],
+    )
+    app.add_url_rule(
+        "/centro/update-estado",
+        "centro_update_estado",
+        centro.update_estado,
+        methods=["GET"],
+    )
+    app.add_url_rule(
+        "/centro/nuevo", "centro_register", centro.register, methods=["GET", "POST"]
+    )
+    app.add_url_rule(
+        "/centro/update/<int:centro_id>",
+        "centro_update",
+        centro.update,
+        methods=["GET", "POST"],
+    )
+    app.add_url_rule(
+        "/centro/eliminar/<int:centro_id>",
+        "centro_eliminar",
+        centro.eliminar,
+        methods=["GET"],
+    )
 
-    @app.route("/usuarios/modificar/<int:user_id>", methods=["GET", "POST"])
-    def update_user(user_id):
-        if not authenticated(session):
-            abort(401)
-        user = User.query.get_or_404(user_id)
-        form = RegistrationForm(obj=user)
-        if form.validate_on_submit():
-            if not user.validate_user_update(
-                form.email.data, form.username.data, user_id
-            ):
-                hashed_password = bcrypt.generate_password_hash(
-                    form.password.data
-                ).decode("utf-8")
-                form.password.data = hashed_password
-                form.populate_obj(user)
-                user.set_update_time()
-                db.session.merge(user)
-                db.session.commit()
-                return redirect(url_for("user_index"))
-            else:
-                flash("El usuario o el email ya existe")
-        sitio = Configuracion.sitio()
-        return render_template("user/update.html", form=form, sitio=sitio)
-
-    @app.route("/usuarios/nuevo", methods=["GET", "POST"])
-    def register():
-        if not authenticated(session):
-            abort(401)
-        form = RegistrationForm()
-        if form.validate_on_submit():
-            if not user.validate(form):
-                hashed_password = bcrypt.generate_password_hash(
-                    form.password.data
-                ).decode("utf-8")
-                form.password.data = hashed_password
-                flash("Usuario creado con éxito")
-                user.create(form)
-                return redirect(url_for("login"))
-            else:
-                flash("El usuario o el email ya existe")
-        sitio = Configuracion.sitio()
-        return render_template("user/new.html", form=form, sitio=sitio)
+    # Rutas de Turnos
+    app.add_url_rule("/turnos/nuevo", "turnos_new", turnos.new, methods=["GET", "POST"])
+    # app.add_url_rule("/turnos/nuevo", "turnos_create", turnos.create, methods=["POST"])
+    app.add_url_rule(
+        "/turnos/eliminar/", "turnos_eliminar", turnos.eliminar, methods=["GET"]
+    )
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
-        conn = SQLAlchemy()
-        us = User.all(conn)
-        sitio = Configuracion.sitio()
-        return render_template("home.html", us=us[0:sitio.paginas], sitio=sitio)
-
-    #Ruta para el filtro de busqueda por nombre
-    #app.add_url_rule("/usuarios/filter", "user_create", user.create, methods=["POST"])
-    @app.route("/usuarios/filter", methods=["GET", "POST"])
-    def filterByName():
-            form = FilterForm()
-            if request.method == "POST":
-                users = User().serchByName(form.nombre.data)
-                sitio = Configuracion.sitio()
-                return render_template("user/index.html", users=users[0:sitio.paginas], sitio=sitio)
-            return render_template("user/filtroDeBusqueda.html", form=form)
+        if authenticated(session):
+            return redirect(url_for("centro_index", page=1))
+        else:
+            sitio = Configuracion().sitio()
+            return render_template("home.html", sitio=sitio)
 
     # Rutas de API-rest
-    #    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
+    app.add_url_rule("/api/centros/", "api_centros_index", centros.index)
+    app.add_url_rule(
+        "/api/centros/",
+        "api_centros_new_centro",
+        centros.new_centro,
+        methods=["POST"],
+    )
+    app.add_url_rule(
+        "/api/centros/<int:centro_id>", "api_centros_show_one", centros.show_one
+    )
+    # Rutas api turnos
+    app.add_url_rule(
+        "/api/centros/<int:centro_id>/turnos_disponibles/?fecha=<fecha>",
+        "api_turno_show",
+        turno.show,
+        methods=["GET"],
+    )
+
+    app.add_url_rule(
+        "/api/centros/<int:centro_id>/turnos_disponibles/",
+        "api_turno_show",
+        turno.show,
+        methods=["GET"],
+    )
+
+    app.add_url_rule(
+        "/api/centros/<int:centro_id>/reserva/",
+        "api_new_reserva",
+        turno.new_reserva,
+        methods=["POST"],
+    )
 
     # Handlers
     app.register_error_handler(404, handler.not_found_error)
     app.register_error_handler(401, handler.unauthorized_error)
-    # Implementar lo mismo para el error 500 y 401
+    app.register_error_handler(500, handler.internal_error)
 
     # Retornar la instancia de app configurada
     return app

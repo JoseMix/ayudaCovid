@@ -3,32 +3,20 @@
 {% block head %}
   {{ super() }}
 {% endblock %}
+{% block logIn %}
+<a class="nav-link" href="{{ url_for('auth_login') }}" >Iniciar sesión</a>
+{% endblock %}
 {% block content %}
-  
+
   {% if is_authenticated(session) %}
+  
   <h1>Inicio</h1>
-  <table class="table table-hover" style="width:75%"  >
-    <tr style="text-align: center;">
-     
-      <th>Nombre usuario</th>
-      <th>Nombre</th>
-      <th>Apellido</th>
-      <th>Mail</th>
-    </tr>
-    {% for user in us %}
-      <tr>        
-        <td>{{user.username}}</td>
-        <td>{{ user.first_name }}</td>
-        <td>{{ user.last_name }}</td>
-        <td>{{ user.email }}</td>       
-      </tr>
-      {% endfor %}
-    </table>
+
   {% else %}
     {% if sitio.activo is false %}
     <div>    
-      <h1> El sitio se encuentra mantenimiento </h1>       
-      <img class="card-img-top" src="{{ url_for('static', filename='mantenimiento.png') }}" alt="imagen página en mantenimiento">
+      <h1 style="text-align: center;"> El sitio se encuentra en mantenimiento </h1>       
+      <img id="img" src="{{ url_for('static', filename='mantenimiento.png') }}" alt="imagen página en mantenimiento">
     </div>
     {% endif %} 
   {% endif %}

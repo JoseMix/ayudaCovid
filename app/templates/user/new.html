@@ -4,58 +4,69 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Cargar nuevo usuario</h1>
+  <div id="derecha">
+    <a href="{{ url_for('user_index') }}" class="btn btn-primary">Volver</a>
+  </div>
   <div id="formulario">
-    <form action="{{ url_for('register') }}" method="POST">
+    <strong class="texto">CARGAR UN NUEVO USUARIO</strong>
+    <form action="{{ url_for('user_register') }}" onsubmit="return validarUser()" method="POST">
       
       {{ form.csrf_token }}
-      {{form.username.label}}
-        {{form.username}}
-        <br>
-        {% for error in form.username.errors %}
-          <div style=color:red>{{ error }}</div>  
-      {% endfor %}
-        
-      <p>
-        <label>Email </label>
-        {{form.email}}
-        <br>
-        {% for error in form.email.errors %}
-        <div style=color:red>{{ error }}</div>
-    {% endfor %}
 
-      </p>
-      <p>
-        <label>Password </label>
-        {{form.password}}
-        <br>
-        {% for error in form.password.errors %}
-        <div style=color:red>{{ error }}</div>
-    {% endfor %}
-
-  </p>
-      <p>
-        <label>Nombre </label>
-        {{form.first_name}}
-        <br>
+      <div class="form-col-left">
+        <label>Nombre </label><strong style="color: red;">*</strong>
+        {{form.first_name(class_="form-control", id="first_name", placeholder='ingrese un nombre')}}
         {% for error in form.first_name.errors %}
-        <div style=color:red>{{ error }}</div>
-    {% endfor %}
-  </p>
-      <p>
-        <label>Apellido </label>
-        {{form.last_name}}
-        <br>
-        {% for error in form.last_name.errors %}
-        <div style=color:red>{{ error }}</div>
-    {% endfor %}
+          <br><div style=color:red>{{ error }}</div>
+        {% endfor %}      
+      </div>
 
-      </p>
-      <p>
-        <input type="submit" value="Submit">
-        <button id="boton" type="reset" >Limpiar</button>
-      </p>
+
+      <div class="form-col-right">
+        <label>Apellido </label><strong style="color: red;">*</strong>
+        {{form.last_name(class_="form-control",id="last_name", placeholder='ingrese un apellido')}}
+        {% for error in form.last_name.errors %}
+          <br><div style=color:red>{{ error }}</div>
+        {% endfor %}      
+      </div>
+
+        
+      <div class="form-col-left">
+        <label>Email </label><strong style="color: red;">*</strong>
+        {{form.email(class_="form-control", id="email", placeholder='ingrese un email')}}
+        {% for error in form.email.errors %}
+          <br><div style=color:red>{{ error }}</div>
+        {% endfor %}      
+      </div>
+
+  
+      <div class="form-col-right">
+        {{form.username.label}}<strong style="color: red;">*</strong>
+        {{form.username(class_="form-control", id="username", placeholder='ingrese un nombre de usuario')}}
+      {% for error in form.username.errors %}
+        <br><div style=color:red>{{ error }}</div>  
+      {% endfor %}         
+        <br><br>
+      </div>
+
+  
+      <div class="form-col-left">
+        <label>Password </label> <strong style="color: red;">*</strong>
+        {{form.password(class_="form-control", id="password", placeholder='ingrese una password')}}
+        {% for error in form.password.errors %}
+          <br><div style=color:red>{{ error }}</div>
+        {% endfor %}      
+      </div>
+
+
+        <div id="centrar" style="padding-left: 300px;">
+          <strong style="color: red;">Campos obligatorios con *</strong><br><br>
+          <input type="submit" value="Cargar usuario" class="btn btn-primary">
+          <button type="reset" class="btn btn-secundary" >Limpiar formulario</button>
+        </div>
     </form>
-    </div>
-  <a href="{{ url_for('user_index') }}" class="link">Volver</a>
+  <br><br>
+  </div>
+  <script src="{{ url_for('static', filename='validaciones/usuario.js') }}"></script>
+
 {% endblock %}

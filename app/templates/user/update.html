@@ -4,60 +4,69 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-
-  
-<div id="formulario">
+  <div id="derecha">
+    <a href="{{ url_for('user_index') }}" class="btn btn-primary">Volver</a>
+  </div>
+    <div id="formulario">
+  <strong class="texto">MODIFICAR DATOS DE USUARIO</strong>
   <form  method="POST">
     
     {{ form.csrf_token }}
-    {{form.username.label}}
-      {{form.username}}
-      <br>
-      {% for error in form.username.errors %}
-        <div style=color:red>{{ error }}</div>  
-    {% endfor %}
-      
-    <p>
-      <label>Email </label>
-      {{form.email}}
-      <br>
-      {% for error in form.email.errors %}
-      <div style=color:red>{{ error }}</div>
-  {% endfor %}
 
-    </p>
-    <p>
-      <label>Password </label>
-      {{form.password}}
-      <br>
-      {% for error in form.password.errors %}
-      <div style=color:red>{{ error }}</div>
-  {% endfor %}
-
-</p>
-    <p>
-      <label>Nombre </label>
-      {{form.first_name}}
-      <br>
+    <div class="form-col-left">
+      <label>Nombre </label><strong style="color: red;">*</strong>
+      {{form.first_name(class_="form-control")}}
       {% for error in form.first_name.errors %}
-      <div style=color:red>{{ error }}</div>
-  {% endfor %}
-</p>
-    <p>
-      <label>Apellido </label>
-      {{form.last_name}}
-      <br>
-      {% for error in form.last_name.errors %}
-      <div style=color:red>{{ error }}</div>
-  {% endfor %}
-
-    </p>
+        <br><div style=color:red>{{ error }}</div>
+      {% endfor %}
     
-    <p>
-      <input type="submit" value="Submit">
-      <button id="boton" type="reset" >Limpiar</button>
-    </p>
+    </div>
+
+    <div class="form-col-right">
+      <label>Apellido </label><strong style="color: red;">*</strong>
+      {{form.last_name(class_="form-control")}}
+      {% for error in form.last_name.errors %}
+        <br><div style=color:red>{{ error }}</div>
+      {% endfor %}
+    
+    </div>
+
+          
+    <div class="form-col-left">
+      <label>Email </label><strong style="color: red;">*</strong>
+      {{form.email(class_="form-control")}}
+      {% for error in form.email.errors %}
+        <br><div style=color:red>{{ error }}</div>
+      {% endfor %}
+    
+    </div>
+
+      <div class="form-col-right">
+        {{form.username.label}}<strong style="color: red;">*</strong>
+        {{form.username(class_="form-control")}}
+        {% for error in form.username.errors %}
+          <br><div style=color:red>{{ error }}</div>  
+        {% endfor %}
+        <br>
+      </div>
+
+      <div class="form-col-left">
+        <label>Password </label><strong style="color: red;">*</strong>
+        {{form.password(class_="form-control", placeholder='*******')}}
+        {% for error in form.password.errors %}
+          <br><div style=color:red>{{ error }}</div>
+        {% endfor %}
+        
+      </div>
+
+    <div id="centrar" style="padding-left: 250px;">
+      <strong style="color: red;">Campos obligatorios con *</strong><br><br>
+      <input type="submit" value="Modificar usuario" class="btn btn-primary">
+      <a href="{{ url_for('user_update', user_id=user_id) }}" class="btn btn-secundary">Limpiar formulario</a>
+      
+    </div>
   </form>
-  </div>
-<a href="{{ url_for('user_index') }}" class="link">Volver</a>
+  <br><br>
+</div>
+
 {% endblock %}

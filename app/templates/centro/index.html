@@ -1,0 +1,183 @@
+{% extends "layout.html" %} {% block title %}Centros de Ayuda{% endblock %} {%
+block head %} {{ super() }} {% endblock %} {% block content %}
+<strong class="texto" style="font-size: xx-large">CENTROS</strong>
+<div id="derecha">
+  {#<a href="{{ url_for('home') }}" class="btn btn-primary">Volver</a>#}
+  <a href="{{ url_for('centro_register') }}" class="btn btn-primary">Nuevo</a>
+</div>
+
+{#-------------busqueda de Centros--------------#}
+
+<div id="formBusqueda">
+  <strong class="texto" style="font-size: medium">Busqueda de Centros:</strong>
+  <br /><br />
+  <form
+    action="{{ url_for('centro_index')}}"
+    method="GET"
+    class="form-inline my-1"
+  >
+    {# {{ form.csrf_token }} #}
+    <div class="busqueda">
+      <strong>Nombre</strong><br />
+      {{form.name(class_="form-control", placeholder='ingrese un nombre',value=
+      mySearch['name'])}}
+    </div>
+    <div class="busqueda">
+      <strong>Estado</strong><br />
+      {{ form.estado(class="form-control mr-sm-1")}}
+    </div>
+    <div>
+      <input type="submit" class="btn btn-primary" value="Buscar" />
+      <a href="{{ url_for('centro_index') }}" class="btn btn-secundary"
+        >Limpiar búsqueda</a
+      >
+    </div>
+  </form>
+</div>
+{#------------------fin------------------------------#}
+
+<div id="index-table">
+  {% if not index_pag.items %}
+  <strong style="color: red; margin-left: 70px">
+    No se encontraron centros de ayuda social para las datos ingresados</strong
+  >
+  {% else %}
+
+  <table class="table table-hover">
+    <tr>
+      <th>
+        <a
+          href="{{ url_for('centro_index', page=page,name=mySearch['name'], estado=mySearch['estado'], orden='nombre') }}"
+        >
+          Nombre</a
+        >
+      </th>
+      <th style="color: #007bff">
+        <!--  
+          href="{{ url_for('centro_index', page=page,name=mySearch['name'], estado=mySearch['estado'], orden='municipio') }}"
+        -->
+        Direccion
+      </th>
+      <th style="color: #007bff">
+        <!--
+          href="{{ url_for('centro_index', page=page,name=mySearch['name'], estado=mySearch['estado'], orden=mySearch['orden']) }}"
+        -->
+        Municipio
+      </th>
+      <th>
+        <a
+          href="{{ url_for('centro_index', page=page,name=mySearch['name'], estado=mySearch['estado'], orden='email') }}"
+        >
+          Email</a
+        >
+      </th>
+      <th>
+        <a
+          href="{{ url_for('centro_index', page=page,name=mySearch['name'], estado=mySearch['estado'], orden='estado') }}"
+          >Estado
+        </a>
+      </th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+
+    {% for centro in index_pag.items %}
+    <tr>
+      <td>{{ centro.nombre }}</td>
+      <td>{{ centro.direccion }}</td>
+      <td>{{ municipios[ centro.municipio | string ] }}</td>
+      <td>{{ centro.email }}</td>
+      <td>{{ centro.estado }}</td>
+      {% if centro.activo == True %} {% if centro.estado == 'ACEPTADO' and
+      centro.publicado == True %}
+      <td>
+        <a
+          href="{{url_for('centro_update_publicado', centro_id=centro.id, publicado=False, page=index_pag.page,name=mySearch['name'], estado=mySearch['estado']) }}"
+          onclick="return despublicarCentro()"
+          class="btn btn-dark"
+          >Despublicar</a
+        >
+      </td>
+      {% endif %} {% if centro.estado == 'ACEPTADO' and centro.publicado ==
+      False %}
+      <td>
+        <a
+          href="{{ url_for('centro_update_publicado', centro_id=centro.id, publicado=True, page=index_pag.page,name=mySearch['name'], estado=mySearch['estado']) }}"
+          onclick="return publicarCentro()"
+          class="btn btn-success"
+          >Publicar</a
+        >
+      </td>
+      {% endif %} {% if centro.estado != 'ACEPTADO' %}
+      <td><strong>DESPUBLICADO</strong></td>
+      {% endif %} {% else %}
+      <td></td>
+      {% endif %} {% if centro.activo == True %}
+      <td>
+        <a
+          href="{{ url_for('centro_update', centro_id=centro.id) }}"
+          class="btn btn-warning"
+          >Modificar</a
+        >
+      </td>
+      {% else %}
+      <td></td>
+      {% endif %}
+
+      <td>
+        {% if centro.activo == True %} {% if ( 'centro_destroy' in
+        session['permisos'] ) %}
+        <a
+          href="{{ url_for('centro_eliminar', centro_id=centro.id, page=index_pag.page,name=mySearch['name'], estado=mySearch['estado'] )}}"
+          onclick="return eliminarCentro()"
+          class="btn btn-danger"
+          >Eliminar</a
+        >
+
+        {% else %}
+        <strong style="color: green">Centro ACTIVO</strong>
+        {% endif %} {%else %}
+        <strong style="color: rgba(197, 11, 5, 0.89)">Centro ELIMINADO</strong>
+      </td>
+      {% endif %}
+      <td>
+        <a
+          href="{{ url_for('centro_show', centro_id=centro.id) }}"
+          class="btn btn-info"
+          >Ver Mas</a
+        >
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+  {#-----------------------------PAGINADO------------------------------------#}
+  <nav aria-label="..." style="margin-left: 15%">
+    <ul class="pagination" style="margin-left: 35%">
+      {% for page in index_pag.iter_pages() %} {% if page %} {% if page !=
+      index_pag.page %}
+      <li class="page-item">
+        <a
+          class="page-link"
+          href="{{ url_for('centro_index', page=page,name=mySearch['name'], estado=mySearch['estado']) }}"
+          >{{ page }}</a
+        >
+      </li>
+      {% else %}
+      <li class="page-item active">
+        <span class="page-link">
+          {{ page }}
+          <span class="sr-only">(current)</span>
+        </span>
+      </li>
+      {% endif %} {% else %}
+      <span class="ellipsis"> . . . </span>
+      {% endif %} {% endfor %}
+    </ul>
+  </nav>
+  {#----------------------------------------------------------------------#}
+</div>
+<script src="{{ url_for('static', filename='validaciones/centro.js') }}"></script>
+{% endblock %}
