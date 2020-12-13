@@ -118,12 +118,20 @@ div #formulario {
   margin-left: 50px;
   margin-right: 170px;
   margin-bottom: 1px;
-  padding: 5px;
+  padding: 15px;
   padding-top: 1%;
   padding-bottom: 0%;
   border-radius: 20px;
   border: 1px solid;
   border-color: #5eafe6cc;
+}
+#columShow {
+  border: 1px solid #a4b7bb;
+}
+
+#botonForm {
+  text-align: center;
+  padding: 15px;
 }
 /*---------------------------*/
 a.link {
