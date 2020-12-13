@@ -23,11 +23,8 @@ import requests
 from _datetime import date
 import datetime
 
-# para local
 UPLOAD_FOLDER = "app/static/uploads/"
-
-# para producción
-#UPLOAD_FOLDER = "/home/grupo13.proyecto2020.linti.unlp.edu.ar/app/static/uploads/"
+DOWNLOAD_FOLDER = "/static/uploads/"
 
 
 def index():
@@ -222,6 +219,10 @@ def show():
     if centro == None:
         abort(404)
     page = request.args.get("page", 1, type=int)
+    if centro.protocolo:
+        ruta = os.path.join(DOWNLOAD_FOLDER, centro.protocolo)
+    else:
+        ruta = '/'
     # para no tener emails repetidos en el select
     select_email = []
     for turno in centro.turnos:
@@ -247,6 +248,7 @@ def show():
         emails=select_email,
         index_pag=turnos,
         search=search,
+        protocolo=ruta
     )
 
 

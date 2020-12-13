@@ -4,51 +4,53 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-
-  <div id="derecha">
-    <a href="{{ url_for('configuracion_show') }}" class="btn btn-primary">Volver</a>
-  </div>
-  <div id="formulario">
+<br>
+<a href="{{ url_for('centro_index', page=1) }}" class="btn btn-primary" style="float: right;">Volver</a><br> <br>
+  
+  <div id="formulario" class="container">
     <strong class="texto">CONFIGURACIÓN DEL SITIO</strong>
     <form action="{{ url_for('configuracion_edit') }}" method="post">
-      
-      <div class="form-col-left">
-        <label>Título del Sitio: </label><br>
-        <input class="form-control" type="text" name="titulo" required value="{{ sitio.titulo }}"/>
+
+      <div class="row">
+        <div class="col-sm">
+          <label>Título del Sitio: </label><br>
+          <input class="form-control" type="text" name="titulo" required value="{{ sitio.titulo }}"/>
+        </div>
+        <div class="col-sm">
+          <label>Mail de contacto: </label><br>
+          <input class="form-control" type="email" name="email" required value="{{ sitio.email }}"/>
+        </div>
       </div>
 
-      <div class="form-col-right">
-        <label>Mail de contacto: </label><br>
-        <input class="form-control" type="email" name="email" required value="{{ sitio.email }}"/>
-      </div>
-      
-
-      <div class="form-col-left">
-        <label>Cantidad de elementos por página </label><br>
-        <input class="form-control" type="number" name="paginas" required value="{{ sitio.paginas }}"/>
-      </div><br>
-      
-      <div class="form-col-right">
-        <label>Estado de sitio:</label><br>
-        <select name="activo" class="form-control">
-          <option value="True" {% if sitio.activo is true %} selected {% endif%}>Habilitado</option>
-          <option value="False" {% if sitio.activo is false %} selected {% endif%}>Deshabilitado</option>
-        </select><br>
-      </div>
-      <div  class="form-col-left">
-      <label>Descripción: </label><br>
-    </div>
-    <div style="margin-left: 70px; margin-right: 70px;">
-      <textarea class="form-control" name="descripcion" 
-      rows="2" maxlength="255" required>{{ sitio.descripcion }}</textarea>
-    </div>
-      <div id="centrar"><br>
-        <input type="submit" value="Modificar sitio" class="btn btn-primary">
-        <button type="reset" class="btn btn-secundary"></button>
-        <a href="{{ url_for('configuracion_update') }}" class="btn btn-secundary">Limpiar Formulario</a>
+      <div class="row">
+          <div class="col-sm">
+            <label>Cantidad de elementos por página </label><br>
+            <input class="form-control" type="number" name="paginas" required value="{{ sitio.paginas }}"/>
+          </div>
+          <div class="col-sm">
+            <label>Estado de sitio:</label><br>
+              <select name="activo" class="form-control">
+                <option value="True" {% if sitio.activo is true %} selected {% endif%}>Habilitado</option>
+                <option value="False" {% if sitio.activo is false %} selected {% endif%}>Deshabilitado</option>
+              </select>
+          </div>
       </div>
 
-    </form>
-    </div>
+      <div class="row">
+        <div class="col-sm">
+          <label>Descripción: </label><br>
+          <textarea class="form-control" name="descripcion" rows="2" maxlength="255" required>{{ sitio.descripcion }}</textarea>
+        </div>
+      </div>
+
+      <div id="botonForm" class="row">
+        <div class="col-sm">
+          <input type="submit" value="Modificar sitio" class="btn btn-primary">
+          <button type="reset" class="btn btn-secundary"></button>
+          <a href="{{ url_for('configuracion_update') }}" class="btn btn-secundary">Limpiar Formulario</a>
+        </div>
+      </div>
+      
+    </div>  
 
 {% endblock %}

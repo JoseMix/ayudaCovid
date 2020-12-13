@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import Centros from "../views/Centros.vue";
 import Turnos from "../views/Turnos.vue";
 import Carga_centro from "../views/Carga_centro.vue";
+import About from "../views/About.vue";
 
 Vue.use(VueRouter);
 
@@ -19,7 +20,7 @@ const routes = [
     component: Centros,
   },
   {
-    path: "/turnos",
+    path: "/turnos/:id/:fecha",
     name: "Turnos",
     component: Turnos,
   },
@@ -28,9 +29,14 @@ const routes = [
     name: "Carga-centro",
     component: Carga_centro,
   },
+  {
+    path: "/about",
+    name: "About",
+    component: About,
+  },
 ];
-
 const router = new VueRouter({
+  mode: "history",
   routes,
 });
 

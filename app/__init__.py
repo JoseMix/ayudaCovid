@@ -12,6 +12,7 @@ from flask import (
     abort,
     make_response,
 )
+from flask_cors import CORS
 import requests
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
@@ -46,6 +47,7 @@ from app.helpers.auth import authenticated
 def create_app(environment="development"):
     # Configuración inicial de la app
     app = Flask(__name__)
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
     app.config["JSON_SORT_KEYS"] = False
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)
@@ -56,14 +58,21 @@ def create_app(environment="development"):
     Session(app)
 
     # Configure db
-    app.config[
-        "SQLALCHEMY_DATABASE_URI"
-    ] = "mysql+pymysql://"+app.config['DB_USER']+":"+app.config['DB_PASS']+"@"+app.config['DB_HOST']+"/"+app.config['DB_NAME']
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        "mysql+pymysql://"
+        + app.config["DB_USER"]
+        + ":"
+        + app.config["DB_PASS"]
+        + "@"
+        + app.config["DB_HOST"]
+        + "/"
+        + app.config["DB_NAME"]
+    )
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     ma = Marshmallow(app)
-    #ver path
-    #print(app.config["UPLOAD_FOLDER"])
+    # ver path
+    # print(app.config["UPLOAD_FOLDER"])
     initialize_db(app)
     configuracion_initialize_db(app)
     centro_turnos_initialize_db(app)
@@ -123,7 +132,9 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/centro/listado", "centro_index", centro.index, methods=["GET", "POST"]
     )
+
     app.add_url_rule("/centro/show", "centro_show", centro.show, methods=["GET"])
+    # app.add_url_rule("/app/static/uploads/Protocolo.pdf")
     app.add_url_rule(
         "/centro/update-publicado",
         "centro_update_publicado",
@@ -170,6 +181,7 @@ def create_app(environment="development"):
 
     # Rutas de API-rest
     app.add_url_rule("/api/centros/", "api_centros_index", centros.index)
+    app.add_url_rule("/api/centros-all/", "api_centros_index_all", centros.index_all)
     app.add_url_rule(
         "/api/centros/",
         "api_centros_new_centro",
