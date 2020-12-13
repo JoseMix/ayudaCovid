@@ -55,7 +55,8 @@
           />
           <FormulateInput
             type="select"
-            name="Municipio"
+            name="id_municipio"
+            label="Municipio"
             :options="municipios"
           />
 
@@ -64,81 +65,10 @@
       </v-row>
     </v-container>
 
-    <h3>{{ formValues }}</h3>
-    <h3>{{ municipios }}</h3>
+    <h5>{{ formValues }}</h5>
   </FormulateForm>
 </template>
 
-<!--
-<template>
-  <v-form v-model="valid">
-    <v-container>
-      <v-row>
-        <v-col cols="12" md="6">
-          <v-text-field
-            v-model="nombre"
-            :rules="nameRules"
-            label="Nombre del centro"
-            required
-          ></v-text-field>
-        </v-col>
-
-        <v-col cols="12" md="6">
-          <v-text-field
-            v-model="direccion"
-            :rules="nameRules"
-            label="Direccion"
-            required
-          ></v-text-field>
-        </v-col>
-
-        <v-col cols="12" md="6">
-          <v-text-field
-            v-model="email"
-            :rules="emailRules"
-            label="E-mail"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="6">
-          <v-text-field
-            v-model="phoneNumber"
-            :counter="7"
-            :error-messages="errors"
-            label="Numero de telefono"
-            required
-          ></v-text-field>
-        </v-col>
-
-        <v-col class="d-flex" cols="12" sm="6">
-          <v-select :items="items" label="Tipo de centro"></v-select>
-        </v-col>
-        <v-col cols="12" md="6">
-          <v-text-field
-            v-model="direccion"
-            :rules="nameRules"
-            label="Direccion"
-            required
-          ></v-text-field>
-        </v-col>
-        <v-col class="d-flex" cols="12" sm="6">
-          <v-select
-            :items="municipios"
-            :item-text="municipios.name"
-            name="Municipio"
-            v-validate="'required'"
-            menu-props="auto"
-            hide-details
-            label="Select"
-            single-line
-          />
-        </v-col>
-      </v-row>
-      <h3>{{ municipios }}</h3>
-    </v-container>
-  </v-form>
-</template>
--->
 <script>
 import axios from "axios";
 export default {
@@ -161,7 +91,7 @@ export default {
           headers: {},
         })
         .then((result) => {
-          console.log(result);
+          console.log(typeof result);
         });
     },
   },
@@ -172,23 +102,22 @@ export default {
         {}
       )
       .then((result) => {
-        console.log(result);
         this.municipios = result.data.data.Town;
         this.municipios = Object.values(this.municipios);
+<<<<<<< HEAD
         //this.municipios.forEach((elemento) => {
         this.municipios = JSON.parse(this.municipios);
         //this.nuevinsky[elemento.id] = elemento.name;
         //this.nuevinsky.push({ value: elemento.id, label: elemento.name });
+=======
+>>>>>>> 6293b5e7bb05570371660e938658cce2cd75807f
 
-        //this.municipios = this.municipios.map((item) => {
-        //  return {
-        //    value: item.id,
-        //    label: item.name,
-        //  };
-        //});
+        let arr = [];
+        this.municipios.forEach((element) => {
+          arr.push({ label: element.name, value: `${element.id}` });
+        });
+        this.municipios = arr;
       });
-
-    //});
   },
 
   nameRules() {

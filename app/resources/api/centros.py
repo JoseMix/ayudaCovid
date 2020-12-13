@@ -92,7 +92,7 @@ def new_centro():
         data["telefono"],
         data["tipo_centro"],
         data["web"],
-        data["id_municipio"],
+        int(data["id_municipio"]),
     )
 
     try:
