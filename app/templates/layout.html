@@ -26,6 +26,7 @@
 
   <body>
     <header>
+    <div class="container-fluid">
       <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="izquierda">                     
           <a href="{{ url_for('home') }}"> <img  src="{{ url_for('static', filename='donaciones.png') }}" alt="imagen" > </a>
@@ -78,6 +79,7 @@
         </div>
       </nav>
     </header>
+  </div>
       <div id="content">
       {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -99,6 +101,7 @@
     </div>
 
     {% block footer %}
+    <div class="container-fluid">
     <footer id="footer">
       <div class="footer-copyright text-center py-3">
         <strong class="texto-show" style="font-size: medium">
@@ -106,6 +109,7 @@
         </strong>
       </div>
     </footer>
+  </div>
    
   {% endblock %}
   

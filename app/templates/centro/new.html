@@ -6,33 +6,35 @@
 
 
 {% block content %} 
+
   <div id="derecha">
     <a href="{{ url_for('centro_index', page=1) }}" class="btn btn-primary">Volver</a>
   </div>
-  <div id="formulario">
+  <div id="formulario" class="container">
     <strong class="texto">CARGAR UN NUEVO CENTRO</strong>
     <!--    onsubmit="return validarCentro()"  onsubmit repetido, no funciona     -->
     <form action="{{ url_for('centro_register') }}" method="POST" onsubmit="submitHandler(event)" enctype="multipart/form-data">
       
       {{ form.csrf_token }}
-      <div class="form-col-left">
-      {{form.nombre.label}}<strong style="color: red;">*</strong>
-        {{form.nombre(class="form-control", id="nombre", placeholder='Ingrese un nombre de centro')}}
-        {% for error in form.nombre.errors %}
-        <br>
-        <div style=color:red>{{ error }}</div>  
-        {% endfor %}      
+      <div class="row">
+        <div class="col-sm">
+          {{form.nombre.label}}<strong style="color: red;">*</strong>
+            {{form.nombre(class="form-control", id="nombre", placeholder='Ingrese un nombre de centro')}}
+            {% for error in form.nombre.errors %}
+            <br>
+            <div style=color:red>{{ error }}</div>  
+            {% endfor %}      
+          </div>
+        <div class="col-sm">
+          {{form.direccion.label}}<strong style="color: red;">*</strong>
+          {{form.direccion(class="form-control", id="direccion", placeholder='Ingrese una direccion')}}
+          {% for error in form.direccion.errors %}
+          <br><div style=color:red>{{ error }}</div>
+          {% endfor %}        
+        </div><br>
       </div>
-
-        <div class="form-col-right">
-        {{form.direccion.label}}<strong style="color: red;">*</strong>
-        {{form.direccion(class="form-control", id="direccion", placeholder='Ingrese una direccion')}}
-        {% for error in form.direccion.errors %}
-        <br><div style=color:red>{{ error }}</div>
-        {% endfor %}        
-      </div><br>
-
-        <div class="form-col-left">
+      <div  class="row">
+        <div class="col-sm">
         {{form.telefono.label}}<strong style="color: red;">*</strong>
         {{form.telefono(class="form-control", id="telefono", placeholder='Ingrese un telefono')}}
         {% for error in form.telefono.errors %}
@@ -41,80 +43,71 @@
         {% endfor %}        
         </div>
 
-
-        <div class="form-col-right" >
-          <div style="float:left; padding-right: 35px; ">
+        <div class="col-sm">
+          {{form.tipo_centro.label}}<strong style="color: red;">*</strong>
+          {{form.tipo_centro(class="form-control", id="tipo_centro")}}
+          {% for error in form.tipo_centro.errors %}
+            <div style=color:red>{{ error }}</div>
+          {% endfor %}
+        </div>
+      </div>  
+      <div class="row">       
+        <div class="col-sm">
             {{form.apertura.label}}<strong style="color: red;">*</strong>
             {{form.apertura(class="form-control", id="apertura", type="time")}}
-          </div>
-          <div style="float: right; padding-left: 60px;">
+        </div>
+          <div class="col-sm">        
             {{form.cierre.label}}<strong style="color: red;">*</strong>
             {{form.cierre(class="form-control", id="cierre", type="time")}}        
-          </div>  
-        </div><br>
-
-
-        <div class="form-col-left">
-        {{form.tipo_centro.label}}<strong style="color: red;">*</strong>
-        {{form.tipo_centro(class="form-control", id="tipo_centro")}}
-        {% for error in form.tipo_centro.errors %}
-          <div style=color:red>{{ error }}</div>
-        {% endfor %}
-        </div>
-
-
-        <div class="form-col-right">
+          </div>
+      </div>
+      <div class="row">        
+        <div class="col-sm">
         {{form.email.label}}
         {{form.email(class="form-control", placeholder='Ingrese un email')}}
         {% for error in form.email.errors %}
           <div style=color:red>{{ error }}</div>
-        {% endfor %}
-              
-        </div><br>
-
-        <div class="form-col-left">
-        
-          <label>Municipio</label><strong style="color: red;">*</strong>
-          <br>      
+        {% endfor %}              
+        </div>
+        <div class="col-sm">        
+          <label>Municipio</label><strong style="color: red;">*</strong>             
           <select name="municipio" class="form-control">
             {% for municipio in lista_municipio %}
               <option value="{{municipio}}">{{lista_municipio[municipio]}}</option>
             {% endfor %}
           </select>
         </div>
-        <br><br>
-        
-        <div class="form-col-right">
+      </div>
+      <div class="row">        
+        <div class="col-sm">
           {{form.web.label}}
           {{form.web(class="form-control", placeholder='Ingrese un sitio')}}
           <strong style="color: red; opacity: 50%;"> Debe comenzar con http://</strong>
           {% for error in form.web.errors %}
             <div style=color:red>{{ error }}</div>
           {% endfor %}        
-        </div><br><br>
-
-
-        <div id="pdf">
+        </div>   
+        <div class="col-sm">
+          
           <label>Protocolo</label>       
           {{form.protocolo(class="form-control" ,type="file")}}
-
           {% for error in form.protocolo.errors %}
             <div style=color:red>{{ error }}</div>
-          {% endfor %}
-                
+          {% endfor %}                
         </div>
-
-      <div class="form-col-left" style="margin-top: 5px; padding-top: 5px; ">
-        <label>Ingrese ubicacion del centro</label>
-        <div class="map-container">
-          {{form.lat(id="lat")}}
-          {{form.lng(id="lng")}} 
-        </div> 
       </div>
-        <div id="myMap" style="height: 180px; width: 800px;">
-          <script src="{{ url_for('static', filename='validaciones/mapaNew.js') }}"> </script> 
-        </div> 
-        
+      <div  class="row">  
+        <div class="col-sm"> 
+          <label>Ingrese ubicacion del centro</label>
+          <div class="map-container">
+            {{form.lat(id="lat")}}
+            {{form.lng(id="lng")}} 
+          </div> 
+          <div id="myMap" style="height: 180px; width: auto;">
+            <script src="{{ url_for('static', filename='validaciones/mapaNew.js') }}"> </script> 
+          </div> 
+        </div>
+      </div>  
         <div id="centrar"><br>
           <strong style="color: red;">Campos obligatorios con *</strong><br><br>
           <input type="submit" value="Cargar Centro" class="btn btn-primary">
@@ -123,5 +116,6 @@
       
     </form>
     </div>
+</div>
     <script src="{{ url_for('static', filename='validaciones/centro.js') }}"></script>
 {% endblock %}
