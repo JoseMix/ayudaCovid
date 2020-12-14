@@ -9,29 +9,31 @@ head %} {{ super() }} {% endblock %} {% block content %}
 
 <div id="formBusqueda">
   <strong class="texto" style="font-size: medium">Busqueda de usuarios:</strong>
-  <br /><br />
-  <form
-    action="{{ url_for('user_index')}}"
-    method="GET"
-    class="form-inline my-1"
-  >
+  <br><br>
+
+  <div class="container">
+    <form action="{{ url_for('user_index')}}" method="GET" class="form-inline my-1">
     {# {{ form.csrf_token }} #}
-    <div class="busqueda">
-      <strong>Username</strong><br />
-      {{form.username( class="form-control mr-sm-1", placeholder='ingrese un
-      username', value= mySearch['username'] if mySearch else '' )}}
-    </div>
-    <div class="busqueda">
-      <strong>Estado</strong><br />
-      {{ form.estado(class="form-control mr-sm-1")}}
-    </div>
-    <div>
-      <input type="submit" class="btn btn-primary" value="Buscar" />
-      <a href="{{ url_for('user_index') }}" class="btn btn-secundary"
-        >Limpiar búsqueda</a
-      >
-    </div>
-  </form>
+        <div class="row">
+            <div class="busqueda" class="col-sm">
+                <strong>Username</strong><br /> 
+                {{form.username( class="form-control mr-sm-1", placeholder='ingrese un username', value= mySearch['username'] if mySearch else '' )}}
+            </div>
+            <div class="busqueda" class="col-sm">
+                <strong>Estado</strong><br />
+                {{ form.estado(class="form-control mr-sm-1")}}
+            </div>
+            <div class="col-sm">
+              <br>
+                <input type="submit" class="btn btn-primary" value="Buscar" />
+              </div>
+              <div class="col-sm">
+                <a href="{{ url_for('user_index') }}" class="btn btn-secundary">Limpiar búsqueda</a>
+            </div>
+        </div>
+    </form>  
+</div> 
+
 </div>
 
 <div id="index-table">
@@ -40,7 +42,7 @@ head %} {{ super() }} {% endblock %} {% block content %}
     No se encontraron usuarios para las datos ingresados</strong
   >
   {% else %}
-  <table class="table table-hover">
+  <table class="table table-hover" id="contenidoDeTabla">
     <tr>
       <th>
         <a

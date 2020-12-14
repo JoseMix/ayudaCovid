@@ -3,76 +3,65 @@
 {% block head %}
   {{ super() }}
 {% endblock %}
-
-
 {% block content %} 
-  <div id="derecha">
-    <a href="{{ url_for('centro_index', page=1) }}" class="btn btn-primary">Volver</a>
-  </div>
-  <div id="formulario">
+  <div id="formulario" class="container">
+      <a href="{{ url_for('centro_index', page=1) }}" class="btn btn-primary" style="float: right;">Volver</a>
     <strong class="texto">MODIFICAR CENTRO</strong>
     <form method="POST" onsubmit="submitHandler(event)" enctype="multipart/form-data">
       <br>
       {{ form.csrf_token }}
-      <div class="form-col-left">
-      {{form.nombre.label}} <strong style="color: red;">*</strong>
-        {{form.nombre(class="form-control")}}
-        {% for error in form.nombre.errors %}
-          <br><div style="color:red">{{ error }}</div>  
-        {% endfor %}
-      
+      <div class="row">
+        <div class="col-sm">
+          {{form.nombre.label}} <strong style="color: red;">*</strong>
+            {{form.nombre(class="form-control")}}
+            {% for error in form.nombre.errors %}
+              <br><div style="color:red">{{ error }}</div>  
+            {% endfor %}
+        </div>    
+        <div class="col-sm">
+          {{form.direccion.label}}<strong style="color: red;">*</strong>
+          {{form.direccion(class="form-control")}}
+          {% for error in form.direccion.errors %}
+            <br><div style=color:red>{{ error }}</div>
+          {% endfor %}        
+        </div>
       </div>
-
-        <div class="form-col-right">
-        {{form.direccion.label}}<strong style="color: red;">*</strong>
-        {{form.direccion(class="form-control")}}
-        {% for error in form.direccion.errors %}
-          <br><div style=color:red>{{ error }}</div>
-        {% endfor %}
-        
-      </div><br>
-
-        <div class="form-col-left">
-        {{form.telefono.label}}<strong style="color: red;">*</strong>
-        {{form.telefono(class="form-control")}}
-        {% for error in form.telefono.errors %}
-          <br><div style=color:red>{{ error }}</div>
-        {% endfor %}
-        
+      <div class="row">
+        <div class="col-sm">
+          {{form.telefono.label}}<strong style="color: red;">*</strong>
+          {{form.telefono(class="form-control")}}
+          {% for error in form.telefono.errors %}
+            <br><div style=color:red>{{ error }}</div>
+          {% endfor %}        
+        </div>
+        <div class="col-sm">       
+          {{form.tipo_centro.label}}<strong style="color: red;">*</strong>
+          {{form.tipo_centro(class="form-control")}}
+  
+          {% for error in form.tipo_centro.errors %}
+            <div style=color:red>{{ error }}</div>
+          {% endfor %}          
+        </div>
       </div>
-
-      <div class="form-col-right" >
-        <div style="float:left; padding-right: 25px; ">
+      <div class="row">
+        <div class="col-sm">
           {{form.apertura.label}}<strong style="color: red;">*</strong>
           {{form.apertura(class="form-control", type="time")}}
         </div>
-        <div style="float: right; padding-left: 50px;">
+        <div class="col-sm">
           {{form.cierre.label}}<strong style="color: red;">*</strong>
           {{form.cierre(class="form-control", type="time")}}       
         </div>  
-      </div><br>
-
-        <div class="form-col-left">
-        {{form.tipo_centro.label}}<strong style="color: red;">*</strong>
-        {{form.tipo_centro(class="form-control")}}
-
-        {% for error in form.tipo_centro.errors %}
-          <div style=color:red>{{ error }}</div>
-        {% endfor %}
-        
       </div>
-
-        <div class="form-col-right">
-        {{form.email.label}}
-        {{form.email(class="form-control")}}
-        {% for error in form.email.errors %}
-          <div style=color:red>{{ error }}</div>
-        {% endfor %}
-        
-        </div><br>
-
-        <div class="form-col-left">
-        
+      <div class="row">
+        <div class="col-sm">
+          {{form.email.label}}
+          {{form.email(class="form-control")}}
+          {% for error in form.email.errors %}
+            <div style=color:red>{{ error }}</div>
+          {% endfor %}          
+        </div>
+        <div class="col-sm">        
           <label>Municipio</label><strong style="color: red;">*</strong><br>       
           <select name="municipio" class="form-control">
               <option value="{{ form.municipio.data }}">{{ muni }}</option>            
@@ -80,37 +69,38 @@
               <option value="{{municipio}}">{{lista_municipio[municipio]}}</option>
             {% endfor %}
           </select> 
-        </div><br><br>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm">
+          {{form.web.label}}
+          {{form.web(class="form-control")}}
+          <strong style="color: red; opacity: 50%;"> Debe comenzar con http://</strong>
+          {% for error in form.web.errors %}
+            <div style=color:red>{{ error }}</div>
+          {% endfor %}        
+        </div>
 
-        <div class="form-col-right">
-        {{form.web.label}}
-        {{form.web(class="form-control")}}
-        <strong style="color: red; opacity: 50%;"> Debe comenzar con http://</strong>
-        {% for error in form.web.errors %}
-          <div style=color:red>{{ error }}</div>
-        {% endfor %}
-        
-        </div><br><br>
-
-        <div id="pdf">
+        <div class="col-sm">
           <label>Protocolo</label>
           {{form.protocolo(class="form-control", type="file" )}}
           {% for error in form.protocolo.errors %}
             <div style=color:red>{{ error }}</div>
           {% endfor %}
         </div>
-
-        <div class="form-col-left" style="margin-top: 5px; padding-top: 5px; ">
+      </div>
+      <div  class="row">  
+        <div class="col-sm"> 
           <label>Ingrese ubicacion del centro</label>
             <div class="map-container">
               {{form.lat(id="lat")}}
               {{form.lng(id="lng")}} 
             </div> 
+          <div id="myMap" style="height: 180px; width: auto;">      
+            <script src="{{ url_for('static', filename='validaciones/mapaUpdate.js') }}"> </script> 
+          </div> 
         </div>
-        <div id="myMap" style="height: 180px; width: 800px;">
-      
-          <script src="{{ url_for('static', filename='validaciones/mapaUpdate.js') }}"> </script> 
-        </div>        
+      </div>
         
         <div id="centrar"><br>
           <strong style="color: red;">campos obligatorios con *</strong><br><br>

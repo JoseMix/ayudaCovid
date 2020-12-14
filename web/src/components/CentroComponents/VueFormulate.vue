@@ -9,7 +9,6 @@
             validation="required"
             :validation-messages="{
               required: 'El nombre es requerido.',
-              alpha: 'El nombre solo puede contener letras',
             }"
           />
           <FormulateInput
@@ -50,9 +49,25 @@
 
           <FormulateInput name="email" label="Email" type="email" />
         </v-col>
+
         <v-col>
-          <FormulateInput name="latitud" />
-          <FormulateInput name="longitud" />
+          <strong>Ubicación:</strong>
+          <MapComponent @latitud="lat = $event" @longitud="lng = $event" />
+          <FormulateInput
+            name="latitud"
+            type="hidden"
+            v-model="lat"
+            validation="required"
+          />
+          <FormulateInput
+            name="longitud"
+            type="hidden"
+            v-model="lng"
+            validation="required"
+            :validation-messages="{
+              required: 'La ubicación es requerida.',
+            }"
+          />
           <FormulateInput
             name="telefono"
             label="Teléfono"
@@ -75,6 +90,12 @@
             label="Web"
             type="url"
             validation="required"
+<<<<<<< HEAD
+=======
+            :validation-messages="{
+              required: 'La web es requerida.',
+            }"
+>>>>>>> master
           />
           <FormulateInput
             type="select"
@@ -91,6 +112,7 @@
           <FormulateInput type="submit" label="Enviar" />
         </v-col>
       </v-row>
+      <v-row> </v-row>
       <vue-recaptcha
         sitekey="6LeaMgUaAAAAAMO68Dyq8L61D8UDRHM-aY0luK8v"
         :loadRecaptchaScript="true"
@@ -121,11 +143,13 @@
 <script>
 import axios from "axios";
 import VueRecaptcha from "vue-recaptcha";
+import MapComponent from "./MapComponent.vue";
 
 export default {
   name: "CrearCentro",
   components: {
     VueRecaptcha,
+    MapComponent,
   },
   data: () => {
     return {
@@ -142,6 +166,8 @@ export default {
       cierre: "",
       errorDate: "",
       errorCaptcha: "",
+      lat: 0,
+      lng: 0,
     };
   },
   methods: {
@@ -149,11 +175,15 @@ export default {
       if (this.captchaFlag) {
         if (this.formValues.apertura < this.formValues.cierre) {
           axios
-            .post("http://127.0.0.1:5000/api/centros/", this.formValues, {
-              headers: {},
-            })
+            .post(
+              "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/centros/",
+              this.formValues,
+              {
+                headers: {},
+              }
+            )
             .then((result) => {
-              console.log(typeof result);
+              this.$router.push({ name: "Home" });
             });
         } else {
           this.errorDate =

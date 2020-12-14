@@ -1,11 +1,13 @@
 from flask import redirect, render_template, request, url_for, abort, session, flash
 from flask_bcrypt import Bcrypt
-
+from app.helpers.auth import authenticated
 from app.models.configuracion import Configuracion
 from app.models.models import Permiso, User
 from app.resources.forms import LoginForm
 
 def login():
+    if authenticated(session):
+        return redirect(url_for("home"))
     form = LoginForm()
     bcrypt = Bcrypt()
     if form.validate_on_submit():
@@ -30,7 +32,7 @@ def logout():
     session.pop("permisos", None)
     session.clear()
     flash("La sesión se cerró correctamente.")
-    return redirect(url_for("home"))
+    return redirect('https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/iniciar_sesion')
 
 
 def validate(form):

@@ -16,11 +16,6 @@ body {
   background-color: rgba(24, 58, 82, 0.24);
   position: relative; /*  queria dejarlo abajo de todo pero pasaron cosas   */
   text-align: center;
-  margin-top: 4%;
-  padding: 2%;
-  padding-bottom: 1.5%;
-
-  width: 100%;
 }
 
 #container {
@@ -123,12 +118,20 @@ div #formulario {
   margin-left: 50px;
   margin-right: 170px;
   margin-bottom: 1px;
-  padding: 5px;
+  padding: 15px;
   padding-top: 1%;
   padding-bottom: 0%;
   border-radius: 20px;
   border: 1px solid;
   border-color: #5eafe6cc;
+}
+#columShow {
+  border: 1px solid #a4b7bb;
+}
+
+#botonForm {
+  text-align: center;
+  padding: 15px;
 }
 /*---------------------------*/
 a.link {
@@ -182,6 +185,10 @@ a.link {
   border: 2px solid;
   border-color: #5eafe6cc;
   background-color: rgba(33, 94, 105, 0.13);
+}
+#contenidoDeTabla {
+  overflow-x: auto;
+  display: block;
 }
 
 #lat {
