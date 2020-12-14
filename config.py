@@ -23,8 +23,8 @@ class DevelopmentConfig(BaseConfig):
     ENV = "development"
     DEBUG = environ.get("DEBUG", True)
     DB_HOST = environ.get("DB_HOST", "localhost")
-    DB_USER = environ.get("DB_USER", "root")
-    DB_PASS = environ.get("DB_PASS", "")
+    DB_USER = environ.get("DB_USER", "maruca")
+    DB_PASS = environ.get("DB_PASS", "maruca")
     DB_NAME = environ.get("DB_NAME", "proyecto")
 
 
@@ -49,7 +49,6 @@ class ProductionConfig(BaseConfig):
     DB_USER = environ.get("DB_USER", "grupo13")
     DB_PASS = environ.get("DB_PASS", "NWE3YTMzYmU4YjY1")
     DB_NAME = environ.get("DB_NAME", "grupo13")
-    
 
 
 config = dict(

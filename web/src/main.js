@@ -5,6 +5,7 @@ import store from "./store";
 import vuetify from "./plugins/vuetify";
 import "./assets/VueFormulate.css";
 import VueFormulate from "@braid/vue-formulate";
+
 Vue.use(VueFormulate);
 
 Vue.config.productionTip = false;

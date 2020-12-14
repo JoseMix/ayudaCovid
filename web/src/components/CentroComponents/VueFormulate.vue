@@ -6,10 +6,9 @@
           <FormulateInput
             name="nombre"
             label="Nombre del centro"
-            validation="required|alpha:latin"
+            validation="required"
             :validation-messages="{
               required: 'El nombre es requerido.',
-              alpha: 'El nombre solo puede contener letras',
             }"
           />
           <FormulateInput
@@ -24,7 +23,6 @@
             name="apertura"
             label="Horario de apertura"
             type="time"
-            error-behavior="live"
             validation="required"
             :validation-messages="{
               required: 'La hora de apertura es requerida.',
@@ -51,9 +49,25 @@
 
           <FormulateInput name="email" label="Email" type="email" />
         </v-col>
+
         <v-col>
-          <FormulateInput name="latitud" type="hidden" />
-          <FormulateInput name="longitud" type="hidden" />
+          <strong>Ubicación:</strong>
+          <MapComponent @latitud="lat = $event" @longitud="lng = $event" />
+          <FormulateInput
+            name="latitud"
+            type="hidden"
+            v-model="lat"
+            validation="required"
+          />
+          <FormulateInput
+            name="longitud"
+            type="hidden"
+            v-model="lng"
+            validation="required"
+            :validation-messages="{
+              required: 'La ubicación es requerida.',
+            }"
+          />
           <FormulateInput
             name="telefono"
             label="Teléfono"
@@ -71,7 +85,15 @@
             :options="{ Ropa: 'ropa', Plasma: 'plasma', Comida: 'comida' }"
             validation="required"
           />
-          <FormulateInput name="web" label="Web" type="url" />
+          <FormulateInput
+            name="web"
+            label="Web"
+            type="url"
+            validation="required"
+            :validation-messages="{
+              required: 'La web es requerida.',
+            }"
+          />
           <FormulateInput
             type="select"
             name="id_municipio"
@@ -87,17 +109,48 @@
           <FormulateInput type="submit" label="Enviar" />
         </v-col>
       </v-row>
+      <v-row> </v-row>
+      <vue-recaptcha
+        sitekey="6LeaMgUaAAAAAMO68Dyq8L61D8UDRHM-aY0luK8v"
+        :loadRecaptchaScript="true"
+        @verify="captchaVerificado"
+        @expired="captchaExpired"
+      ></vue-recaptcha>
+      <span
+        style="color: #960505;
+            font-size: 0.8em;
+            font-weight: 300;
+            line-height: 1.5;
+            margin-bottom: 0.25em;"
+      >
+        {{ errorCaptcha }}
+      </span>
     </v-container>
-
-    <h5>{{ formValues }}</h5>
   </FormulateForm>
 </template>
 
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script
+  src="https://www.google.com/recaptcha/api.js?onload=vueRecaptchaApiLoaded&render=explicit"
+  async
+  defer
+></script>
+<script src="https://unpkg.com/vue-recaptcha@latest/dist/vue-recaptcha.min.js%22%3E"></script>
+
 <script>
 import axios from "axios";
+import VueRecaptcha from "vue-recaptcha";
+import MapComponent from "./MapComponent.vue";
+
 export default {
+  name: "CrearCentro",
+  components: {
+    VueRecaptcha,
+    MapComponent,
+  },
   data: () => {
     return {
+      captchaFlag: false,
       items: ["Comida", "Ropa", "Plasma"],
       formValues: {},
       municipios: {},
@@ -109,24 +162,39 @@ export default {
       apertura: "",
       cierre: "",
       errorDate: "",
+      errorCaptcha: "",
+      lat: 0,
+      lng: 0,
     };
   },
   methods: {
     handleSubmit() {
-      if (this.formValues.apertura < this.formValues.cierre) {
-        axios
-          .post("http://127.0.0.1:5000/api/centros/", this.formValues, {
-            headers: {},
-          })
-          .then((result) => {
-            console.log(typeof result);
-          });
+      if (this.captchaFlag) {
+        if (this.formValues.apertura < this.formValues.cierre) {
+          axios
+            .post("http://127.0.0.1:5000/api/centros/", this.formValues, {
+              headers: {},
+            })
+            .then((result) => {
+              this.$router.push({ name: "Home" });
+            });
+        } else {
+          this.errorDate =
+            "La hora de cierre debe ser posterior a la de apertura";
+        }
       } else {
-        this.errorDate =
-          "La hora de cierre debe ser posterior a la de apertura";
+        this.errorCaptcha = "Por favor verificar Captcha";
       }
     },
+    captchaVerificado() {
+      this.captchaFlag = true;
+      this.errorCaptcha = "";
+    },
+    captchaExpired() {
+      this.captchaFlag = false;
+    },
   },
+
   created() {
     axios
       .get(
