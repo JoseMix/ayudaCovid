@@ -50,7 +50,7 @@
         @blur="$v.hora_inicio.$touch()"
       ></v-select>
       <v-btn class="mr-4" @click="validaciones">
-        submit
+        Reservar
       </v-btn>
     </v-form>
   </div>
