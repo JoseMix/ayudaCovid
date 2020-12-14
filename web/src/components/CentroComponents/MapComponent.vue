@@ -33,7 +33,6 @@ export default {
   },
   methods: {
     addMarker(event) {
-      console.log(event);
       this.latitud = event.latlng.lat;
       this.longitud = event.latlng.lng;
       this.act();
@@ -51,6 +50,7 @@ li {
   cursor: pointer;
 }
 .mapa {
+  position: sticky;
   height: 50%;
   width: 60%;
 }

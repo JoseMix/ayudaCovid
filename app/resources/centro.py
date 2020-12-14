@@ -18,8 +18,6 @@ from app.models.configuracion import Configuracion
 from app.models.centro import Turnos, Centro
 from app.helpers.auth import authenticated, tiene_permiso
 from app.resources.forms import CrearCentroForm, FilterFormCentro
-
-import requests
 from _datetime import date
 import datetime
 
