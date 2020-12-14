@@ -172,9 +172,13 @@ export default {
       if (this.captchaFlag) {
         if (this.formValues.apertura < this.formValues.cierre) {
           axios
-            .post("http://127.0.0.1:5000/api/centros/", this.formValues, {
-              headers: {},
-            })
+            .post(
+              "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/centros/",
+              this.formValues,
+              {
+                headers: {},
+              }
+            )
             .then((result) => {
               this.$router.push({ name: "Home" });
             });

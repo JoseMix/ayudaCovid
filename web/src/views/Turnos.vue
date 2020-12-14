@@ -50,7 +50,7 @@
         @blur="$v.hora_inicio.$touch()"
       ></v-select>
       <v-btn class="mr-4" @click="validaciones">
-        submit
+        Reservar
       </v-btn>
     </v-form>
   </div>
@@ -127,12 +127,12 @@ export default {
         .reverse()
         .join("-");
       this.apiHorarios =
-        "http://127.0.0.1:5000/api/centros/" +
+        "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/centros/" +
         id +
         "/turnos_disponibles/?fecha=" +
         this.fecha;
       this.apiReservarTurno =
-        "http://127.0.0.1:5000/api/centros/" + id + "/reserva/";
+        "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/centros/" + id + "/reserva/";
     },
     validaciones() {
         if ((this.email=="")){

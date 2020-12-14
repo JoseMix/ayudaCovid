@@ -1,202 +1,204 @@
 {% extends "layout.html" %} {% block title %}Centros de Ayuda{% endblock %} {%
 block head %} {{ super() }} {% endblock %} {% block content %}
-<div id="derecha">
-  <a href="{{ url_for('centro_index', page=1) }}" class="btn btn-primary"
-    >Volver</a
-  >
-</div>
-<div id="show">
-  <strong class="texto" style="font-size: x-large"
-    >INFORMACIÓN DEL CENTRO:</strong
-  ><br /><br />
+<br>
+<div class="container">
+ 
+    <a href="{{ url_for('centro_index', page=1) }}" class="btn btn-primary"
+    style="float: right;"  >Volver</a
+    >    
+    <h3>INFORMACIÓN DEL CENTRO</h3>
+  <hr>
 
-  {#----------------------- DATOS DEL CENTRO ----------------------------#}
-  <div style="float: left; margin: 15px">
-    <strong class="texto-show">Nombre: </strong>
-    <strong class="text-text"> {{ centro.nombre }}</strong><br />
+    {#----------------------- DATOS DEL CENTRO ----------------------------#}
+    <div style="float: left; margin: 15px">
+      <strong class="texto-show">Nombre: </strong>
+      <strong class="text-text"> {{ centro.nombre }}</strong><br />
 
-    <strong class="texto-show">Tipo de Centro: </strong>
-    <strong class="text-text"> {{ centro.tipo_centro }} </strong><br />
+      <strong class="texto-show">Tipo de Centro: </strong>
+      <strong class="text-text"> {{ centro.tipo_centro }} </strong><br />
 
-    <strong class="texto-show">Direccion: </strong>
-    <strong class="text-text"> {{ centro.direccion }} </strong><br />
+      <strong class="texto-show">Direccion: </strong>
+      <strong class="text-text"> {{ centro.direccion }} </strong><br />
 
-    <strong class="texto-show">Municipio: </strong>
-    <strong class="text-text"> {{ centro.municipio }} </strong><br />
+      <strong class="texto-show">Municipio: </strong>
+      <strong class="text-text"> {{ centro.municipio }} </strong><br />
 
-    <strong class="texto-show">Email: </strong>
-    <strong class="text-text"> {{ centro.email }} </strong><br />
-    {% if (centro.protocolo == 'NULL') or (centro.protocolo == None )%}
-    <strong class="texto-show">Protocolo: </strong>
-    <strong class="text-text"> -</strong><br />
-    {% else %}
-    <strong class="texto-show">Protocolo: </strong>
-
-    <a onclick="window.open('{{ protocolo }}')" class="btn btn-link">
-      {{ centro.protocolo }}
-    </a>
-    <br />
-
-    {% endif %}
-
-    <strong class="texto-show">Estado: </strong>
-    <strong class="text-text"> {{ centro.estado }} </strong><br />
-    {% if centro.estado == 'PENDIENTE' %}
-    <div style="margin: 15px">
-      <a
-        href="{{url_for('centro_update_estado', centro_id=centro.id,estado='ACEPTADO')}}"
-        onclick="return aceptarCentro()"
-        class="btn btn-success"
-        >ACEPTAR</a
-      >
-      <a
-        href="{{url_for('centro_update_estado', centro_id=centro.id,estado='RECHAZADO')}}"
-        onclick="return rechazarCentro()"
-        class="btn btn-danger"
-        >RECHAZAR</a
-      >
-    </div>
-    {% endif %}
-    <br /><br />
-  </div>
-  <div style="margin-left: 20px">
-    <strong class="texto-show">Ubicacion: </strong>
-    <input type="hidden" value="{{centro.latitud}}" id="latitud" />
-    <input type="hidden" value="{{centro.longitud}}" id="longitud" />
-
-    <div id="myMap" style="height: 230px">
-      <script src="{{ url_for('static', filename='mapaShow.js') }}"></script>
-    </div>
-  </div>
-  {#-----------------------------------------------#} {% if centro.estado ==
-  'ACEPTADO' and centro.publicado == True and centro.activo == True %} {% if (
-  'turnos_new' in session['permisos'] ) %}
-  <div style="margin: 15px">
-    <br />
-    <a
-      href="{{url_for('turnos_new', centro_id=centro.id)}}"
-      class="btn btn-primary"
-      >Solicitar turno</a
-    >
-    <br />
-  </div>
-  {% endif %} {#-------------busqueda de turnos--------------#}
-
-  <div id="formBusqueda">
-    <strong class="texto" style="font-size: medium">Busqueda de turnos:</strong>
-    <br />
-    <form
-      action="{{url_for('centro_show')}}"
-      method="GET"
-      class="form-inline my-1"
-    >
-      <div class="busqueda">
-        <strong>Email de solicitante:</strong><br />
-        <select name="email" class="form-control mr-sm-1">
-          {% if search["email"] and search["email"] != "todos" %}
-          <option value="{{ search['email'] }}">{{ search["email"] }}</option>
-          {% endif%}
-          <option value="todos">TODOS</option>
-          {% for email in emails %}
-          <option value="{{ email }}">{{ email }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div style="margin-left: 40px">
-        <input type="hidden" name="centro_id" value="{{ centro.id }}" />
-        <input type="submit" class="btn btn-primary" value="Buscar" />
-        <a href="#" class="btn btn-secundary">Limpiar búsqueda</a>
-      </div>
-    </form>
-  </div>
-
-  {#--------------------------- Index de Turnos ----------------------------#}
-
-  <strong class="texto-show">Listado de turnos solicitados: </strong>
-  {% if not index_pag.items %}
-  <strong style="color: red; margin-left: 70px">
-    No se encontraron turnos para el email ingresado</strong
-  >
-  {% else %}
-  <table class="table table-hover">
-    <tr>
-      <td>
-        <strong class="=texto-text">Día:</strong>
-      </td>
-      <td>
-        <strong class="texto-text">Horario:</strong>
-      </td>
-      <td>
-        <strong class="texto-text">Email solicitante:</strong>
-      </td>
-      <td></td>
-    </tr>
-    {% for turno in index_pag.items %}
-    <tr>
-      <td>
-        <strong class="text-text">
-          {{ turno.dia.strftime("%d-%m-%Y") }}
-        </strong>
-      </td>
-      <td>
-        <strong class="text-text">
-          {{ turno.bloque.hora_inicio.strftime("%H:%M") }}hs - {{
-          turno.bloque.hora_fin.strftime("%H:%M") }}hs
-        </strong>
-      </td>
-      <td>
-        <strong class="text-text"> {{ turno.email }} </strong>
-      </td>
-      <td>
-        {% if turno.estado=="VIGENTE" %} {% if ( 'turnos_destroy' in
-        session['permisos'] ) %}
-        <a
-          href="{{ url_for('turnos_eliminar', turno_id=turno.id, centro_id=centro.id, page=index_pag.page, email=search['email'])}}"
-          onclick="return confirmationTurno()"
-          class="btn btn-danger"
-          >Cancelar</a
-        >
-        {% else %}
-        <strong class="text-text" style="color: green">
-          {{ turno.estado }}
-        </strong>
-        {% endif %} {% else %}
-        <strong class="text-text" style="color: red">
-          {{ turno.estado }}
-        </strong>
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor %}
-  </table>
-  {% endif %}
-  {#-----------------------------PAGINADO------------------------------------#}
-  <nav aria-label="..." style="margin-left: 15%">
-    <ul class="pagination" style="margin-left: 35%">
-      {% for page in index_pag.iter_pages() %} {% if page %} {% if page !=
-      index_pag.page %}
-      <li class="page-item">
-        <a
-          class="page-link"
-          href="{{url_for('centro_show',centro_id=centro.id, page=page, email=search['email'])}}"
-          >{{ page }}</a
-        >
-      </li>
+      <strong class="texto-show">Email: </strong>
+      <strong class="text-text"> {{ centro.email }} </strong><br />
+      {% if (centro.protocolo == 'NULL') or (centro.protocolo == None )%}
+      <strong class="texto-show">Protocolo: </strong>
+      <strong class="text-text"> -</strong><br />
       {% else %}
-      <li class="page-item active">
-        <span class="page-link">
-          {{ page }}
-          <span class="sr-only">(current)</span>
-        </span>
-      </li>
-      {% endif %} {% else %}
-      <span class="ellipsis"> . . . </span>
-      {% endif %} {% endfor %}
-    </ul>
-  </nav>
-  {#----------------------------------------------------------------------#} {%
-  endif %}
-  <br /><br /><br /><br />
+      <strong class="texto-show">Protocolo: </strong>
+
+      <a onclick="window.open('{{ protocolo }}')" class="btn btn-link">
+        {{ centro.protocolo }}
+      </a>
+      <br />
+
+      {% endif %}
+
+      <strong class="texto-show">Estado: </strong>
+      <strong class="text-text"> {{ centro.estado }} </strong><br />
+      {% if centro.estado == 'PENDIENTE' %}
+      <div style="margin: 15px">
+        <a
+          href="{{url_for('centro_update_estado', centro_id=centro.id,estado='ACEPTADO')}}"
+          onclick="return aceptarCentro()"
+          class="btn btn-success"
+          >ACEPTAR</a>
+        <a
+          href="{{url_for('centro_update_estado', centro_id=centro.id,estado='RECHAZADO')}}"
+          onclick="return rechazarCentro()"
+          class="btn btn-danger"
+          >RECHAZAR</a
+        >
+      </div>
+      {% endif %}
+      <br /><br />
+    </div>
+    <div style="margin-left: 20px">
+      <strong class="texto-show">Ubicacion: </strong>
+      <input type="hidden" value="{{centro.latitud}}" id="latitud" />
+      <input type="hidden" value="{{centro.longitud}}" id="longitud" />
+
+      <div id="myMap" style="height: 230px">
+        <script src="{{ url_for('static', filename='mapaShow.js') }}"></script>
+      </div>
+    </div>
+    {#-----------------------------------------------#} {% if centro.estado ==
+    'ACEPTADO' and centro.publicado == True and centro.activo == True %} {% if (
+    'turnos_new' in session['permisos'] ) %}
+    <div style="margin: 15px">
+      <br>
+      <a
+        href="{{url_for('turnos_new', centro_id=centro.id)}}"
+        class="btn btn-primary"
+        >Solicitar turno</a
+      >
+      <br />
+    </div>
+    {% endif %} {#-------------busqueda de turnos--------------#}
+
+    <div id="formBusqueda" class="container">
+      <div class="row">
+        <div class="col-sm">
+          <h2>Busqueda de turnos:</h2>
+          <br>
+          <form
+            action="{{url_for('centro_show')}}"
+            method="GET"
+            class="form-inline my-1">
+              <div class="busqueda">
+              <h6>Email de solicitante:</h6><br />
+              <select name="email" class="form-control">
+                {% if search["email"] and search["email"] != "todos" %}
+                <option value="{{ search['email'] }}">{{ search["email"] }}</option>
+                {% endif%}
+                <option value="todos">TODOS</option>
+                {% for email in emails %}
+                <option value="{{ email }}">{{ email }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div style="margin-left: 40px">
+          <input type="hidden" name="centro_id" value="{{ centro.id }}" />
+          <input type="submit" class="btn btn-primary" value="Buscar" />
+          <a href="#" class="btn btn-secundary">Limpiar búsqueda</a>
+        </div>
+      </form>
+      </div>
+    </div>
+
+
+    {#--------------------------- Index de Turnos ----------------------------#}
+
+    <strong class="texto-show">Listado de turnos solicitados: </strong>
+    {% if not index_pag.items %}
+    <strong style="color: red; margin-left: 70px">
+      No se encontraron turnos para el email ingresado</strong
+    >
+    {% else %}
+    <table class="table table-hover" id="contenidoDeTabla">
+      <tr>
+        <td>
+          <strong class="=texto-text">Día:</strong>
+        </td>
+        <td>
+          <strong class="texto-text">Horario:</strong>
+        </td>
+        <td>
+          <strong class="texto-text">Email solicitante:</strong>
+        </td>
+        <td></td>
+      </tr>
+      {% for turno in index_pag.items %}
+      <tr>
+        <td>
+          <strong class="text-text">
+            {{ turno.dia.strftime("%d-%m-%Y") }}
+          </strong>
+        </td>
+        <td>
+          <strong class="text-text">
+            {{ turno.bloque.hora_inicio.strftime("%H:%M") }}hs - {{
+            turno.bloque.hora_fin.strftime("%H:%M") }}hs
+          </strong>
+        </td>
+        <td>
+          <strong class="text-text"> {{ turno.email }} </strong>
+        </td>
+        <td>
+          {% if turno.estado=="VIGENTE" %} {% if ( 'turnos_destroy' in
+          session['permisos'] ) %}
+          <a
+            href="{{ url_for('turnos_eliminar', turno_id=turno.id, centro_id=centro.id, page=index_pag.page, email=search['email'])}}"
+            onclick="return confirmationTurno()"
+            class="btn btn-danger"
+            >Cancelar</a
+          >
+          {% else %}
+          <strong class="text-text" style="color: green">
+            {{ turno.estado }}
+          </strong>
+          {% endif %} {% else %}
+          <strong class="text-text" style="color: red">
+            {{ turno.estado }}
+          </strong>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+    {#-----------------------------PAGINADO------------------------------------#}
+    <nav aria-label="..." style="margin-left: 15%">
+      <ul class="pagination" style="margin-left: 35%">
+        {% for page in index_pag.iter_pages() %} {% if page %} {% if page !=
+        index_pag.page %}
+        <li class="page-item">
+          <a
+            class="page-link"
+            href="{{url_for('centro_show',centro_id=centro.id, page=page, email=search['email'])}}"
+            >{{ page }}</a
+          >
+        </li>
+        {% else %}
+        <li class="page-item active">
+          <span class="page-link">
+            {{ page }}
+            <span class="sr-only">(current)</span>
+          </span>
+        </li>
+        {% endif %} {% else %}
+        <span class="ellipsis"> . . . </span>
+        {% endif %} {% endfor %}
+      </ul>
+    </nav>
+    {#----------------------------------------------------------------------#} {%
+    endif %}
+    <br /><br /><br /><br />
+  </div>
 </div>
 <script src="{{ url_for('static', filename='validaciones/turnos.js') }}"></script>
 <script src="{{ url_for('static', filename='validaciones/centro.js') }}"></script>
