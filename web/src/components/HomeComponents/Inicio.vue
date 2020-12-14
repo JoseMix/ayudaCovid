@@ -20,7 +20,7 @@
           </v-card-text>
           <br />
           <v-card-actions>
-            <v-btn href="#" color="info" text>
+            <v-btn href="/estadisticas" color="info" text>
               Acceder
             </v-btn>
 

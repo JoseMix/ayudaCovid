@@ -5,6 +5,7 @@ import Centros from "../views/Centros.vue";
 import Turnos from "../views/Turnos.vue";
 import Carga_centro from "../views/Carga_centro.vue";
 import About from "../views/About.vue";
+import Estadisticas from "../views/Estadisticas.vue";
 
 Vue.use(VueRouter);
 
@@ -33,6 +34,11 @@ const routes = [
     path: "/about",
     name: "About",
     component: About,
+  },
+  {
+    path: "/estadisticas",
+    name: "Estadisticas",
+    component: Estadisticas,
   },
 ];
 const router = new VueRouter({

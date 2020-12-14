@@ -6,7 +6,7 @@
           <FormulateInput
             name="nombre"
             label="Nombre del centro"
-            validation="required|alpha:latin"
+            validation="required"
             :validation-messages="{
               required: 'El nombre es requerido.',
               alpha: 'El nombre solo puede contener letras',
@@ -24,7 +24,6 @@
             name="apertura"
             label="Horario de apertura"
             type="time"
-            error-behavior="live"
             validation="required"
             :validation-messages="{
               required: 'La hora de apertura es requerida.',
@@ -71,7 +70,12 @@
             :options="{ Ropa: 'ropa', Plasma: 'plasma', Comida: 'comida' }"
             validation="required"
           />
-          <FormulateInput name="web" label="Web" type="url" />
+          <FormulateInput
+            name="web"
+            label="Web"
+            type="url"
+            validation="required"
+          />
           <FormulateInput
             type="select"
             name="id_municipio"
