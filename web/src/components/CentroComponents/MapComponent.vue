@@ -51,7 +51,7 @@ li {
 }
 .mapa {
   position: sticky;
-  height: 50%;
-  width: 60%;
+  height: 100%;
+  width: 100%;
 }
 </style>

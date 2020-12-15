@@ -1,9 +1,7 @@
 <template>
-  <div class="Carga_centro">
-    <h1>Alta de centro</h1>
+  <div class="carga_centro">
+    <h1 class="display-1 font-weight-thin">Alta de centro</h1>
     <VueFormulate></VueFormulate>
-
-    <router-link to="/" class="btn btn-primary">Volver </router-link>
   </div>
 </template>
 

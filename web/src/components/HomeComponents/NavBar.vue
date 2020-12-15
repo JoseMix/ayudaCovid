@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app color="blue">
+  <v-app-bar app class="white--text blue darken-4">
     <v-toolbar-title>
       <strong>Donaciones - Covid 19</strong>
     </v-toolbar-title>

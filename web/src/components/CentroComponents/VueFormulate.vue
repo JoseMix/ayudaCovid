@@ -1,8 +1,8 @@
 <template>
   <FormulateForm v-model="formValues" @submit="handleSubmit">
-    <v-container>
+    <v-container fluid ma-0 px-6 fill-height>
       <v-row>
-        <v-col>
+        <v-col align="center" justify="center">
           <FormulateInput
             name="nombre"
             label="Nombre del centro"
@@ -48,26 +48,6 @@
           </span>
 
           <FormulateInput name="email" label="Email" type="email" />
-        </v-col>
-
-        <v-col>
-          <strong>Ubicación:</strong>
-          <MapComponent @latitud="lat = $event" @longitud="lng = $event" />
-          <FormulateInput
-            name="latitud"
-            type="hidden"
-            v-model="lat"
-            validation="required"
-          />
-          <FormulateInput
-            name="longitud"
-            type="hidden"
-            v-model="lng"
-            validation="required"
-            :validation-messages="{
-              required: 'La ubicación es requerida.',
-            }"
-          />
           <FormulateInput
             name="telefono"
             label="Teléfono"
@@ -90,12 +70,9 @@
             label="Web"
             type="url"
             validation="required"
-<<<<<<< HEAD
-=======
             :validation-messages="{
               required: 'La web es requerida.',
             }"
->>>>>>> master
           />
           <FormulateInput
             type="select"
@@ -108,26 +85,64 @@
               required: 'El municipio es requerido.',
             }"
           />
-
-          <FormulateInput type="submit" label="Enviar" />
-        </v-col>
-      </v-row>
-      <v-row> </v-row>
-      <vue-recaptcha
-        sitekey="6LeaMgUaAAAAAMO68Dyq8L61D8UDRHM-aY0luK8v"
-        :loadRecaptchaScript="true"
-        @verify="captchaVerificado"
-        @expired="captchaExpired"
-      ></vue-recaptcha>
-      <span
-        style="color: #960505;
+          <FormulateInput
+            name="latitud"
+            type="hidden"
+            v-model="lat"
+            validation="required"
+          />
+          <FormulateInput
+            name="longitud"
+            type="hidden"
+            v-model="lng"
+            validation="required"
+            :validation-messages="{
+              required: 'La ubicación es requerida.',
+            }"
+          />
+          <vue-recaptcha
+            sitekey="6LeaMgUaAAAAAMO68Dyq8L61D8UDRHM-aY0luK8v"
+            :loadRecaptchaScript="true"
+            @verify="captchaVerificado"
+            @expired="captchaExpired"
+          ></vue-recaptcha>
+          <span
+            style="color: #960505;
             font-size: 0.8em;
             font-weight: 300;
             line-height: 1.5;
             margin-bottom: 0.25em;"
-      >
-        {{ errorCaptcha }}
-      </span>
+          >
+            {{ errorCaptcha }}
+          </span>
+        </v-col>
+        <v-col align="center" justify="center">
+          <strong>Ubicación:</strong>
+          <MapComponent @latitud="lat = $event" @longitud="lng = $event" />
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col align="left" justify="center"> </v-col>
+      </v-row>
+
+      <v-row align="center" justify="center">
+        <v-btn
+          class="red darken-1 display-1 font-weight-thin"
+          elevation="2"
+          large
+          accent-2
+          outlined
+          rounded
+          @click="$router.go(-1)"
+          >Volver</v-btn
+        >
+
+        <FormulateInput
+          type="submit"
+          label="Enviar"
+          outer-class="v-btn green darken-1 v-btn--depressed v-btn--flat v-btn--outlined v-btn--rounded v-btn--router theme--light elevation-2 v-size--large display-1 font-weight-thin "
+        />
+      </v-row>
     </v-container>
   </FormulateForm>
 </template>

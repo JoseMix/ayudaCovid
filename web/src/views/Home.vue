@@ -1,9 +1,7 @@
 <template>
-  <v-container>
-    <div class="home">
-      <Inicio></Inicio>
-    </div>
-  </v-container>
+  <div class="home">
+    <Inicio></Inicio>
+  </div>
 </template>
 
 <script>
