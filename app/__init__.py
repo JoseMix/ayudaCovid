@@ -21,12 +21,10 @@ from flask_marshmallow import Marshmallow
 from app.resources import user, configuracion, auth, centro, turnos
 from app.resources.api import centros, turno
 
-# from app.resources.api import centro
 from config import config
 from app import db
 from app.resources import user, configuracion, auth, centro
 
-# from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.helpers import handler
 from app.resources.forms import (
@@ -37,7 +35,6 @@ from app.resources.forms import (
     FilterFormCentro,
 )
 
-# from app.db import connection
 from app.models.configuracion import Configuracion, configuracion_initialize_db
 from app.models.centro import Bloque, Centro, Turnos, centro_turnos_initialize_db
 from app.models.models import Rol, Permiso, User, initialize_db
@@ -71,12 +68,10 @@ def create_app(environment="development"):
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db = SQLAlchemy(app)
     ma = Marshmallow(app)
-    # ver path
-    # print(app.config["UPLOAD_FOLDER"])
+
     initialize_db(app)
     configuracion_initialize_db(app)
     centro_turnos_initialize_db(app)
-    # bcrypt = Bcrypt(app)
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
@@ -134,7 +129,6 @@ def create_app(environment="development"):
     )
 
     app.add_url_rule("/centro/show", "centro_show", centro.show, methods=["GET"])
-    # app.add_url_rule("/app/static/uploads/Protocolo.pdf")
     app.add_url_rule(
         "/centro/update-publicado",
         "centro_update_publicado",
@@ -165,7 +159,6 @@ def create_app(environment="development"):
 
     # Rutas de Turnos
     app.add_url_rule("/turnos/nuevo", "turnos_new", turnos.new, methods=["GET", "POST"])
-    # app.add_url_rule("/turnos/nuevo", "turnos_create", turnos.create, methods=["POST"])
     app.add_url_rule(
         "/turnos/eliminar/", "turnos_eliminar", turnos.eliminar, methods=["GET"]
     )
@@ -180,6 +173,8 @@ def create_app(environment="development"):
             return render_template("home.html", sitio=sitio)
 
     # Rutas de API-rest
+    # Rutas api centros
+
     app.add_url_rule("/api/centros/", "api_centros_index", centros.index)
     app.add_url_rule("/api/centros-all/", "api_centros_index_all", centros.index_all)
     app.add_url_rule(
