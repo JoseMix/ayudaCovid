@@ -6,20 +6,20 @@ from datetime import date
 db = SQLAlchemy()
 
 
-# Inicializo contexto
 def initialize_db(app):
+    """ Inicializo contexto"""
     app.app_context().push()
     db.init_app(app)
     db.create_all()
 
 
-# Relaciones many to many
+"""esquema de relaciones many to many usuario-rol"""
 usuario_rol = db.Table(
     "usuario_rol",
     db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
     db.Column("user_id", db.Integer, db.ForeignKey("user.id"), primary_key=True),
 )
-
+"""esquema de relaciones many to many permiso-rol"""
 permiso_rol = db.Table(
     "permiso_rol",
     db.Column("rol_id", db.Integer, db.ForeignKey("rol.id"), primary_key=True),
@@ -27,8 +27,9 @@ permiso_rol = db.Table(
 )
 
 
-# Modelo Rol
 class Rol(db.Model):
+    """ Modelo Rol de usuarios"""
+
     __tablename__ = "rol"
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
@@ -40,23 +41,30 @@ class Rol(db.Model):
     )
 
     def all(self):
+        """devuelve roles de bd"""
         roles = Rol.query.all()
         return roles
 
     def create(self, formulario):
+        """carga un nuevo rol en la bd"""
         nuevo = Rol(nombre=formulario["rol"])
         db.session.add(nuevo)
         db.session.commit()
 
     def find_by_id(self, id):
+        """busca un rol por su id"""
         return Rol.query.filter(Rol.id == id).first()
 
     def is_admin(self, id_rol):
-        return Rol.query.filter(and_(Rol.nombre == "administrador", Rol.id==id_rol) ).first()
+        """verifica si el id pertenece a un administrador"""
+        return Rol.query.filter(
+            and_(Rol.nombre == "administrador", Rol.id == id_rol)
+        ).first()
 
 
-# Modelo Permiso
 class Permiso(db.Model):
+    """ Modelo permisos de rol"""
+
     __tablename__ = "permiso"
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(255))
@@ -65,26 +73,32 @@ class Permiso(db.Model):
         return self.__dict__[nombre]
 
     def all(self):
+        """devuelve los permisos de la bd"""
         permisos = Permiso.query.all()
         return permisos
 
     def permiso_by_name(self, permiso):
+        """busca un permiso por nombre"""
         return Permiso.query.filter(Permiso.nombre == permiso).first()
 
-#---------------------------------------------------------------------------
     def permisos_de_usuario(self, id):
-        res = db.session.query(Permiso).join(User.roles).join(Rol.permisos).filter(User.id == id)
+        """devuelve los permisos de un usuario"""
+        res = (
+            db.session.query(Permiso)
+            .join(User.roles)
+            .join(Rol.permisos)
+            .filter(User.id == id)
+        )
         return res
 
-#---------------------------------------------------------------------------
-
-    #page= página actual, per_page = elementos x página
     def all_paginado(self, page, per_page):
+        """devuelve permisos paginados por page= página actual, per_page = elementos x página"""
         return Permiso.query.order_by(Permiso.id.desc()).paginate(
             page=page, per_page=per_page, error_out=False
         )
 
     def create(self, formulario):
+        """crea un nuevo permiso"""
         nuevo = Permiso(nombre=formulario["permiso"])
         db.session.add(nuevo)
         db.session.commit()
@@ -92,6 +106,8 @@ class Permiso(db.Model):
 
 # Modelo Usuario
 class User(db.Model):
+    """ Modelo Usuario"""
+
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(255), unique=True, nullable=False)
@@ -110,6 +126,7 @@ class User(db.Model):
     )
 
     def create(self, formulario):
+        """carga un nuevo usuario en la bd"""
         nuevo = User(
             email=formulario["email"].data,
             username=formulario["username"].data,
@@ -123,16 +140,19 @@ class User(db.Model):
         db.session.commit()
 
     def update(self, user):
-        user.set_update_time()
+        """setea la hora de actualizacion en el registro modificado"""
+        user.updated_at = date.today()
+        # user.set_update_time() SI FUNCIONA EL UPDATE BORRAR ESTA LINEA!!!!!
         db.session.merge(user)
         db.session.commit()
 
     def all(self):
+        """devuelve todos los usuarios de la bd"""
         users = User.query.all()
         return users
 
-    # page= página actual, per_page = elementos x página
-    def all_paginado(self,orden, page, per_page):
+    def all_paginado(self, orden, page, per_page):
+        """devuelve los usuarios ordenados por criterio y paginados"""
         return User.query.order_by(text(orden)).paginate(
             page=page, per_page=per_page, error_out=False
         )
@@ -140,30 +160,35 @@ class User(db.Model):
     def __getitem__(self, id):
         return self.__dict__[id]
 
-    def set_update_time(self):
-        self.updated_at = date.today()
+    """ def set_update_time(self): SI FUNCIONA EL UPDATE BORRAR ESTO************
+        self.updated_at = date.today()"""
 
     def find_by_email(self, emailForm):
+        """busca usuario por email"""
         user = User.query.filter(
             and_(User.email == emailForm, User.activo == True)
         ).first()
         return user
 
     def find_by_username(self, name):
+        """busca usuario por username"""
         user = User.query.filter_by(User.username == name)
         return user
 
     def find_by_id(self, id):
+        """busca usuario por id"""
         user = User.query.filter(User.id == id).first()
         return user
 
     def validate_user_creation(self, emailForm, usernameForm):
+        """valida que el usuario no exista"""
         user = User.query.filter(
             or_(User.email == emailForm, User.username == usernameForm)
         ).first()
         return user
 
     def validate_user_update(self, emailForm, usernameForm, id):
+        """valida que el usuario que se quiere modificar, no tome datos existentes"""
         user = User.query.filter(
             or_(User.email == emailForm, User.username == usernameForm),
             and_(User.id != id),
@@ -171,46 +196,64 @@ class User(db.Model):
         return user
 
     def eliminar(self, id):
+        """elimina usuario de la bd"""
         user = User().find_by_id(id)
         user.activo = False
         db.session.commit()
         return user
 
     def activar(self, id):
+        """activa usuario"""
         user = User().find_by_id(id)
         user.activo = True
         db.session.commit()
         return user
 
-    def search_by(self, username, estado,orden, page, per_page):
-        if estado == '2':
-            users = User().query.filter(User.username.ilike(f'%{username}%')).order_by(text(orden)).paginate(page=page, per_page=per_page, error_out=False)
+    def search_by(self, username, estado, orden, page, per_page):
+        """busca un usuario paginado"""
+        if estado == "2":
+            users = (
+                User()
+                .query.filter(User.username.ilike(f"%{username}%"))
+                .order_by(text(orden))
+                .paginate(page=page, per_page=per_page, error_out=False)
+            )
         else:
-            users = User().query.\
-            filter(and_(User.username.ilike(f'%{username}%'), User.activo == estado)).order_by(text(orden)).\
-            paginate(page=page, per_page=per_page, error_out=False)
-        
+            users = (
+                User()
+                .query.filter(
+                    and_(User.username.ilike(f"%{username}%"), User.activo == estado)
+                )
+                .order_by(text(orden))
+                .paginate(page=page, per_page=per_page, error_out=False)
+            )
+
         return users
 
-    #--------------------- Roles de usuario -----------------
-    #recibe el id del usuario y el rol-string-
     def tiene_rol(self, id, rol):
-        return db.session.query(User).join(Rol, User.roles).\
-        filter(and_(User.id== id, Rol.nombre == rol)).first()
-    #---------------------------------------------------------
+        """retorna los roles de un usuario"""
+        return (
+            db.session.query(User)
+            .join(Rol, User.roles)
+            .filter(and_(User.id == id, Rol.nombre == rol))
+            .first()
+        )
 
-    #recibe un usuario y un rol para desasignar
     def delete_rol(self, rol, user):
+        """desasigna un rol a un usuario"""
         user.roles.remove(rol)
         db.session.commit()
 
-    #recibe un usuario y un rol para asignar
     def add_rol(self, rol, user):
+        """recibe un usuario y un rol para asignar"""
         user.roles.append(rol)
         db.session.commit()
 
-    #verifica que exista otro administrador
     def unico_admin(self, id_rol, id_user):
-        return db.session.query(Rol).join(User.roles).filter(and_(Rol.id==id_rol, User.id!=id_user)).all()
-
-
+        """ verifica que exista otro administrador"""
+        return (
+            db.session.query(Rol)
+            .join(User.roles)
+            .filter(and_(Rol.id == id_rol, User.id != id_user))
+            .all()
+        )

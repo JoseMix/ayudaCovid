@@ -1,42 +1,87 @@
-{% extends "layout.html" %}
-{% block title %}TURNOS{% endblock %}
-{% block head %}
-    {{ super() }}
-{% endblock %}
-{% block content %}
-    <strong class="texto" style="font-size: xx-large;">centro: {{centro.nombre}}</strong>
-    <div id="derecha">
-        {# arreglar redirecciones #}
-        <a href="{{ url_for('centro_show', centro_id=centro.id) }}" class="btn btn-primary">Volver</a>
+{% extends "layout.html" %} {% block title %}TURNOS{% endblock %} {% block head
+%} {{ super() }} {% endblock %} {% block content %}
+<strong class="texto" style="font-size: xx-large"
+  >centro: {{centro.nombre}}</strong
+>
+<div id="derecha">
+  {# arreglar redirecciones #}
+  <a
+    href="{{ url_for('centro_show', centro_id=centro.id) }}"
+    class="btn btn-primary"
+    >Volver</a
+  >
+</div>
+<br />
+{#------------- Carga de turnos --------------#}
+<div id="formBusqueda">
+  <strong class="texto">Formulario de turnos:</strong>
+  <br /><br />
+  <form
+    action="{{url_for('turnos_new', centro_id=centro.id)}}"
+    onsubmit="return validarDatosTurno()"
+    method="POST"
+    class="form-inline my-1"
+  >
+    <div class="busqueda">
+      <strong>Fecha de turno:</strong><br />
+      <input
+        type="date"
+        name="dia"
+        id="dia"
+        min="{{rango['inicio']}}"
+        max="{{rango['fin']}}"
+        {%
+        if
+        form.dia
+        %}
+        value="{{form.dia}}"
+        {%
+        endif%}
+        required
+        class="form-control mr-sm-1"
+      /><br />
     </div>
-<br>
-    {#------------- Carga de turnos --------------#}
-    <div id="formBusqueda">
-        <strong class="texto">Formulario de turnos:</strong>
-        <br><br>
-        <form action="{{url_for('turnos_new', centro_id=centro.id)}}" onsubmit="return validarDatosTurno()" method="POST" class="form-inline my-1">
-            <div class="busqueda">
-                <strong>Fecha de turno:</strong><br>
-                <input type="date" name="dia" id="dia" min="{{rango['inicio']}}" max="{{rango['fin']}}" {% if form.dia %} value="{{form.dia}}" {% endif%} required class="form-control mr-sm-1"><br>
-            </div>
-            <div class="busqueda">
-                <strong>Email del solicitante:</strong><br>
-                <input type="email" name="email" id="email" required placeholder="ingrese un email" {% if form.email %} value="{{form.email}}" {% endif%} class="form-control mr-sm-1"><br>
-            </div>
-            <div class="busqueda">
-                <strong>Franja horaria:</strong><br>
-                <select name="bloque" id="bloque" class="form-control mr-sm-1">
-                    {% for bloque in bloques %}
-                    <option value="{{ bloque.id }}"> {{bloque.hora_inicio.strftime("%H:%M")}}hs - {{bloque.hora_fin.strftime("%H:%M")}}hs</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div style="float: right; margin-left: 175px;"><br>
-                <input type="hidden" name="centro_id" value="{{ centro.id }}">
-                <input type="submit"  class="btn btn-primary" value="Cargar turno">
-                <a href="{{url_for('turnos_new', centro_id=centro.id)}}" class="btn btn-secundary" >Limpiar búsqueda</a>
-            </div>
-        </form>
-    </div><br><br>
-    <script src="{{ url_for('static', filename='validaciones/turnos.js') }}"></script>
-    {% endblock %}
+    <div class="busqueda">
+      <strong>Email del solicitante:</strong><br />
+      <input
+        type="email"
+        name="email"
+        id="email"
+        required
+        placeholder="ingrese un email"
+        {%
+        if
+        form.email
+        %}
+        value="{{form.email}}"
+        {%
+        endif%}
+        class="form-control mr-sm-1"
+      /><br />
+    </div>
+    <div class="busqueda">
+      <strong>Franja horaria:</strong><br />
+      <select name="bloque" id="bloque" class="form-control mr-sm-1">
+        {% for bloque in bloques %}
+        <option value="{{ bloque.id }}">
+          {{bloque.hora_inicio.strftime("%H:%M")}}hs -
+          {{bloque.hora_fin.strftime("%H:%M")}}hs
+        </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div style="float: right; margin-left: 175px">
+      <br />
+      <input type="hidden" name="centro_id" value="{{ centro.id }}" />
+      <input type="submit" class="btn btn-primary" value="Cargar turno" />
+      <a
+        href="{{url_for('turnos_new', centro_id=centro.id)}}"
+        class="btn btn-secundary"
+        >Limpiar búsqueda</a
+      >
+    </div>
+  </form>
+</div>
+<br /><br />
+<script src="{{ url_for('static', filename='validaciones/turnos.js') }}"></script>
+{% endblock %}

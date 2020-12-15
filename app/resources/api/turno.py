@@ -18,9 +18,13 @@ db = SQLAlchemy()
 
 
 def show(centro_id):
-
+    """Retorna turnos de un centro para una fecha, en caso de no introducir fecha,
+    se toma la de hoy y se convierte a formato JSON, segun esquema.
+    Se manejan errores si: no existe el centro, la fecha es incorrecta,
+    la fecha es anterior al dia de hoy o hay un fallo en el servidor"""
     try:
         centro = Centro().show_one(centro_id)
+
     except:
         response = {
             "message": "Fallo en servidor",
@@ -70,10 +74,14 @@ def show(centro_id):
 
 
 def es_turno_de_30(hora_inicio, hora_fin):
+    """comprueba si la hora ingresada corresponde a 30 minutos"""
     return ((hora_fin - hora_inicio).total_seconds() / 60) != 30
 
 
 def new_reserva(centro_id):
+    """Se parsea JSON de un turno y se convierte en un objeto para agregar a la bd.
+    Se manejan errores si: falta algun campo, ya existe el turno, si existe un fallo en la bd,
+    la fecha no esta en el rango de los 3 dias, o no  son bloques de 30 min"""
     json_data = request.get_json()
     if not json_data:
         response = {

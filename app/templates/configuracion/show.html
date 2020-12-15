@@ -1,71 +1,68 @@
-{% extends "layout.html" %}
-{% block title %}Informacion del sitio{% endblock %}
-{% block head %}
-  {{ super() }}
-{% endblock %}
-{% block content %}
+{% extends "layout.html" %} {% block title %}Informacion del sitio{% endblock %}
+{% block head %} {{ super() }} {% endblock %} {% block content %}
 
-  
 <div id="show" class="container">
-  <strong class="texto" style="font-size: xx-large;">INFORMACIÓN DEL SITIO:</strong>
-    <div id="columShow" class="row">
-      <div class="col-sm">
-        <strong class="texto-show">Titulo: </strong>
-      </div>
-      <div class="col-sm">
-        <strong class="text-text"> {{ sitio.titulo }}</strong>
-      </div>
+  <strong class="texto" style="font-size: xx-large"
+    >INFORMACIÓN DEL SITIO:</strong
+  >
+  <div id="columShow" class="row">
+    <div class="col-sm">
+      <strong class="texto-show">Titulo: </strong>
     </div>
-
-    <div id="columShow" class="row">  
-      <div class="col-sm">
-        <strong class="texto-show">Descripcion:</strong>
-      </div>
-      <div class="col-sm">
-        <strong class="text-text">{{ sitio.descripcion }}</strong>
-      </div>
+    <div class="col-sm">
+      <strong class="text-text"> {{ sitio.titulo }}</strong>
     </div>
+  </div>
 
-    <div id="columShow" class="row">  
-      <div class="col-sm">
-        <strong class="texto-show">Email de contacto: </strong>
-      </div>
-      <div class="col-sm">
-        <strong class="text-text">{{ sitio.email }}</strong>
-      </div>
+  <div id="columShow" class="row">
+    <div class="col-sm">
+      <strong class="texto-show">Descripcion:</strong>
     </div>
-    
-    <div id="columShow" class="row">  
-      <div class="col-sm">
-        <strong class="texto-show">Estado: </strong>
-      </div>
-      <div class="col-sm">
-        <strong class="text-text"> 
-          {% if sitio.activo is true %}
-            Habilitado
-          {% else %}
-              Deshabilitado
-          {% endif %}
-        </strong>
-      </div>
+    <div class="col-sm">
+      <strong class="text-text">{{ sitio.descripcion }}</strong>
     </div>
+  </div>
 
-    <div id="columShow" class="row">  
-      <div class="col-sm">
-        <strong class="texto-show">Cantidad para paginado:</strong>
-      </div>
-      <div class="col-sm">
-        <strong class="text-text">{{ sitio.paginas }}</strong>
-      </div>
+  <div id="columShow" class="row">
+    <div class="col-sm">
+      <strong class="texto-show">Email de contacto: </strong>
     </div>
-    
-    <div id="botonForm" class="row">
-      <div class="col-sm">
-        <a id="botonForm" href="{{ url_for('configuracion_update') }}" class="btn btn-primary">Modificar</a>
-      </div>
+    <div class="col-sm">
+      <strong class="text-text">{{ sitio.email }}</strong>
     </div>
+  </div>
 
-  </div>  
+  <div id="columShow" class="row">
+    <div class="col-sm">
+      <strong class="texto-show">Estado: </strong>
+    </div>
+    <div class="col-sm">
+      <strong class="text-text">
+        {% if sitio.activo is true %} Habilitado {% else %} Deshabilitado {%
+        endif %}
+      </strong>
+    </div>
+  </div>
 
+  <div id="columShow" class="row">
+    <div class="col-sm">
+      <strong class="texto-show">Cantidad para paginado:</strong>
+    </div>
+    <div class="col-sm">
+      <strong class="text-text">{{ sitio.paginas }}</strong>
+    </div>
+  </div>
 
-  {% endblock %}
+  <div id="botonForm" class="row">
+    <div class="col-sm">
+      <a
+        id="botonForm"
+        href="{{ url_for('configuracion_update') }}"
+        class="btn btn-primary"
+        >Modificar</a
+      >
+    </div>
+  </div>
+</div>
+
+{% endblock %}
