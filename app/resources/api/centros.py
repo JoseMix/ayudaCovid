@@ -1,7 +1,7 @@
 from flask import jsonify, abort, request
 from flask_sqlalchemy import SQLAlchemy
 import requests
-from app.models.centro import Centro, centro_schema, centros_schema#, centro_schema_all, centros_schema_all
+from app.models.centro import Centro, centro_schema, centros_schema
 from app.models.configuracion import Configuracion
 from marshmallow import ValidationError
 
@@ -9,6 +9,8 @@ db = SQLAlchemy()
 
 
 def index():
+    """Retorna los centros activos, paginados y se convierte en json segun el esquema
+    Se manejan errores si: no existe el centro"""
     sitio = Configuracion().sitio()
     centros = Centro().aprobados_paginado(1, sitio.paginas)
     centro2 = centros.next()
@@ -25,8 +27,10 @@ def index():
         centros = centros.next()
     return jsonify({"centros": centrosAPI, "pages": pages, "per_page": per_page}, 200)
 
+
 def index_all():
-    
+    """Retorna los centros activos y se convierte en json segun el esquema.
+    Se manejan errores si: no existe el centro"""
     centros = Centro().aprobados()
     if centros is None:
         response = {
@@ -39,6 +43,8 @@ def index_all():
 
 
 def show_one(centro_id):
+    """Busca un centro por id y lo retorna en formato JSON segun esquema.
+    Se manejan errores si:no existe el centro o si existe un fallo en la bd"""
     try:
         centro = Centro().show_one(centro_id)
     except:
@@ -55,8 +61,9 @@ def show_one(centro_id):
     return jsonify({"centro": result}, 200)
 
 
-
 def new_centro():
+    """Se parsea JSON de un centro y se convierte en un objeto para agregar a la bd.
+    Se manejan errores si: falta algun campo, ya existe el centro o si existe un fallo en la bd"""
     json_data = request.get_json()
     if not json_data:
         response = {

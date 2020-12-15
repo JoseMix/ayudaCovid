@@ -1,10 +1,21 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField, TimeField, FloatField
+from wtforms import (
+    StringField,
+    PasswordField,
+    SubmitField,
+    SelectField,
+    TimeField,
+    FloatField,
+)
 from wtforms.validators import DataRequired, Length, Email, Regexp
 from flask_wtf.file import FileField, FileRequired
 from wtforms.fields.html5 import EmailField, URLField, IntegerField
 
+
 class RegistrationForm(FlaskForm):
+    """Formulario de registro en FLASKFORM
+    se definen tipos y validaciones para cada campo"""
+
     username = StringField(
         "Username",
         validators=[
@@ -54,6 +65,9 @@ class RegistrationForm(FlaskForm):
 
 
 class LoginForm(FlaskForm):
+    """Formulario de login en FLASKFORM
+    se definen tipos y validaciones para cada campo"""
+
     email = StringField(
         "Email",
         validators=[
@@ -74,12 +88,18 @@ class LoginForm(FlaskForm):
 
 
 class FilterForm(FlaskForm):
+    """Filtro en FLASKFORM
+    se definen de busqueda y valores permitidos"""
+
     username = StringField()
     estado = SelectField(choices=[("2", "Todos"), ("1", "Activo"), ("0", "Bloqueado")])
     submit = SubmitField("Enviar")
 
 
 class FilterFormCentro(FlaskForm):
+    """Filtro en FLASKFORM
+    se definen de busqueda y valores permitidos"""
+
     name = StringField()
     estado = SelectField(
         choices=[
@@ -93,6 +113,9 @@ class FilterFormCentro(FlaskForm):
 
 
 class CrearCentroForm(FlaskForm):
+    """Creacion de centro en FLASKFORM
+    se definen campos y validaciones"""
+
     nombre = StringField(
         "Nombre",
         validators=[
@@ -112,7 +135,9 @@ class CrearCentroForm(FlaskForm):
     telefono = IntegerField(
         "Telefono",
         validators=[
-            DataRequired(message="El campo Telefono no puede estar vacio ni contener caracteres especiales")
+            DataRequired(
+                message="El campo Telefono no puede estar vacio ni contener caracteres especiales"
+            )
         ],
     )
 
@@ -151,17 +176,14 @@ class CrearCentroForm(FlaskForm):
     web = URLField(
         "Web",
         validators=[
-            Length(
-                min=2, max=20, message="La web debe tener entre 8-20 caracteres"
-            ),
+            Length(min=2, max=20, message="La web debe tener entre 8-20 caracteres"),
         ],
     )
 
     email = EmailField(
         "Email",
         validators=[
-            Email(message="El email no es valido"
-            ),
+            Email(message="El email no es valido"),
         ],
     )
 
@@ -169,5 +191,5 @@ class CrearCentroForm(FlaskForm):
 
     lng = FloatField()
     lat = FloatField()
-    
+
     submit = SubmitField("Enviar")

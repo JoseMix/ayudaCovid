@@ -13,7 +13,6 @@ from flask import (
 )
 import requests
 
-# from app.db import connection
 from app.models.configuracion import Configuracion
 from app.models.centro import Turnos, Centro
 from app.helpers.auth import authenticated, tiene_permiso
@@ -21,11 +20,13 @@ from app.resources.forms import CrearCentroForm, FilterFormCentro
 from _datetime import date
 import datetime
 
+"""Rutas de los pdf"""
 UPLOAD_FOLDER = "app/static/uploads/"
 DOWNLOAD_FOLDER = "/static/uploads/"
 
 
 def index():
+    """Muestra el listado de centros e implementa la busqueda"""
     if not authenticated(session) or not tiene_permiso(session, "centro_index"):
         abort(401)
     form = FilterFormCentro()
@@ -45,33 +46,29 @@ def index():
     mySearch["estado"] = estado
     mySearch["orden"] = orden
     if name != "" or estado != "" or request.method == "POST":
-        # si estan seteados o se usó el buscador
         index_pag = Centro().search_by(name, estado, orden, page, sitio.paginas)
     else:
         index_pag = Centro().all_paginado(orden, page, sitio.paginas)
     lista_municipio = show_municipio()
     return render_template(
-        "centro/index.html", form=form, mySearch=mySearch, index_pag=index_pag, municipios=lista_municipio
+        "centro/index.html",
+        form=form,
+        mySearch=mySearch,
+        index_pag=index_pag,
+        municipios=lista_municipio,
     )
 
 
-
 def register():
-    """  vista del formulario y lógica de create de centro """
+    """  Crea un centro validando que los horarios sean correctos, tenga pdf y no exista el centro """
     if not authenticated(session) or not tiene_permiso(session, "centro_new"):
         abort(401)
-
     form = CrearCentroForm()
     lista_municipio = show_municipio()
-
     if request.method == "POST":
-        if not validate(form):  # valida que no exista centro con mismos datos
-            if validate_horarios(form) and validate_tipo_centro(
-                form.tipo_centro.data
-            ):  # Si los horarios ok
-                if validate_pdf(
-                    form, request.files["protocolo"]
-                ):  # valido pdf y crea centro
+        if not validate(form):
+            if validate_horarios(form) and validate_tipo_centro(form.tipo_centro.data):
+                if validate_pdf(form, request.files["protocolo"]):
                     return redirect(url_for("centro_index", page=1))
         else:
             flash("El centro que intenta crear ya existe.")
@@ -81,12 +78,12 @@ def register():
 
 
 def update(centro_id):
+    """verifica si se puede actualaz y reenvia a vista udpate"""
     if not authenticated(session) or not tiene_permiso(session, "centro_update"):
         abort(401)
     lista_municipio = show_municipio()
-    # busca el centro y carga el formulario de update
     centro = Centro().query.get_or_404(centro_id)
-    if(centro.activo == False ):
+    if centro.activo == False:
         abort(401)
     form = CrearCentroForm(obj=centro)
     if request.method != "POST":
@@ -94,22 +91,22 @@ def update(centro_id):
         form.lng.data = centro.longitud
         muni = get_municipio(form.municipio.data)
     if request.method == "POST":
-        # valida y modifica, retorna boolean
+
         if update_centro(form, centro):
             flash("Centro modificado exitosamente!")
             return redirect(url_for("centro_index", page=1))
-        #si falla alguna validación que redireccione al update
+
     return render_template(
         "centro/update.html",
         form=form,
         centro_id=centro_id,
-        lista_municipio=lista_municipio,muni = muni
+        lista_municipio=lista_municipio,
+        muni=muni,
     )
 
 
-
 def update_centro(form, centro):
-    """ valida los datos y modifica si todo OK """
+    """ valida los datos y actualiza """
     if not centro.validate_centro_update(
         form.nombre.data, form.direccion.data, form.municipio.data, centro.id
     ):
@@ -138,9 +135,8 @@ def update_centro(form, centro):
         return False
 
 
-
 def validate_horarios(form):
-    """ valida horario de apertura y cierre. retorna boolean """
+    """ valida horario de apertura y cierre """
     if form["apertura"].data < form["cierre"].data:
         return True
     else:
@@ -149,6 +145,7 @@ def validate_horarios(form):
 
 
 def validate_tipo_centro(tipo):
+    """valida que se haya seleccionado un tipo de centro"""
     if tipo == "0":
         flash("No ha seleccionado un tipo de centro válido")
         return False
@@ -173,12 +170,13 @@ def validate_pdf(form, file_protocolo):
 
 
 def allowed_file(filename):
-    """ Chequeo de la extension y que solo exista un solo . antes de la extension """
+    """ Chequeo de la extension y que solo exista un solo . (punto) antes de la extension """
     ALLOWED_EXTENSIONS = {"pdf"}
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def validate(form):
+    """metodo que llama a la validacion del centro """
     centro = Centro().validate_centro_creation(
         form["nombre"].data, form["direccion"].data, form["municipio"].data
     )
@@ -186,6 +184,7 @@ def validate(form):
 
 
 def create(form, nameProtocolo):
+    """metodo que llama a la creacion del centro, formulario + protocolo"""
     if not authenticated(session) or not tiene_permiso(session, "centro_new"):
         abort(401)
     centro = Centro()
@@ -193,6 +192,7 @@ def create(form, nameProtocolo):
 
 
 def show_municipio():
+    """retorna el listado de municipios de la api provista por la catedra"""
     data = requests.get(
         "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=135"
     ).json()
@@ -204,13 +204,15 @@ def show_municipio():
 
 
 def get_municipio(id):
-    """ busca el nombre del municipio con id recibido por parametro. returna string """
+    """ busca el nombre del municipio con id recibido por parametro """
     data = requests.get(
         "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=135"
     ).json()
     return data["data"]["Town"][str(id)]["name"]
 
+
 def show():
+    """muestra el centro con sus datos y turnos"""
     if not authenticated(session) or not tiene_permiso(session, "centro_show"):
         abort(401)
     centro = Centro().find_by_id(request.args.get("centro_id"))
@@ -220,7 +222,7 @@ def show():
     if centro.protocolo:
         ruta = os.path.join(DOWNLOAD_FOLDER, centro.protocolo)
     else:
-        ruta = '/'
+        ruta = "/"
     # para no tener emails repetidos en el select
     select_email = []
     for turno in centro.turnos:
@@ -246,14 +248,13 @@ def show():
         emails=select_email,
         index_pag=turnos,
         search=search,
-        protocolo=ruta
+        protocolo=ruta,
     )
 
 
 # elimina el centro
-def eliminar(
-    centro_id,
-):
+def eliminar(centro_id):
+    """elimina un centro"""
     if not authenticated(session) or not tiene_permiso(session, "centro_destroy"):
         abort(401)
     Centro().eliminar(id=centro_id)
@@ -268,7 +269,6 @@ def eliminar(
     )
 
 
-
 def update_estado():
     """ lógica para aceptar o rechazar un centro """
     if not authenticated(session) or not tiene_permiso(session, "centro_update"):
@@ -279,7 +279,6 @@ def update_estado():
     else:
         flash("¡El centro de ayuda social ha sido rechazado exitosamente!")
     return redirect(url_for("centro_show", centro_id=request.args.get("centro_id")))
-
 
 
 def update_publicado():

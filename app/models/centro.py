@@ -255,6 +255,7 @@ class Centro(db.Model):
         )
 
     def create(self, formulario, nameProtocolo):
+        """Crea un centro y lo añade a la bd"""
         nuevo = Centro(
             nombre=formulario["nombre"].data,
             direccion=formulario["direccion"].data,
@@ -276,6 +277,7 @@ class Centro(db.Model):
 
     # actualiza centro con datos del form
     def update(self, formulario, centro):
+        """actualiza un centro en la bd"""
         centro.nombre = formulario["nombre"].data
         centro.direccion = formulario["direccion"].data
         centro.telefono = formulario["telefono"].data
@@ -292,6 +294,7 @@ class Centro(db.Model):
         db.session.commit()
 
     def validate_centro_creation(self, nombre, direccion, municipio):
+        """valida que el centro no exista antes de agregarlo a la bd"""
         centro = Centro.query.filter(
             and_(
                 and_(Centro.municipio == municipio, Centro.direccion == direccion),
@@ -301,6 +304,7 @@ class Centro(db.Model):
         return centro
 
     def show_one(self, id):
+        """verifica si el centro ya existe"""
         centro = Centro.query.filter(
             and_(Centro.id == id, Centro.estado == "ACEPTADO")
         ).first()
@@ -339,6 +343,7 @@ class Centro(db.Model):
         return centro
 
     def eliminar(self, id):
+        """elimina un centro pasandolo a activo=False"""
         turno = Turnos().turno_centro(id)
         for x in turno:
             x.estado = "CANCELADO"
@@ -349,11 +354,14 @@ class Centro(db.Model):
 
 
 def empty_value(data):
+    """Valida que el campo en JSON no este vacio"""
     if not data:
         raise ValidationError("El campo no puede ser vacio.")
 
 
 class CentroSchema(Schema):
+    """ Esquema de centros para api marshmallow"""
+
     id = fields.Int()
     nombre = fields.Str(required=True, validate=empty_value)
     direccion = fields.Str(required=True, validate=empty_value)

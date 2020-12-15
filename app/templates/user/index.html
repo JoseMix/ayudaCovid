@@ -9,31 +9,37 @@ head %} {{ super() }} {% endblock %} {% block content %}
 
 <div id="formBusqueda">
   <strong class="texto" style="font-size: medium">Busqueda de usuarios:</strong>
-  <br><br>
+  <br /><br />
 
   <div class="container">
-    <form action="{{ url_for('user_index')}}" method="GET" class="form-inline my-1">
-    {# {{ form.csrf_token }} #}
-        <div class="row">
-            <div class="busqueda" class="col-sm">
-                <strong>Username</strong><br /> 
-                {{form.username( class="form-control mr-sm-1", placeholder='ingrese un username', value= mySearch['username'] if mySearch else '' )}}
-            </div>
-            <div class="busqueda" class="col-sm">
-                <strong>Estado</strong><br />
-                {{ form.estado(class="form-control mr-sm-1")}}
-            </div>
-            <div class="col-sm">
-              <br>
-                <input type="submit" class="btn btn-primary" value="Buscar" />
-              </div>
-              <div class="col-sm">
-                <a href="{{ url_for('user_index') }}" class="btn btn-secundary">Limpiar búsqueda</a>
-            </div>
+    <form
+      action="{{ url_for('user_index')}}"
+      method="GET"
+      class="form-inline my-1"
+    >
+      {# {{ form.csrf_token }} #}
+      <div class="row">
+        <div class="busqueda" class="col-sm">
+          <strong>Username</strong><br />
+          {{form.username( class="form-control mr-sm-1", placeholder='ingrese un
+          username', value= mySearch['username'] if mySearch else '' )}}
         </div>
-    </form>  
-</div> 
-
+        <div class="busqueda" class="col-sm">
+          <strong>Estado</strong><br />
+          {{ form.estado(class="form-control mr-sm-1")}}
+        </div>
+        <div class="col-sm">
+          <br />
+          <input type="submit" class="btn btn-primary" value="Buscar" />
+        </div>
+        <div class="col-sm">
+          <a href="{{ url_for('user_index') }}" class="btn btn-secundary"
+            >Limpiar búsqueda</a
+          >
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 
 <div id="index-table">

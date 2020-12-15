@@ -1,40 +1,46 @@
 {% extends "layout.html" %} {% block title %}Centros de Ayuda{% endblock %} {%
 block head %} {{ super() }} {% endblock %} {% block content %}
 <strong class="texto" style="font-size: xx-large">CENTROS</strong>
-<br>
+<br />
 <div id="derecha">
   <a href="{{ url_for('centro_register') }}" class="btn btn-primary">Nuevo</a>
 </div>
-<br>
+<br />
 
 {#-------------busqueda de Centros--------------#}
-<br>
+<br />
 <div id="formBusqueda">
   <strong class="texto" style="font-size: medium">Busqueda de Centros:</strong>
-  <br><br>
+  <br /><br />
 
   <div class="container">
-    <form action="{{ url_for('centro_index')}}" method="GET" class="form-inline my-1">
-        {# {{ form.csrf_token }} #}
-        <div class="row">
-            <div class="busqueda" class="col-sm">
-                <strong>Nombre</strong><br />
-                {{form.name(class_="form-control", placeholder='ingrese un nombre',value=mySearch['name'])}}
-            </div>
-            <div class="busqueda" class="col-sm">
-                <strong>Estado</strong><br />
-                {{ form.estado(class="form-control mr-sm-1")}}
-            </div>
-            <div class="col-sm">
-                <input type="submit" class="btn btn-primary" value="Buscar" />
-              </div>
-              <div class="col-sm">    
-                <a href="{{ url_for('centro_index') }}" class="btn btn-secundary" >Limpiar búsqueda</a>
-            </div>
+    <form
+      action="{{ url_for('centro_index')}}"
+      method="GET"
+      class="form-inline my-1"
+    >
+      {# {{ form.csrf_token }} #}
+      <div class="row">
+        <div class="busqueda" class="col-sm">
+          <strong>Nombre</strong><br />
+          {{form.name(class_="form-control", placeholder='ingrese un
+          nombre',value=mySearch['name'])}}
         </div>
-    </form>  
-</div> 
-
+        <div class="busqueda" class="col-sm">
+          <strong>Estado</strong><br />
+          {{ form.estado(class="form-control mr-sm-1")}}
+        </div>
+        <div class="col-sm">
+          <input type="submit" class="btn btn-primary" value="Buscar" />
+        </div>
+        <div class="col-sm">
+          <a href="{{ url_for('centro_index') }}" class="btn btn-secundary"
+            >Limpiar búsqueda</a
+          >
+        </div>
+      </div>
+    </form>
+  </div>
 </div>
 {#------------------fin------------------------------#}
 
@@ -45,7 +51,7 @@ block head %} {{ super() }} {% endblock %} {% block content %}
   >
   {% else %}
 
-  <table class="table table-hover" id="contenidoDeTabla" >
+  <table class="table table-hover" id="contenidoDeTabla">
     <tr>
       <th>
         <a
