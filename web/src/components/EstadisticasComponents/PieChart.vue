@@ -47,7 +47,7 @@ export default {
           let arr = [];
           this.turnos.forEach((element) => {
             arr.push({
-              Municipio: this.municipios[element.id].name,
+              Municipio: this.municipios[element.id - 1].name,
               Cantidad: element.cantidad,
             });
           });
@@ -70,11 +70,10 @@ export default {
         this.turnos = result[0].data[0].centros[0];
         this.municipios = result[1].data.data.Town;
         this.municipios = Object.values(this.municipios);
-
         let arr = [];
         this.turnos.forEach((element) => {
           arr.push({
-            Municipio: this.municipios[element.id].name,
+            Municipio: this.municipios[element.id - 1].name,
             Cantidad: element.cantidad,
           });
         });
