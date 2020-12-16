@@ -1,11 +1,16 @@
 <template>
   <v-container fluid ma-0 px-6 fill-height>
     <v-row>
-      <v-col align="center" justify="center">
+      <v-col align="center" justify="center"><br>
         <PieChart></PieChart>
       </v-col>
       <v-col align="center" justify="center">
-        <LineChart></LineChart>
+          <RingType/>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="6" align="center" justify="center"> 
+        <LineChart></LineChart>        
       </v-col>
     </v-row>
   </v-container>
@@ -14,11 +19,14 @@
 <script>
 import LineChart from "./LineChart.vue";
 import PieChart from "./PieChart.vue";
+import RingType from "./RingType.vue";
+
 export default {
   name: "Estadisticas",
   components: {
     PieChart,
     LineChart,
+    RingType,
   },
   data: () => ({}),
 };

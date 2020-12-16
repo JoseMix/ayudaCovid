@@ -1,7 +1,8 @@
 <template>
   <v-container fluid ma-0 px-6 fill-height>
     <v-row>
-      <v-col align="center" justify="center">
+      <v-col>
+        <h4>TOP MUNICIPIOS</h4>
         <ve-pie :data="chartData"></ve-pie>
         <v-select
           v-model="e1"
@@ -33,7 +34,11 @@ export default {
     onChange(event) {
       axios
         .all([
-          axios.get("http://localhost:5000/api/municipios/top/" + event, {}),
+          axios.get(
+            "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/municipios/top/" +
+              event,
+            {}
+          ),
           axios.get(
             "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=140",
             {}
@@ -60,7 +65,10 @@ export default {
   created() {
     axios
       .all([
-        axios.get("http://localhost:5000/api/municipios/top/5", {}),
+        axios.get(
+          "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/municipios/top/5",
+          {}
+        ),
         axios.get(
           "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=140",
           {}
