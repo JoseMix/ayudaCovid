@@ -1,5 +1,5 @@
 def authenticated(session):
-    """returna el id del usuario logueado"""
+    """retorna el id del usuario logueado"""
     return session.get("user_id")
 
 
