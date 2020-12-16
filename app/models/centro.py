@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import text
+from sqlalchemy import text, func
 from operator import and_
 from marshmallow import Schema, fields, ValidationError
+from sqlalchemy.dialects import mysql
 
 db = SQLAlchemy()
 
@@ -94,10 +95,29 @@ class Turnos(db.Model):
             )
         ).first()
 
+    def top(self, cantidad):
+        return (
+            db.session.query(Centro.id, func.count(Centro.municipio).label("cantidad"))
+            .join(Centro.turnos)
+            .group_by(Centro.municipio)
+            .limit(cantidad)
+            .all()
+        )
+        """(
+            (
+               db.session.query(Centro.id, func.count(Centro.municipio)).join(
+                    Turnos.centro_id
+                )
+            )
+            .group_by(Centro.municipio)
+            .all()
+        )"""
+
 
 class TurnoSchema(Schema):
     """ Esquema de Turnos de centros para api marshmallow"""
 
+    id = fields.Int()
     centro_id = fields.Str()
     email = fields.Str()
     nombre = fields.Str()
@@ -106,11 +126,13 @@ class TurnoSchema(Schema):
     hora_inicio = fields.DateTime(format="%H:%M")
     hora_fin = fields.DateTime(format="%H:%M")
     fecha = fields.Date(format="%d-%m-%Y")
+    cantidad = fields.Int()
 
     class Meta:
         """ campos del esquema de turnos para api marshmallow ordenados"""
 
         fields = (
+            "id",
             "centro_id",
             "email",
             "nombre",
@@ -119,6 +141,7 @@ class TurnoSchema(Schema):
             "fecha",
             "hora_inicio",
             "hora_fin",
+            "cantidad",
         )
         ordered = True
 

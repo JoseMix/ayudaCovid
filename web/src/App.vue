@@ -1,6 +1,5 @@
 <template>
   <v-app style="margin:0px; padding:0px;">
-    <title>Paprpapap</title>
     <v-main>
       <v-parallax dark src="./assets/cdc-w9KEokhajKw-unsplash.jpg" height="300">
         <v-row align="center" justify="center">

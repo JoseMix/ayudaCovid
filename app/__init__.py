@@ -22,7 +22,6 @@ from app.resources import user, configuracion, auth, centro, turnos
 from app.resources.api import centros, turno
 
 from config import config
-from app import db
 from app.resources import user, configuracion, auth, centro
 
 from app.helpers import auth as helper_auth
@@ -206,6 +205,15 @@ def create_app(environment="development"):
         "api_new_reserva",
         turno.new_reserva,
         methods=["POST"],
+    )
+
+    """Rutas estadisticas"""
+    """Ruta top municipios"""
+    app.add_url_rule(
+        "/api/municipios/top/<int:cantidad>",
+        "api_top",
+        turno.top,
+        methods=["GET"],
     )
 
     """Handlers: manejan errores"""

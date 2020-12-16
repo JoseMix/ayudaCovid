@@ -1,8 +1,7 @@
 <template>
   <div class="Estadisticas">
-    <h1>Estadisticas</h1>
-    <PieChart></PieChart>
-    <VeWaterfall></VeWaterfall>
+    <h1 class="display-1 font-weight-thin">Estadisticas</h1>
+    <Stats></Stats>
 
     <router-link to="/" class="btn btn-primary">Volver </router-link>
   </div>
@@ -10,14 +9,12 @@
 
 <script>
 // @ is an alias to /src
-import PieChart from "../components/EstadisticasComponents/PieChart.vue";
-import VeWaterfall from "../components/EstadisticasComponents/LineChart.vue";
+import Stats from "../components/EstadisticasComponents/Inicio.vue";
 
 export default {
   name: "Estadisticas",
   components: {
-    PieChart,
-    VeWaterfall,
+    Stats,
   },
 };
 </script>

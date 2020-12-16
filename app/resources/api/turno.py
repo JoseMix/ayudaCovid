@@ -153,3 +153,19 @@ def new_reserva(centro_id):
             "message": "El turno ya existe",
         }
         return jsonify(response), 400
+
+
+def top(cantidad):
+    try:
+        top_municipios = Turnos().top(cantidad)
+    except:
+        response = {
+            "message": "Fallo en servidor",
+        }
+        return jsonify(response), 500
+
+    centrosAPI = []
+
+    centrosAPI.append(turnos_schema.dump(top_municipios))
+
+    return jsonify({"centros": centrosAPI}, 200)

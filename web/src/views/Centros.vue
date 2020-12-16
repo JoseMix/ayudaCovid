@@ -2,7 +2,7 @@
   <v-container>
     <h1>Página de centros</h1>
     <router-link to="/" class="btn btn-primary">Volver </router-link>
-    <my-map />
+    <MyMap />
   </v-container>
 </template>
 
