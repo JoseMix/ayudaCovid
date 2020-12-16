@@ -65,8 +65,7 @@ export default {
     axios
       .all([
         axios.get(
-          "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/municipios/top/5" +
-            event,
+          "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/municipios/top/5",
           {}
         ),
         axios.get(
