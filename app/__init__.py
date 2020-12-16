@@ -185,6 +185,14 @@ def create_app(environment="development"):
     app.add_url_rule(
         "/api/centros/<int:centro_id>", "api_centros_show_one", centros.show_one
     )
+
+    app.add_url_rule(
+        "/api/centros/tipos/",
+        "api_centros_tipos",
+        centros.tipos,
+        methods=["GET"],
+    )
+
     """Rutas api turnos"""
     app.add_url_rule(
         "/api/centros/<int:centro_id>/turnos_disponibles/?fecha=<fecha>",
@@ -215,6 +223,8 @@ def create_app(environment="development"):
         turno.top,
         methods=["GET"],
     )
+
+    
 
     """Handlers: manejan errores"""
     app.register_error_handler(404, handler.not_found_error)

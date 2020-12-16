@@ -244,6 +244,13 @@ class Centro(db.Model):
                 )
         return centro
 
+        
+    def tipos(self):
+        return(
+        db.session.query(Centro.tipo_centro, func.count(Centro.tipo_centro).label("cantidad"))
+        .group_by(Centro.tipo_centro)
+        .all())
+
     def all(self):
         """devuelve todos los centros"""
         centros = Centro.query.all()
@@ -381,7 +388,6 @@ def empty_value(data):
     if not data:
         raise ValidationError("El campo no puede ser vacio.")
 
-
 class CentroSchema(Schema):
     """ Esquema de centros para api marshmallow"""
 
@@ -399,6 +405,7 @@ class CentroSchema(Schema):
     id_municipio = fields.Int(required=True, validate=empty_value)
     pages = fields.Str()
     per_page = fields.Str()
+    cantidad = fields.Int()
 
 
 centro_schema = CentroSchema()

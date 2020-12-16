@@ -135,3 +135,19 @@ def new_centro():
             "message": "El centro ya existe",
         }
         return jsonify(response), 400
+
+def tipos():
+    try:
+        tipo_centro = Centro().tipos()
+    except:
+        response = {
+            "message": "Fallo en servidor",
+        }
+        return jsonify(response), 500
+
+    tipoCentrosAPI = []
+
+    tipoCentrosAPI.append(centros_schema.dump(tipo_centro))
+
+    return jsonify({"centros": tipoCentrosAPI}, 200)
+    
