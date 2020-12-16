@@ -34,9 +34,11 @@ export default {
   methods: {
     horarios() {
       this.fecha_ini = moment().format("YYYY[-]M[-]D");
-      this.fecha_fin = moment("2020-12-12" + " 00:00:00")
-        .add(3, "days")
+      console.log( this.fecha_ini);
+      this.fecha_fin = moment(this.fecha_ini + " 00:00:00")
+        .add(2, "days")
         .format("YYYY[-]M[-]D");
+      console.log('fecha fin',this.fecha_fin)  
     },
   },
 };
