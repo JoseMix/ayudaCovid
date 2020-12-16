@@ -1,7 +1,8 @@
 <template>
   <v-container fluid ma-0 px-6 fill-height>
     <v-row>
-      <v-col align="center" justify="center">
+      <v-col>
+        <h4>TOP MUNICIPIOS</h4>
         <ve-pie :data="chartData"></ve-pie>
         <v-select
           v-model="e1"
