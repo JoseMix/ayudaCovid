@@ -64,7 +64,10 @@ export default {
   created() {
     axios
       .all([
-        axios.get("http://localhost:5000/api/municipios/top/5", {}),
+        axios.get(
+          "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/municipios/top/",
+          {}
+        ),
         axios.get(
           "https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=140",
           {}
