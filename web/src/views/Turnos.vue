@@ -3,56 +3,70 @@
     <h1>Página de Turnos</h1>
 
     <h3>{{ rutasApi($route.params.id, $route.params.fecha) }}</h3>
-
-    <router-link to="/centros" class="btn btn-primary">Volver </router-link>
-    <v-form class="pa-15">
-      <v-text-field
-        v-model="email"
-        :error-messages="emailErrors"
-        label="Email"
-        required
-        @input="$v.email.$touch()"
-        @blur="$v.email.$touch()"
-      ></v-text-field>
-      <v-text-field
-        v-model="nombre"
-        :error-messages="nameErrors"
-        label="Nombre"
-        required
-        @input="$v.nombre.$touch()"
-        @blur="$v.nombre.$touch()"
-      ></v-text-field>
-      <v-text-field
-        v-model="ape"
-        :error-messages="apeErrors"
-        label="Apellido"
-        required
-        @input="$v.ape.$touch()"
-        @blur="$v.ape.$touch()"
-      ></v-text-field>
-      <v-text-field
-        v-model="telefono"
-        :error-messages="telefonoErrors"
-        label="Telefono"
-        type="number"
-        required
-        @input="$v.telefono.$touch()"
-        @blur="$v.telefono.$touch()"
-      ></v-text-field>
-      <v-select
-        v-model="hora_inicio"
-        :error-messages="selectErrors"
-        :items="options"
-        label="Horario"
-        data-vv-name="select"
-        required
-        @change="$v.hora_inicio.$touch()"
-        @blur="$v.hora_inicio.$touch()"
-      ></v-select>
-      <v-btn class="mr-4" @click="validaciones">
-        Reservar
-      </v-btn>
-    </v-form>
+    <v-container>
+      <v-btn
+          class="red darken-1 display-1 font-weight-thin"
+          elevation="2"
+          large
+          accent-2
+          outlined
+          rounded
+          @click="$router.go(-1)"
+          >Volver</v-btn>
+        <v-row>
+             
+          <v-col cols="6">
+            <v-form class="pa-15">
+              <v-text-field
+                v-model="email"
+                :error-messages="emailErrors"
+                label="Email"
+                required
+                @input="$v.email.$touch()"
+                @blur="$v.email.$touch()"
+              ></v-text-field>
+              <v-text-field
+                v-model="nombre"
+                :error-messages="nameErrors"
+                label="Nombre"
+                required
+                @input="$v.nombre.$touch()"
+                @blur="$v.nombre.$touch()"
+              ></v-text-field>
+              <v-text-field
+                v-model="ape"
+                :error-messages="apeErrors"
+                label="Apellido"
+                required
+                @input="$v.ape.$touch()"
+                @blur="$v.ape.$touch()"
+              ></v-text-field>
+              <v-text-field
+                v-model="telefono"
+                :error-messages="telefonoErrors"
+                label="Telefono"
+                type="number"
+                required
+                @input="$v.telefono.$touch()"
+                @blur="$v.telefono.$touch()"
+              ></v-text-field>
+              <v-select
+                v-model="hora_inicio"
+                :error-messages="selectErrors"
+                :items="options"
+                label="Horario"
+                data-vv-name="select"
+                required
+                @change="$v.hora_inicio.$touch()"
+                @blur="$v.hora_inicio.$touch()"
+              ></v-select>
+              <v-btn class="v-btn green darken-1 v-btn--depressed v-btn--flat v-btn--outlined v-btn--rounded v-btn--router theme--light elevation-2 v-size--large display-1 font-weight-thin " @click="validaciones">
+                Reservar
+              </v-btn>
+            </v-form>
+          </v-col>
+        </v-row>
+    </v-container>
   </div>
 </template>
 <script>
