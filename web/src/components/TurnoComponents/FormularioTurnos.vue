@@ -1,9 +1,10 @@
 <template>
   <div class="formTurnos">
-    <h1>Página de Turnos</h1>
+   
 
     <h3>{{ rutasApi($route.params.id, $route.params.fecha) }}</h3>
     <v-container>
+      <h1>Página de Turnos</h1>
       <v-btn
           class="red darken-1 display-1 font-weight-thin"
           elevation="2"
@@ -13,7 +14,7 @@
           rounded
           @click="$router.go(-1)"
           >Volver</v-btn>
-        <v-row>
+        <v-row align="center" justify="center">
         
           <v-col cols="6">
             <v-form class="pa-15">

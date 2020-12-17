@@ -1,8 +1,16 @@
 <template>
   <v-container>
-    <h1>Página de centros</h1>
-    <router-link to="/" class="btn btn-primary">Volver </router-link>
-    <MyMap />
+    <h1>Página de Centros</h1>
+          <v-btn
+          class="red darken-1 display-1 font-weight-thin"
+          elevation="2"
+          large
+          accent-2
+          outlined
+          rounded
+          @click="$router.go(-1)"
+          >Volver</v-btn>        
+         <MyMap />
   </v-container>
 </template>
 
