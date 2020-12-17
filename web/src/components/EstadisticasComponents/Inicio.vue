@@ -18,11 +18,7 @@
         <LineChart></LineChart>        
       </v-col>
     </v-row>
-    <v-row>
-      <v-col cols="6" align="center" justify="center"> 
-        <Bar/>        
-      </v-col>
-    </v-row>
+
   </v-container>
 </template>
 
