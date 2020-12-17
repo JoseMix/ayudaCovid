@@ -13,7 +13,7 @@
           rounded
           @click="$router.go(-1)"
           >Volver</v-btn>
-        <v-row>
+        <v-row align="center" justify="center">
         
           <v-col cols="6">
             <v-form class="pa-15">
