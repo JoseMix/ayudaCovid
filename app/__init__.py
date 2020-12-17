@@ -223,8 +223,13 @@ def create_app(environment="development"):
         turno.top,
         methods=["GET"],
     )
-
-    
+    """Ruta turnos por tipo"""
+    app.add_url_rule(
+        "/api/turnosPorTipo/",
+        "api_turnos_por_tipo",
+        turno.turnos_por_tipo,
+        methods=["GET"],
+    )
 
     """Handlers: manejan errores"""
     app.register_error_handler(404, handler.not_found_error)

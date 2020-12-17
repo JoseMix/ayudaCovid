@@ -169,3 +169,19 @@ def top(cantidad):
     centrosAPI.append(turnos_schema.dump(top_municipios))
 
     return jsonify({"centros": centrosAPI}, 200)
+
+
+def turnos_por_tipo():
+    try:
+        turnos = Centro().turnos_por_tipo()
+    except:
+        response = {
+            "message": "Fallo en servidor",
+        }
+        return jsonify(response), 500
+
+    turnosAPI = []
+
+    turnosAPI.append(centros_schema.dump(turnos))
+
+    return jsonify({"centros": turnosAPI}, 200)

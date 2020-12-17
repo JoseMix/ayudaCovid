@@ -244,12 +244,24 @@ class Centro(db.Model):
                 )
         return centro
 
-        
     def tipos(self):
-        return(
-        db.session.query(Centro.tipo_centro, func.count(Centro.tipo_centro).label("cantidad"))
-        .group_by(Centro.tipo_centro)
-        .all())
+        return (
+            db.session.query(
+                Centro.tipo_centro, func.count(Centro.tipo_centro).label("cantidad")
+            )
+            .group_by(Centro.tipo_centro)
+            .all()
+        )
+
+    def turnos_por_tipo(self):
+        return (
+            db.session.query(
+                Centro.tipo_centro, func.count(Centro.tipo_centro).label("cantidad")
+            )
+            .join(Turnos.centro)
+            .group_by(Centro.tipo_centro)
+            .all()
+        )
 
     def all(self):
         """devuelve todos los centros"""
@@ -387,6 +399,7 @@ def empty_value(data):
     """Valida que el campo en JSON no este vacio"""
     if not data:
         raise ValidationError("El campo no puede ser vacio.")
+
 
 class CentroSchema(Schema):
     """ Esquema de centros para api marshmallow"""

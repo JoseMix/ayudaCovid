@@ -1,17 +1,17 @@
 <template> 
-   <v-container fluid ma-0 px-6 fill-height>
+  <v-container fluid ma-0 px-6 fill-height>
     <v-row>      
       <v-col>  
       <h4>TIPOS DE CENTROS</h4>
         <ve-ring :data="chartData" :settings="chartSettings"></ve-ring>
       </v-col>
     </v-row>
-   </v-container>
+  </v-container>
 </template>
 
 <script>
- import VeRing from'v-charts/lib/ring.common';
- import axios from "axios";
+import VeRing from'v-charts/lib/ring.common';
+import axios from "axios";
 
 export default {
     components: { VeRing },
