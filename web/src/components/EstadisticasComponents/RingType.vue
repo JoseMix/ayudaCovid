@@ -2,7 +2,7 @@
   <v-container fluid ma-0 px-6 fill-height>
     <v-row>      
       <v-col>  
-      <h4>TIPOS DE CENTROS</h4>
+      <h4>CANTIDAD DE CENTROS POR TIPO</h4>
         <ve-ring :data="chartData" :settings="chartSettings"></ve-ring>
       </v-col>
     </v-row>

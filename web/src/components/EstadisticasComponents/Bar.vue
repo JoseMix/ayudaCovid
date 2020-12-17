@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>Donaciones por tipo de centro</h3>
+        <h3>CANTIDAD DE TURNOS POR TIPO DE CENTRO</h3>
         <ve-histogram :data="chartData" :settings="chartSettings"></ve-histogram>
     </div>
 </template>
@@ -14,7 +14,7 @@
         components: { VeHistogram },
         data () {
         this.chartSettings = {
-        yAxisName: ['Donaciones']
+        yAxisName: ['Turnos']
         }
         return {
             chartData: {
