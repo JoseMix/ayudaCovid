@@ -79,8 +79,8 @@ li {
   cursor: pointer;
 }
 .mapa {
-  height: 80%;
+  height: auto;
 
-  margin: 10px;
+  margin: 85px;
 }
 </style>
