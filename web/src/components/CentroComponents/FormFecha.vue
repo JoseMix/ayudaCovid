@@ -14,7 +14,7 @@
     <router-link
       :to="{
         name: 'Turnos',
-        params: { id: centro_id, fecha: formValues.fecha },
+        params: { id: centro_id, fecha: formValues.fecha, nombre:nombre_centro },
       }"
     >
       <v-btn depressed color="primary">Sacar Turno</v-btn></router-link
@@ -30,7 +30,7 @@ export default {
     fecha_fin: null,
     fecha_ini: null,
   }),
-  props: ["centro_id"],
+  props: ["centro_id","nombre_centro"],
   methods: {
     horarios() {
       this.fecha_ini = moment().format("YYYY[-]M[-]D");

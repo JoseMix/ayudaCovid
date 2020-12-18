@@ -1,10 +1,10 @@
 <template>
   <div class="formTurnos">
    
-
+   
     <h3>{{ rutasApi($route.params.id, $route.params.fecha) }}</h3>
     <v-container>
-      <h1>Página de Turnos</h1>
+      <h1>Página de Turnos</h1>       
       <v-btn
           class="red darken-1 display-1 font-weight-thin"
           elevation="2"
@@ -16,8 +16,10 @@
           >Volver</v-btn>
         <v-row align="center" justify="center">
         
-          <v-col cols="6">
+          <v-col cols="6"> 
+                      
             <v-form class="pa-15">
+               <h2>{{$route.params.nombre}}</h2>
               <v-text-field
                 v-model="email"
                 :error-messages="emailErrors"
