@@ -20,7 +20,7 @@
             {{ marker.telefono }}
           </span>
           <!-- llamamos componente  -->
-          <FormFecha :centro_id="marker.id" />
+          <FormFecha :centro_id="marker.id" :nombre_centro="marker.nombre"/>
         </l-popup>
       </l-marker>
     </l-map>
