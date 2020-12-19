@@ -1,7 +1,7 @@
 <template>
   <v-container>
     {{ horarios() }}
-    <FormulateForm v-model="formValues">
+    <FormulateForm v-model="formValues" @submit="sacarTurno">
       <FormulateInput
         name="fecha"
         label="Fecha"
@@ -10,15 +10,12 @@
         :min="fecha_ini"
         :max="fecha_fin"
       />
+    <FormulateInput
+      type="submit"
+      label="Register"
+      /> 
     </FormulateForm>
-    <router-link
-      :to="{
-        name: 'Turnos',
-        params: { id: centro_id, fecha: formValues.fecha, nombre:nombre_centro },
-      }"
-    >
-      <v-btn depressed color="primary">Sacar Turno</v-btn></router-link
-    >
+
   </v-container>
 </template>
 
@@ -32,12 +29,16 @@ export default {
   }),
   props: ["centro_id","nombre_centro"],
   methods: {
+    sacarTurno() {
+        this.$router.push({ name: "Turnos" , params: { id: this.centro_id, fecha: this.formValues.fecha, nombre: this.nombre_centro }});
+    },
     horarios() {
       this.fecha_ini = moment().format("YYYY[-]M[-]D");
       this.fecha_fin = moment(this.fecha_ini + " 00:00:00")
         .add(2, "days")
         .format("YYYY[-]M[-]D");
     },
+
   },
 };
 </script>
