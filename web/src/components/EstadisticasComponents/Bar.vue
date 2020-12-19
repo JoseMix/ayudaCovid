@@ -24,7 +24,7 @@
         }
     },
     created() {
-    axios.get("http://127.0.0.1:5000/api/turnosPorTipo/").then((response) => {
+    axios.get("https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/turnosPorTipo/").then((response) => {
         this.chartData.rows = response.data[0].centros[0];
     })
     }
