@@ -152,15 +152,6 @@ export default {
         "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/centros/" + id + "/reserva/";
     },
     validaciones() {        
-        if ((this.email=="")){
-          alert("El campo email no puede estar vacío");
-          return false;
-        }
-        let emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
-        if (!emailRegex.test(this.email)) {
-          alert("Debe ingresar un email valido");
-            return false;
-        }
         if ((this.nombre=="")){
           alert("El campo nombre no puede estar vacío");
           return false;
