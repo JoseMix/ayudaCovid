@@ -19,7 +19,7 @@
           <v-col cols="6"> 
                       
             <v-form class="pa-15">
-               <h2>{{$route.params.nombre}}</h2>
+              <h2> Centro:  {{$route.params.nombre}}</h2>
               <v-text-field
                 v-model="email"
                 :error-messages="emailErrors"
