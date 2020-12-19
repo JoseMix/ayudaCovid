@@ -151,7 +151,7 @@ export default {
       this.apiReservarTurno =
         "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/centros/" + id + "/reserva/";
     },
-    validaciones() {
+    validaciones() {        
         if ((this.email=="")){
           alert("El campo email no puede estar vacío");
           return false;
@@ -160,7 +160,7 @@ export default {
         if (!emailRegex.test(this.email)) {
           alert("Debe ingresar un email valido");
             return false;
-        }  
+        }
         if ((this.nombre=="")){
           alert("El campo nombre no puede estar vacío");
           return false;
