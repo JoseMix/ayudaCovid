@@ -104,11 +104,13 @@ En caso de querer introducir un centro ya existente:
 }
 ```
 
-Si queremos ver los centros, habría que cambiar el metodo a GET con el mismo endpoint:
+Si queremos ver los centros, habría que cambiar el metodo a GET con el endpoint: http://127.0.0.1:5000/api/centros/ que devuelve la primera pagina con las paginas totales y el numero de elementos por página.
+En caso de querer una página en particular le pasamos el parametro page en la url: http://127.0.0.1:5000/api/centros/?page=1
 
 ```bash
 
 {
+            "id": 1,
             "apertura": "09:00:00",
             "cierre": "20:00:00",
             "direccion": "Calle 24 y 12",
@@ -125,7 +127,30 @@ Si queremos ver los centros, habría que cambiar el metodo a GET con el mismo en
 }
 ```
 
-Y vemos el centro creado previamente, además de las paginas y los elementos por página tomados de la configuración.
+```bash
+
+  {
+    "centros": [
+      [
+        {
+          "id": 1, 
+          "direccion": "Calle 24 y 12", 
+          "apertura": "12:00", 
+          "telefono": "112233123", 
+          "email": "pruebajson@gmail.com", 
+          "latitud": 1.4556, 
+          "longitud": -12.567, 
+          "nombre": "Centro los alamos", 
+          "tipo_centro": "ROPA", 
+          "web": null, 
+          "cierre": "20:00"
+        }
+      ]
+    ], 
+    "pages": 1, 
+    "per_page": 4
+  }
+```
 
 Si queremos buscar un centro en concreto seleccionamos GET como método y cambiamos el endpoind a:
 http://127.0.0.1:5000/api/centros/:id
