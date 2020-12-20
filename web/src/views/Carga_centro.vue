@@ -1,10 +1,10 @@
 <template>
-  <div class="carga_centro">
+  <v-container>
     <h1 class="display-1 font-weight-thin" style="text-align:center">
       Creación de solicitud de centro
     </h1>
     <VueFormulate></VueFormulate>
-  </div>
+  </v-container>
 </template>
 
 <script>

@@ -19,7 +19,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from flask_marshmallow import Marshmallow
 from app.resources import user, configuracion, auth, centro, turnos
-from app.resources.api import centros, turno
+from app.resources.api import centros, turno, sitio
 
 from config import config
 from app.resources import user, configuracion, auth, centro
@@ -169,7 +169,8 @@ def create_app(environment="development"):
             return redirect(url_for("centro_index", page=1))
         else:
             sitio = Configuracion().sitio()
-            return render_template("home.html", sitio=sitio)
+            return redirect("https://grupo13.proyecto2020.linti.unlp.edu.ar/")
+            # return redirect("http://localhost:8080/")
 
     """Rutas de API-rest
     Rutas api centros"""
@@ -192,6 +193,14 @@ def create_app(environment="development"):
         centros.tipos,
         methods=["GET"],
     )
+
+    """ Ruta API configuración del sitio"""
+    app.add_url_rule(
+            "/api/sitio/",
+            "api_sitio_sitio",
+            sitio.sitio,
+            # methods=["GET"],
+        )
 
     """Rutas api turnos"""
     app.add_url_rule(
