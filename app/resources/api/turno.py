@@ -13,7 +13,7 @@ from app.models.centro import (
 from app.models.configuracion import Configuracion
 from marshmallow import ValidationError
 from datetime import datetime, timedelta
-
+import re
 db = SQLAlchemy()
 
 
@@ -77,6 +77,10 @@ def es_turno_de_30(hora_inicio, hora_fin):
     """comprueba si la hora ingresada corresponde a 30 minutos"""
     return ((hora_fin - hora_inicio).total_seconds() / 60) != 30
 
+def validate(email): 
+       match=re.search(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9]+\.[a-zA-Z0-9.]*\.*[com|org|edu]{3}$)",email)
+       if not match:
+           return 'Email invalido'
 
 def new_reserva(centro_id):
     """Se parsea JSON de un turno y se convierte en un objeto para agregar a la bd.
@@ -102,6 +106,11 @@ def new_reserva(centro_id):
         data["fecha"],
         data["telefono"],
     )
+    if validate(email):
+        response = {
+            "message": "Debe ingresar un mail valido",
+        }
+        return jsonify(response), 500
     obj_fecha = datetime.strftime(fecha, "%d-%m-%Y")
     if datetime.strptime(obj_fecha, "%d-%m-%Y") < datetime.now() - timedelta(
         days=1
@@ -116,6 +125,7 @@ def new_reserva(centro_id):
             "message": "La hora de inicio y fin, deben ser bloques de 30 minutos",
         }
         return jsonify(response), 500
+    
     try:
         timeStr = hora_inicio.strftime("%H:%M")
         bloque = Bloque().find_by_hora_inicio(timeStr)

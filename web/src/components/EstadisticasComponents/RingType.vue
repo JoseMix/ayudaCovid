@@ -14,6 +14,7 @@ import VeRing from "v-charts/lib/ring.common";
 import axios from "axios";
 
 export default {
+<<<<<<< HEAD
   components: { VeRing },
   data() {
     this.chartSettings = {
@@ -33,4 +34,25 @@ export default {
     });
   },
 };
+=======
+    components: { VeRing },
+    data () {
+      this.chartSettings = {
+        radius: [30, 100],
+        offsetY: 200
+      }
+      return {
+        chartData: {
+          columns: ["tipo_centro", "cantidad"],
+          rows: [],
+        },
+      }
+    },
+    created() {
+      axios.get("https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/centros/tipos/").then((response) => {
+        this.chartData.rows = response.data[0].centros[0];
+    })
+    }
+  }
+>>>>>>> development
 </script>

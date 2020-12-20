@@ -19,7 +19,7 @@
           <v-col cols="6"> 
                       
             <v-form class="pa-15">
-               <h2>{{$route.params.nombre}}</h2>
+              <h2> Centro:  {{$route.params.nombre}}</h2>
               <v-text-field
                 v-model="email"
                 :error-messages="emailErrors"
@@ -151,16 +151,16 @@ export default {
       this.apiReservarTurno =
         "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/centros/" + id + "/reserva/";
     },
-    validaciones() {
+    validaciones() {  
         if ((this.email=="")){
           alert("El campo email no puede estar vacío");
-          return false;
+            return false;
         }
         let emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
         if (!emailRegex.test(this.email)) {
           alert("Debe ingresar un email valido");
             return false;
-        }  
+        }      
         if ((this.nombre=="")){
           alert("El campo nombre no puede estar vacío");
           return false;
