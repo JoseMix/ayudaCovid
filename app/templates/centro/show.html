@@ -161,10 +161,18 @@ block head %} {{ super() }} {% endblock %} {% block content %}
           <strong class="text-text"> {{ turno.email }} </strong>
         </td>
         <td>
+          {% if (turno.nombre == None )%}
+          <strong class="text-text"> - </strong>
+          {%else%}
           <strong class="text-text"> {{ turno.nombre }} </strong>
+          {%endif%}
         </td>
         <td>
+          {% if (turno.apellido == None )%}
+          <strong class="text-text"> - </strong>
+          {%else%}
           <strong class="text-text"> {{ turno.apellido }} </strong>
+          {%endif%}
         </td>
         <td>
           {% if turno.estado=="VIGENTE" %} {% if ( 'turnos_destroy' in
