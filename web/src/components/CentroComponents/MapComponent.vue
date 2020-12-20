@@ -52,8 +52,8 @@ li {
 .map {
   position: sticky;
   height: 50%;
-  width: 70%;
-  margin-top: 1%;
-  margin-bottom: 2%;
+  width: 75%;
+  margin-top: 4%;
+  margin-bottom: 4%;
 }
 </style>

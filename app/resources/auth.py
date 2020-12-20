@@ -38,6 +38,9 @@ def logout():
     return redirect(
         "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/iniciar_sesion"
     )
+    # return redirect(
+    #     "http://127.0.0.1:5000/iniciar_sesion"
+    # )
 
 
 def validate(form):

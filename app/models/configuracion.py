@@ -1,5 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date
+from marshmallow import Schema, fields, ValidationError
+
 
 db = SQLAlchemy()
 
@@ -49,3 +51,20 @@ class Configuracion(db.Model):
         sitio.activo = eval(formulario["activo"])
         sitio.paginas = formulario["paginas"]
         db.session.commit()
+
+
+def empty_value(data):
+    """Valida que el campo en JSON no este vacio"""
+    if not data:
+        raise ValidationError("El campo no puede ser vacio.")
+
+class SitioSchema(Schema):
+    """ Esquema de configuración de sitio para api marshmallow"""
+
+    titulo = fields.Str(required=True, validate=empty_value)
+    descripcion = fields.Str(required=True, validate=empty_value)
+    email = fields.Email(required=True, validate=empty_value)
+    paginas = fields.Int(required=True, validate=empty_value)
+    activo = fields.Boolean(required=True, validate=empty_value)
+
+sitio_schema = SitioSchema()

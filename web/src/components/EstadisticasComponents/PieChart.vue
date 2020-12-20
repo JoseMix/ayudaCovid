@@ -2,7 +2,7 @@
   <v-container fluid ma-0 px-6 fill-height>
     <v-row>
       <v-col>
-        <h4>TOP MUNICIPIOS CON MAS CENTROS</h4>
+        <h4>TOP MUNICIPIOS CON MAS TURNOS</h4>
         <ve-pie :data="chartData"></ve-pie>
         <v-select
           v-model="e1"
