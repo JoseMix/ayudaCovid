@@ -135,9 +135,6 @@
           </span>
         </v-col>
       </v-row>
-      <!-- <v-row>
-        <v-col align="left" justify="center"> </v-col>
-      </v-row> -->
 
       <v-row align="center" justify="center">
         <FormulateInput
@@ -145,6 +142,9 @@
           label="CREAR SOLICITUD DE CENTRO"
           ouner-class="success"
         />
+      </v-row>
+      <v-row style="margin-botton:5%">
+        <v-col align="left" justify="center"> </v-col>
       </v-row>
     </v-container>
   </FormulateForm>

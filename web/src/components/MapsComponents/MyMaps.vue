@@ -1,5 +1,12 @@
 <template>
-  <div class="mapa">
+  <div
+    class="map"
+    style="  position: sticky;
+  height: 90%;
+  width: 90%;
+  margin: 85px;
+  margin-top:10px"
+  >
     <l-map :zoom="zoom" :center="center">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
       <l-marker
