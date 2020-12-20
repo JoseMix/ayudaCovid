@@ -1,5 +1,5 @@
 <template>
-  <div class="mapa">
+  <div class="map">
     <l-map :zoom="zoom" :center="center" @click="addMarker">
       <l-tile-layer :url="url" :attribution="attribution"></l-tile-layer>
       <l-marker ref="markersRef" :lat-lng="{ lat: latitud, lng: longitud }">
@@ -49,9 +49,11 @@ export default {
 li {
   cursor: pointer;
 }
-.mapa {
+.map {
   position: sticky;
-  height: 100%;
-  width: 100%;
+  height: 50%;
+  width: 70%;
+  margin-top: 1%;
+  margin-bottom: 2%;
 }
 </style>

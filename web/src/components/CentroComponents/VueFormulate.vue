@@ -5,23 +5,17 @@
         <v-col align="center" justify="center">
           <FormulateInput
             name="nombre"
-            label="Nombre del centro"
+            label="Nombre del centro *"
+            placeholder="Ingrese un nombre"
             validation="required"
             :validation-messages="{
               required: 'El nombre es requerido.',
             }"
           />
-          <FormulateInput
-            name="direccion"
-            label="Direccion del centro"
-            validation="required"
-            :validation-messages="{
-              required: 'La direccion es requerida.',
-            }"
-          />
+
           <FormulateInput
             name="apertura"
-            label="Horario de apertura"
+            label="Horario de apertura *"
             type="time"
             validation="required"
             :validation-messages="{
@@ -30,11 +24,11 @@
           />
           <FormulateInput
             name="cierre"
-            label="Horario de cierre"
+            label="Horario de cierre *"
             type="time"
             validation="required"
             :validation-messages="{
-              required: 'La hora de apertura es requerida.',
+              required: 'La hora de cierre es requerida.',
             }"
           />
           <span
@@ -47,11 +41,17 @@
             {{ errorDate }}
           </span>
 
-          <FormulateInput name="email" label="Email" type="email" />
+          <FormulateInput
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="Ingrese un email"
+          />
           <FormulateInput
             name="telefono"
-            label="Teléfono"
+            label="Teléfono *"
             type="text"
+            placeholder="Ingrese un teléfono"
             validation="required|number"
             :validation-messages="{
               required: 'El telefono es requerido.',
@@ -61,30 +61,21 @@
           <FormulateInput
             name="tipo_centro"
             label="Tipo de centro"
+            placeholder="Seleccione un tipo de centro"
             type="select"
             :options="{ Ropa: 'ropa', Plasma: 'plasma', Comida: 'comida' }"
             validation="required"
+            :validation-messages="{
+              required: 'Tipo de centro requerido.',
+            }"
           />
           <FormulateInput
             name="web"
             label="Web"
             type="url"
-            validation="required"
-            :validation-messages="{
-              required: 'La web es requerida.',
-            }"
+            placeholder="Ingrese sitio web"
           />
-          <FormulateInput
-            type="select"
-            name="id_municipio"
-            label="Municipio"
-            :options="municipios"
-            validation="required"
-            placeholder="Seleccione un municipio"
-            :validation-messages="{
-              required: 'El municipio es requerido.',
-            }"
-          />
+
           <FormulateInput
             name="latitud"
             type="hidden"
@@ -100,6 +91,33 @@
               required: 'La ubicación es requerida.',
             }"
           />
+        </v-col>
+        <v-col align="center" justify="center">
+          <FormulateInput
+            type="select"
+            name="id_municipio"
+            label="Municipio *"
+            :options="municipios"
+            validation="required"
+            placeholder="Seleccione un municipio"
+            :validation-messages="{
+              required: 'El municipio es requerido.',
+            }"
+          />
+
+          <FormulateInput
+            name="direccion"
+            label="Direccion del centro *"
+            placeholder="Ingrese una dirección"
+            validation="required"
+            :validation-messages="{
+              required: 'La direccion es requerida.',
+            }"
+          />
+
+          <strong>Ubicación *</strong>
+          <MapComponent @latitud="lat = $event" @longitud="lng = $event" />
+
           <vue-recaptcha
             sitekey="6LeaMgUaAAAAAMO68Dyq8L61D8UDRHM-aY0luK8v"
             :loadRecaptchaScript="true"
@@ -116,31 +134,16 @@
             {{ errorCaptcha }}
           </span>
         </v-col>
-        <v-col align="center" justify="center">
-          <strong>Ubicación:</strong>
-          <MapComponent @latitud="lat = $event" @longitud="lng = $event" />
-        </v-col>
       </v-row>
-      <v-row>
+      <!-- <v-row>
         <v-col align="left" justify="center"> </v-col>
-      </v-row>
+      </v-row> -->
 
       <v-row align="center" justify="center">
-        <v-btn
-          class="red darken-1 display-1 font-weight-thin"
-          elevation="2"
-          large
-          accent-2
-          outlined
-          rounded
-          @click="$router.go(-1)"
-          >Volver</v-btn
-        >
-
         <FormulateInput
           type="submit"
-          label="Enviar"
-          outer-class="v-btn green darken-1 v-btn--depressed v-btn--flat v-btn--outlined v-btn--rounded v-btn--router theme--light elevation-2 v-size--large display-1 font-weight-thin "
+          label="CREAR SOLICITUD DE CENTRO"
+          ouner-class="success"
         />
       </v-row>
     </v-container>

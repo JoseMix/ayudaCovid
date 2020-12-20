@@ -1,6 +1,8 @@
 <template>
   <div class="carga_centro">
-    <h1 class="display-1 font-weight-thin">Alta de centro</h1>
+    <h1 class="display-1 font-weight-thin" style="text-align:center">
+      Creación de solicitud de centro
+    </h1>
     <VueFormulate></VueFormulate>
   </div>
 </template>

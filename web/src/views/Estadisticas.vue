@@ -1,9 +1,10 @@
 <template>
   <div class="Estadisticas">
-    <h1 class="display-1 font-weight-thin">Estadisticas</h1>
-    <Stats></Stats>
+    <h1 class="display-1 font-weight-thin" style="text-align:center">
+      Estadisticas
+    </h1>
 
-    <router-link to="/" class="btn btn-primary">Volver </router-link>
+    <Stats></Stats>
   </div>
 </template>
 

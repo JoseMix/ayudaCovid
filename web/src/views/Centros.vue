@@ -1,16 +1,10 @@
 <template>
   <v-container>
-    <h1>Página de Centros</h1>
-          <v-btn
-          class="red darken-1 display-1 font-weight-thin"
-          elevation="2"
-          large
-          accent-2
-          outlined
-          rounded
-          @click="$router.go(-1)"
-          >Volver</v-btn>        
-         <MyMap />
+    <h1 class="display-1 font-weight-thin" style="text-align:center">
+      Mapa de Centros
+    </h1>
+    <MyMap />
+    <br />
   </v-container>
 </template>
 
