@@ -128,13 +128,19 @@ block head %} {{ super() }} {% endblock %} {% block content %}
     <table class="table table-hover" id="contenidoDeTabla">
       <tr>
         <td>
-          <strong class="=texto-text">Día:</strong>
+          <strong class="=texto-text">Día</strong>
         </td>
         <td>
-          <strong class="texto-text">Horario:</strong>
+          <strong class="texto-text">Horario</strong>
         </td>
         <td>
-          <strong class="texto-text">Email solicitante:</strong>
+          <strong class="texto-text">Email solicitante</strong>
+        </td>
+        <td>
+          <strong class="texto-text">Nombre</strong>
+        </td>
+        <td>
+          <strong class="texto-text">Apellido</strong>
         </td>
         <td></td>
       </tr>
@@ -153,6 +159,12 @@ block head %} {{ super() }} {% endblock %} {% block content %}
         </td>
         <td>
           <strong class="text-text"> {{ turno.email }} </strong>
+        </td>
+        <td>
+          <strong class="text-text"> {{ turno.nombre }} </strong>
+        </td>
+        <td>
+          <strong class="text-text"> {{ turno.apellido }} </strong>
         </td>
         <td>
           {% if turno.estado=="VIGENTE" %} {% if ( 'turnos_destroy' in
