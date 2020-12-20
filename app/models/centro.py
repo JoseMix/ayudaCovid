@@ -191,7 +191,7 @@ class Centro(db.Model):
     cierre = db.Column(db.Time, nullable=False)
     tipo_centro = db.Column(db.Enum("COMIDA", "ROPA", "PLASMA"), nullable=False)
     municipio = db.Column(db.Integer, nullable=False)
-    web = db.Column(db.String(255), nullable=False)
+    web = db.Column(db.String(255), nullable=True)
     email = db.Column(db.String(255), nullable=False)
     estado = db.Column(
         db.Enum("RECHAZADO", "ACEPTADO", "PENDIENTE"),
@@ -402,7 +402,7 @@ class CentroSchema(Schema):
     apertura = fields.DateTime(format="%H:%M", required=True, validate=empty_value)
     cierre = fields.DateTime(format="%H:%M", required=True, validate=empty_value)
     tipo_centro = fields.Str(required=True, validate=empty_value)
-    web = fields.URL(required=False)
+    web = fields.URL(default=None)
     email = fields.Email(required=False)
     latitud = fields.Float(required=True)
     longitud = fields.Float(required=True)

@@ -70,7 +70,7 @@ export default {
     llamadoApi() {
       axios
         .get(
-          "http://127.0.0.1:5000/api/turnosPorTipo/fecha_inicio=" +
+          "https://admin-grupo13.proyecto2020.linti.unlp.edu.ar/api/turnosPorTipo/fecha_inicio=" +
             this.dates[0] +
             ",fecha_fin=" +
             this.dates[1]

@@ -51,7 +51,7 @@ def show(centro_id):
         return jsonify(response), 500
 
     try:
-        turnos = Bloque().bloques_ocupados(centro_id, fecha)
+        turnos = Bloque().bloques_ocupados(centro_id, datetime.strptime(fecha, "%d-%m-%Y"))
         turnos_all = Bloque().all()
 
     except:
@@ -78,9 +78,9 @@ def es_turno_de_30(hora_inicio, hora_fin):
     return ((hora_fin - hora_inicio).total_seconds() / 60) != 30
 
 def validate(email): 
-       match=re.search(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9]+\.[a-zA-Z0-9.]*\.*[com|org|edu]{3}$)",email)
-       if not match:
-           return 'Email invalido'
+    match=re.search(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9]+\.[a-zA-Z0-9.]*\.*[com|org|edu]{3}$)",email)
+    if not match:
+        return 'Email invalido'
 
 def new_reserva(centro_id):
     """Se parsea JSON de un turno y se convierte en un objeto para agregar a la bd.

@@ -85,7 +85,7 @@ def new_centro():
         return jsonify(response), 400
     try:
         """id_municipio = show_id_municipio(json_data["municipio"])"""
-        data = centro_schema.load(json_data)
+        data = centro_schema.load(json_data,partial=("web"))
     except ValidationError as err:
         return jsonify(err.messages), 500
 
@@ -99,7 +99,6 @@ def new_centro():
         longitud,
         telefono,
         tipo_centro,
-        web,
         id_municipio,
     ) = (
         data["apertura"],
@@ -111,10 +110,12 @@ def new_centro():
         data["longitud"],
         data["telefono"],
         data["tipo_centro"],
-        data["web"],
         int(data["id_municipio"]),
     )
-
+    try:
+        web =data["web"]
+    except:
+        web = None
     try:
         centro = Centro().validate_centro_creation(
             nombre=nombre, direccion=direccion, municipio=id_municipio
@@ -124,6 +125,19 @@ def new_centro():
             "message": "Fallo en servidor",
         }
         return jsonify(response), 500
+    
+    #valido fechas de apertura y cierre
+    if(apertura > cierre):
+        response = {
+            "message": "El horario de apertura debe ser anterior al de cierre",
+        }
+        return jsonify(response), 500
+    if( not telefono.isnumeric()):
+        response = {
+            "message": "Teléfono inválido!",
+        }
+        return jsonify(response), 500
+    
     if centro is None:
         centro = Centro(
             nombre=nombre,
