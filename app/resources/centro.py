@@ -218,6 +218,7 @@ def show():
     centro = Centro().find_by_id(request.args.get("centro_id"))
     if centro == None:
         abort(404)
+    municipio= get_municipio(centro.id)
     page = request.args.get("page", 1, type=int)
     if centro.protocolo:
         ruta = os.path.join(DOWNLOAD_FOLDER, centro.protocolo)
@@ -249,6 +250,7 @@ def show():
         index_pag=turnos,
         search=search,
         protocolo=ruta,
+        municipio= municipio
     )
 
 

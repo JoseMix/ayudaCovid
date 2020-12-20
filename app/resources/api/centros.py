@@ -10,10 +10,20 @@ db = SQLAlchemy()
 
 def index():
     """Retorna los centros activos, paginados y se convierte en json segun el esquema
-    Se manejan errores si: no existe el centro"""
+    Se manejan errores si: no existen centros"""
     sitio = Configuracion().sitio()
-    centros = Centro().aprobados_paginado(1, sitio.paginas)
-    centro2 = centros.next()
+    # recibo parametro -optativo- 
+    page = request.args.get("page")
+    
+    if( page == None or page== '' ):
+        centros = Centro().aprobados_paginado(1, sitio.paginas)
+    else:
+        if ( not page.isnumeric() ):
+            response = {
+                "message": "Fallo en servidor, inserte un valor numérico de página!",
+            }
+            return jsonify(response), 500
+        centros = Centro().aprobados_paginado(int(page), sitio.paginas)
     pages = centros.pages
     per_page = centros.per_page
     if centros is None:
@@ -22,9 +32,12 @@ def index():
         }
         return jsonify(response), 404
     centrosAPI = []
-    for i in range(pages):
+    if( page == None or page== '' ):
+        for i in range(pages):
+            centrosAPI.append(centros_schema.dump(centros.items))
+            centros = centros.next()
+    else:
         centrosAPI.append(centros_schema.dump(centros.items))
-        centros = centros.next()
     return jsonify({"centros": centrosAPI, "pages": pages, "per_page": per_page}, 200)
 
 

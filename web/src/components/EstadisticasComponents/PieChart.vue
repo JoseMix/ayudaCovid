@@ -8,7 +8,7 @@
           v-model="e1"
           @change="onChange(e1)"
           :items="items"
-          label="Seleccione cantidad"
+          label="Seleccione cantidad municipios"
         ></v-select>
       </v-col>
     </v-row>

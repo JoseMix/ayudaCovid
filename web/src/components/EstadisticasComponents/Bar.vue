@@ -2,7 +2,13 @@
   <v-container fluid ma-0 px-6 fill-height>
     <v-row>
       <v-col>
-        <h3>CANTIDAD DE TURNOS POR TIPO DE CENTRO</h3>
+        <h3 style="text-align:center">
+          CANTIDAD DE TURNOS POR TIPO DE CENTRO EN UN INTERVALO
+        </h3>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <v-date-picker v-model="dates" range></v-date-picker>
 
         <v-text-field
@@ -19,7 +25,7 @@
         ></ve-histogram>
       </v-col>
       <v-col v-if="!tiene_datos" style="text-align:center; margin-top:15%">
-        <h3>{{ vacio }}</h3>
+        <h3>SIN RESULTADOS</h3>
       </v-col>
     </v-row>
   </v-container>
@@ -35,7 +41,7 @@ export default {
     return {
       dates: [],
       dates_vista: [],
-      vacio: "SIN RESULTADOS",
+
       tiene_datos: false,
       chartSettings: {
         yAxisName: ["Turnos"],
