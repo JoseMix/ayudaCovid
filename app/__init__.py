@@ -225,7 +225,7 @@ def create_app(environment="development"):
     )
     """Ruta turnos por tipo"""
     app.add_url_rule(
-        "/api/turnosPorTipo/",
+        "/api/turnosPorTipo/fecha_inicio=<fecha_inicio>,fecha_fin=<fecha_fin>",
         "api_turnos_por_tipo",
         turno.turnos_por_tipo,
         methods=["GET"],

@@ -103,15 +103,6 @@ class Turnos(db.Model):
             .limit(cantidad)
             .all()
         )
-        """(
-            (
-               db.session.query(Centro.id, func.count(Centro.municipio)).join(
-                    Turnos.centro_id
-                )
-            )
-            .group_by(Centro.municipio)
-            .all()
-        )"""
 
 
 class TurnoSchema(Schema):
@@ -253,11 +244,11 @@ class Centro(db.Model):
             .all()
         )
 
-    def turnos_por_tipo(self):
+    def turnos_por_tipo(self, fecha_inicio, fecha_fin):
         return (
             db.session.query(
                 Centro.tipo_centro, func.count(Centro.tipo_centro).label("cantidad")
-            )
+            ).filter(Turnos.dia.between(fecha_inicio, fecha_fin))
             .join(Turnos.centro)
             .group_by(Centro.tipo_centro)
             .all()

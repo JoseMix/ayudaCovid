@@ -171,9 +171,10 @@ def top(cantidad):
     return jsonify({"centros": centrosAPI}, 200)
 
 
-def turnos_por_tipo():
+def turnos_por_tipo(fecha_inicio, fecha_fin):
     try:
-        turnos = Centro().turnos_por_tipo()
+        turnos = Centro().turnos_por_tipo(fecha_inicio, fecha_fin)
+        print(turnos)
     except:
         response = {
             "message": "Fallo en servidor",
